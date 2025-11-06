@@ -38,10 +38,14 @@ const fn return_fn_returning_bool() -> fn() -> bool {
 
 # unsafe_method_***
 
-Unfortunately, Rust language limitations don't allow us to have one macro for methods that with
-receiver `self` being a shared reference `&self`, a mutable reference `&mut self` or a value `self`.
-We need to use three different macros: `unsafe_method_ref`, `unsafe_method_mut` and
-`unsafe_method_val`.
+Unfortunately, Rust macros can't have access to the type system. So they can't differentiate whether
+a method's receiver is a shared reference `&self`, a mutable reference `&mut self` or a value
+`self`.
+
+We need to use three different macros:
+- `unsafe_method_ref`,
+- `unsafe_method_mut` and
+- `unsafe_method_val`.
 
 # unsafe_method_ref and unsafe_method_mut in const
 
