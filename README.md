@@ -69,10 +69,9 @@ As of late 2025, `const` traits are not stabilized in Rust. So, currently `unsaf
    name implying `const`, because this macro on its own **cannot** give a `const` guarantee.
 
 ```rust
-use prudent::unsafe_method_val;
-use prudent::unsafe_method_val as unsafe_method_for;
+use prudent::unsafe_method as unsafe_method_for;
 
-// @TODO
+// @TODO accept path
 //
 //const ONE: u8 = unsafe_method_for!(1, u8::unchecked_add, );
 ```
@@ -85,8 +84,8 @@ const ONE: u8 = unsafe_fn!(u8::unchecked_add, 1, 0);
 
 # unsafe_method_ref
 ```rust
-# use prudent::unsafe_method_ref;
-let _ = unsafe_method_ref!(1u8, unchecked_add, 0);
+# use prudent::unsafe_method;
+let _ = unsafe_method!(1u8, unchecked_add, 0);
 
 struct SNonCopy {}
 impl SNonCopy {
@@ -96,14 +95,14 @@ impl SNonCopy {
 }
 
 let s = SNonCopy {};
-unsafe_method_ref!(s, unsafe_method_no_args);
-unsafe_method_ref!(s, unsafe_method_one_arg, true);
-unsafe_method_ref!(s, unsafe_method_two_args, true, false);
+unsafe_method!(s, unsafe_method_no_args);
+unsafe_method!(s, unsafe_method_one_arg, true);
+unsafe_method!(s, unsafe_method_two_args, true, false);
 ```
 
 # unsafe_method_mut
 ```rust
-# use prudent::unsafe_method_mut;
+# use prudent::unsafe_method;
 struct SNonCopy {}
 impl SNonCopy {
     fn unsafe_method_no_args(&mut self) {}
@@ -112,14 +111,14 @@ impl SNonCopy {
 }
 
 let mut s = SNonCopy {};
-unsafe_method_mut!(s, unsafe_method_no_args);
-unsafe_method_mut!(s, unsafe_method_one_arg, true);
-unsafe_method_mut!(s, unsafe_method_two_args, true, false);
+unsafe_method!(s, unsafe_method_no_args);
+unsafe_method!(s, unsafe_method_one_arg, true);
+unsafe_method!(s, unsafe_method_two_args, true, false);
 ```
 
 # unsafe_method_val
 ```rust
-# use prudent::unsafe_method_val;
+# use prudent::unsafe_method;
 {
     struct SNonCopy {}
     impl SNonCopy {
@@ -129,11 +128,11 @@ unsafe_method_mut!(s, unsafe_method_two_args, true, false);
     }
 
     let sNonCopy = SNonCopy {};
-    unsafe_method_val!(sNonCopy, unsafe_method_no_args);
+    unsafe_method!(sNonCopy, unsafe_method_no_args);
     let sNonCopy = SNonCopy {};
-    unsafe_method_val!(sNonCopy, unsafe_method_one_arg, true);
+    unsafe_method!(sNonCopy, unsafe_method_one_arg, true);
     let sNonCopy = SNonCopy {};
-    unsafe_method_val!(sNonCopy, unsafe_method_two_args, true, false);
+    unsafe_method!(sNonCopy, unsafe_method_two_args, true, false);
 }
 {
     #[derive(Clone, Copy)]
@@ -143,8 +142,8 @@ unsafe_method_mut!(s, unsafe_method_two_args, true, false);
     }
 
     let sCopy = SCopy {};
-    unsafe_method_val!(sCopy, unsafe_method_no_args);
-    unsafe_method_val!(sCopy, unsafe_method_no_args);
+    unsafe_method!(sCopy, unsafe_method_no_args);
+    unsafe_method!(sCopy, unsafe_method_no_args);
     let _ = sCopy;
 }
 ```

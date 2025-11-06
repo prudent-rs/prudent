@@ -1,0 +1,7 @@
+[package]
+name = "method_one_postfix_param"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+prudent = { version = "0.0.3-alpha", path="../.."}
