@@ -23,17 +23,6 @@ const unsafe fn unsafe_fn_two_args(_: bool, u: u8) -> u8 { u }
 unsafe_fn!(unsafe_fn_no_args);
 unsafe_fn!(unsafe_fn_one_arg, true);
 unsafe_fn!(unsafe_fn_two_args, true, 0);
-
-const UNIT: () = unsafe_fn!(unsafe_fn_no_args);
-const B: bool = unsafe_fn!(unsafe_fn_one_arg, true);
-const U8: u8 = unsafe_fn!(unsafe_fn_two_args, true, 0);
-
-const fn return_fn_returning_bool() -> fn() -> bool {
-    fn f() -> bool {
-      true
-    }
-    f
-}
 ```
 
 # unsafe_method_***
@@ -69,7 +58,7 @@ As of late 2025, `const` traits are not stabilized in Rust. So, currently `unsaf
    name implying `const`, because this macro on its own **cannot** give a `const` guarantee.
 
 ```rust
-use prudent::unsafe_method as unsafe_method_for;
+//use prudent::unsafe_method as unsafe_method_for;
 
 // @TODO accept path
 //
@@ -79,7 +68,7 @@ use prudent::unsafe_method as unsafe_method_for;
 ## Less ergonomic
 ```rust
 # use prudent::unsafe_fn;
-const ONE: u8 = unsafe_fn!(u8::unchecked_add, 1, 0);
+const _ONE: u8 = unsafe_fn!(u8::unchecked_add, 1, 0);
 ```
 
 # unsafe_method_ref
@@ -318,7 +307,7 @@ let _ = unsafe_mut!(pt, bool);
 ## unsafe_mut - two args, typed slice
 ```rust
 # use prudent::unsafe_mut;
-let mut bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
+let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
 let pt: *mut [bool] = bs as *mut [bool];
 
 let _: &mut [bool] = unsafe_mut!(pt, [bool]);
