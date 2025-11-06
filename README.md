@@ -57,7 +57,7 @@ As of late 2025, `const` traits are not stabilized in Rust. So, currently `unsaf
 3. However, suggest **not** to (re)import `unsafe_method_val` as `unsafe_method_const` or any other
    name implying `const`, because this macro on its own **cannot** give a `const` guarantee.
 
-```rust
+```text,ignore
 //use prudent::unsafe_method as unsafe_method_for;
 
 // @TODO accept path
