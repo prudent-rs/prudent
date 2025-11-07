@@ -51,5 +51,7 @@ jobs:
         shell: sh
         run: |
           cargo test
+          # We need "cargo +nightly test" to validate error numbers, see src/lib.rs.
+          cargo +nightly test
           cargo test --release
           cargo +nightly miri test
