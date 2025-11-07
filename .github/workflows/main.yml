@@ -1,4 +1,4 @@
-name: Run tests and validate version
+name: Tests, doc tests, MIRI, violations coverage
 
 on:
   push:
