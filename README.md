@@ -259,6 +259,7 @@ let _ = unsafe_mut!(pt);
 let mut b: bool = true;
 let pt: *mut bool = &mut b as *mut bool;
 
+let _: &mut dyn Display = unsafe_mut!(pt);
 let _: &dyn Display = unsafe_mut!(pt);
 ```
 
