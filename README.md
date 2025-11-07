@@ -9,6 +9,10 @@ results](https://github.com/peter-lyons-kehl/prudent/actions/workflows/main.yml/
 - clear
 - obvious (easy to search for and review).
 
+# const-friendly
+Results of `prudent`'s macro invocations are `const` if the original invocation would be `const`
+also.
+
 # API and examples
 All the following examples are also run as
 [doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html).
@@ -20,61 +24,17 @@ const unsafe fn unsafe_fn_no_args() {}
 const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
 const unsafe fn unsafe_fn_two_args(_: bool, u: u8) -> u8 { u }
 
-unsafe_fn!(unsafe_fn_no_args);
-unsafe_fn!(unsafe_fn_one_arg, true);
-unsafe_fn!(unsafe_fn_two_args, true, 0);
+const _: () = unsafe_fn!(unsafe_fn_no_args);
+const _: bool = unsafe_fn!(unsafe_fn_one_arg, true);
+const _: u8 = unsafe_fn!(unsafe_fn_two_args, true, 0);
 ```
 
-# unsafe_method_***
-
-Unfortunately, Rust macros can't have access to the type system. So they can't differentiate whether
-a method's receiver is a shared reference `&self`, a mutable reference `&mut self` or a value
-`self`.
-
-We need to use three different macros:
-- `unsafe_method_ref`,
-- `unsafe_method_mut` and
-- `unsafe_method_val`.
-
-# unsafe_method_ref and unsafe_method_mut in const
-
-As of late 2025, `const` traits are not stabilized in Rust. So, currently `unsafe_method_ref` and
-`unsafe_method_mut` can't be used in `const` context. Please give thumbs up to
-`feature(const_trait_impl)`
-[rust-lang/rust#143874](https://github.com/rust-lang/rust/issues/143874).
-
-<!--UNSURE: `unsafe_method_ref` and `unsafe_method_mut` in `const` **will** be supported by `prudent` on`nightly` Rust toolchain in late 2025.-->
- There are two workarounds. Both require you to pass in the receiver expression **typed exactly** as
- the receiver of the method. So, you can **not** hand a receiver expression with type `T` if the
- method's receiver is defined as `&T` or `&mut T`.
-
-## More ergonomic alternative
-
-1. This re-uses `unsafe_method_val`. 
-2. You _could_ use `unsafe_method_val` directly. But, if you'd like to be able to search/easily
-   notice these `const` use cases, (re)import `unsafe_method_val` under a different name, like
-   `unsafe_method_for`.
-3. However, suggest **not** to (re)import `unsafe_method_val` as `unsafe_method_const` or any other
-   name implying `const`, because this macro on its own **cannot** give a `const` guarantee.
-
-```text,ignore
-//use prudent::unsafe_method as unsafe_method_for;
-
-// @TODO accept path
-//
-//const ONE: u8 = unsafe_method_for!(1, u8::unchecked_add, );
-```
-
-## Less ergonomic
-```rust
-# use prudent::unsafe_fn;
-const _ONE: u8 = unsafe_fn!(u8::unchecked_add, 1, 0);
-```
-
-# unsafe_method_ref
+# unsafe_method
+## unsafe_method > self: shared reference
 ```rust
 # use prudent::unsafe_method;
-let _ = unsafe_method!(1u8, unchecked_add, 0);
+// Works for Copy types
+const _: u8 = unsafe_method!(1u8, unchecked_add, 0);
 
 struct SNonCopy {}
 impl SNonCopy {
@@ -84,12 +44,13 @@ impl SNonCopy {
 }
 
 let s = SNonCopy {};
+// Works for non-Copy types
 unsafe_method!(s, unsafe_method_no_args);
 unsafe_method!(s, unsafe_method_one_arg, true);
 unsafe_method!(s, unsafe_method_two_args, true, false);
 ```
 
-# unsafe_method_mut
+## unsafe_method > self: mutable reference
 ```rust
 # use prudent::unsafe_method;
 struct SNonCopy {}
@@ -105,7 +66,7 @@ unsafe_method!(s, unsafe_method_one_arg, true);
 unsafe_method!(s, unsafe_method_two_args, true, false);
 ```
 
-# unsafe_method_val
+## unsafe_method > self: by value
 ```rust
 # use prudent::unsafe_method;
 {
@@ -116,12 +77,9 @@ unsafe_method!(s, unsafe_method_two_args, true, false);
         fn unsafe_method_two_args(self, _: bool, _: bool) {}
     }
 
-    let sNonCopy = SNonCopy {};
-    unsafe_method!(sNonCopy, unsafe_method_no_args);
-    let sNonCopy = SNonCopy {};
-    unsafe_method!(sNonCopy, unsafe_method_one_arg, true);
-    let sNonCopy = SNonCopy {};
-    unsafe_method!(sNonCopy, unsafe_method_two_args, true, false);
+    unsafe_method!(SNonCopy {}, unsafe_method_no_args);
+    unsafe_method!(SNonCopy {}, unsafe_method_one_arg, true);
+    unsafe_method!(SNonCopy {}, unsafe_method_two_args, true, false);
 }
 {
     #[derive(Clone, Copy)]
