@@ -1,1 +1,3 @@
 /target
+/violation_coverage/format_files/target
+/violation_coverage/format_files/Cargo.lock

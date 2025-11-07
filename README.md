@@ -7,7 +7,8 @@ results](https://github.com/peter-lyons-kehl/prudent/actions/workflows/main.yml/
 
 - ergonomic (short)
 - clear
-- obvious (easy to search for and review).
+- obvious (easy to search for and review)
+- lightweight (no dependencies, no procedural macros, fast build)
 
 # const-friendly
 Results of `prudent`'s macro invocations are `const` if the original invocation would be `const`
@@ -16,6 +17,9 @@ also.
 # API and examples
 All the following examples are also run as
 [doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html).
+
+For negative examples, which catch unintended `unsafe` functions/expressions, see documentation of
+each `prudent` macro.
 
 # unsafe_fn
 ```rust
@@ -397,21 +401,19 @@ that be an opportunity to refactor?
 `prudent` is a zero-cost abstraction (for both binary size/speed and memory). Rust/LLVM easily
 optimizes it out.
 
-Current features of `prudent` don't use procedural macros, but use `macro_rules!` (macros by
-example), so it compiles fast.
-
 # Compatibility
 
-`prudent` is `no-std`-compatible. It has no dependencies.
+`prudent` is `no-std`-compatible.
 
 ## Always forward compatible
 
-`prudent` is planned to be always below version `1.0`. So stable (**even**-numbered) versions will
-be forward compatible. (If a need ever arises for big incompatibility, that can go to a new crate.)
+`prudent` is planned to be always below version `1.0`. So <!--stable (**even**-numbered) versions-->
+it will be forward compatible. (If a need ever arises for big incompatibility, that can go to a new
+crate.)
 
 That allows you to specify `prudent` as a dependency with version `0.*`, which will match ANY
-**major** versions (below `1.0`, of course). That will match the newest (**even**-numbered major)
-stable version (available for your Rust) automatically.
+**major** versions (below `1.0`, of course). That will match the newest <!-- (**even**-numbered major)-->
+<!-- stable--> version (available for your Rust) automatically.
 
 This is special only to `0.*` - it is **not** possible to have a wildcard matching various **major**
 versions `1.0` or higher.

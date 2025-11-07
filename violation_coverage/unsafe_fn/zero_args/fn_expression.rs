@@ -7,5 +7,5 @@ unsafe fn get_fn_itself() -> unsafe fn() {
 }
 
 fn main() {
-    unsafe_fn!( get_fn_itself() );
+    unsafe_fn!(get_fn_itself());
 }

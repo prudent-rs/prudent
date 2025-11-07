@@ -1,0 +1,1 @@
+../../../unsafe_fn/zero_args/fn_expression.rs
