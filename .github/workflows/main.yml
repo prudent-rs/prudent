@@ -16,7 +16,11 @@ jobs:
     # Other Rust Alpine images that I've tried and they failed: rust:1.54.0-alpine.
     #
     # Also, our tests use usize::unchecked_add, which was stabilized in Rust 1.79.
-    container: rust:1.79-alpine
+    #
+    # However, with Rust 1.88.0 or older, we were getting false positive errors from `cargo test`,
+    # reporting constants in doctests as unused, even though they were used. That's why we need at
+    # least 1.89.
+    container: rust:1.89.0-alpine
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
