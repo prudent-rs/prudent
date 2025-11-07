@@ -270,6 +270,7 @@ let pt: *mut bool = b as *mut bool;
 
 let _: &'static mut bool = unsafe_mut!(pt, 'static);
 let _ = unsafe_mut!(pt, 'static);
+# let _drop_for_miri = unsafe { Box::from_raw(b) };
 ```
 
 ## unsafe_mut - two args, lifetimed dyn reference
@@ -281,17 +282,18 @@ let pt: *mut bool = b as *mut bool;
 
 let _: &'static mut dyn Display = unsafe_mut!(pt, 'static);
 let _ = unsafe_mut!(pt, 'static);
+# let _drop_for_miri = unsafe { Box::from_raw(b) };
 ```
 
 ## unsafe_mut - two args, lifetimed slice
 ```rust
 # use prudent::unsafe_mut;
-let b: &'static mut [bool] = Box::leak( Box::new([true, false]) );
-let pt: *mut [bool] = b as *mut [bool];
+let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
+let pt: *mut [bool] = bs as *mut [bool];
 
 let _: &'static mut [bool] = unsafe_mut!(pt, 'static);
 let _ = unsafe_mut!(pt, 'static);
-
+# let _drop_for_miri = unsafe { Box::from_raw(bs) };
 ```
 
 ## unsafe_mut - two args, typed basic reference
@@ -312,6 +314,7 @@ let pt: *mut [bool] = bs as *mut [bool];
 
 let _: &mut [bool] = unsafe_mut!(pt, [bool]);
 let _ = unsafe_mut!(pt, [bool]);
+# let _drop_for_miri = unsafe { Box::from_raw(bs) };
 ```
 
 ## unsafe_mut - two args, typed dyn reference
