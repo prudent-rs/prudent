@@ -21,16 +21,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Tests
+      - name: rustup components
         shell: sh
         run: |
           rustup component add clippy rustfmt
-          cargo clippy
-          cargo fmt --check
-          cargo doc --no-deps --quiet
-          cargo test
-          cargo test --release
           rustup install nightly --profile minimal
           rustup +nightly component add miri
+
+      - name: Clippy, fmt
+        shell: sh
+        run: |
+          cargo clippy
+          cargo fmt --check
+
+      - name: Doc (stable, nightly)
+        shell: sh
+        run: |
+          cargo doc --no-deps --quiet
+          RUSTDOCFLAGS="--forbid rustdoc::invalid_codeblock_attributes \
+            --forbid rustdoc::missing_doc_code_examples \
+            -Zcrate-attr=feature(rustdoc_missing_doc_code_examples)" \
+            cargo +nightly doc --no-deps --quiet
+
+      - name: Tests (debug, release, MIRI)
+        shell: sh
+        run: |
+          cargo test
+          cargo test --release
           cargo +nightly miri test
-          RUSTDOCFLAGS="--forbid rustdoc::invalid_codeblock_attributes --forbid rustdoc::missing_doc_code_examples -Zcrate-attr=feature(rustdoc_missing_doc_code_examples)" cargo +nightly doc
