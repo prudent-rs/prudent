@@ -422,11 +422,13 @@ However,
 
 ## Scope
 
-Rust is a rich language and it allows complex statements/expressions. `prudent` tries to be flexible, but it also needs to be manageable and testable. So, there may be code that `prudent` doesn't accept. Most likely if it involves advanced pattern matching.
+Rust is a rich language and it allows complex statements/expressions. `prudent` tries to be
+flexible, but it also needs to be manageable and testable. So, there may be code that `prudent`
+doesn't accept (please do report it). Most likely if it involves advanced pattern matching.
 
-`prudent` is to help you make `unsafe` code stand out more. Mixing `unsafe` with advanced or complex
-syntax may sound exciting, but it makes reading the code difficult. Can that be an opportunity to
-refactor?
+`prudent` is to help you make `unsafe` code stand out more. Mixing `unsafe` with advanced pattern
+matching or other complex syntax may sound exciting, but it makes reading the code difficult. Can
+that be an opportunity to refactor?
 
 # Zero cost
 
@@ -455,8 +457,8 @@ versions `1.0` or higher.
 # Quality assurance
 
 Checks and tests are run by [GitHub Actions]. See
-[results](https://github.com/peter-lyons-kehl/prudent/actions). All scripts run on Alpine Linux
-(without `libc`, in a `rust:1.87-alpine` container) and are POSIX-compliant:
+[results](https://github.com/peter-lyons-kehl/prudent/actions). All tests <!--scripts--> run on
+Alpine Linux (without `libc`, in a `rust:1.87-alpine` container)<!-- and are POSIX-compliant-->:
 
 - `rustup component add clippy rustfmt`
 - `cargo clippy`
@@ -473,6 +475,18 @@ Checks and tests are run by [GitHub Actions]. See
 
 Please subscribe for low frequency updates at
 [peter-lyons-kehl/prudent/issues#1](https://github.com/peter-lyons-kehl/prudent/issues/1).
+
+# Side fruit and related issues
+Please give thumbs up to:
+- [rust-lang/rust#143874]( https://github.com/rust-lang/rust/issues/143874)
+  `#![feature(const_trait_impl)]`
+- [rust-lang/rust#148599](https://github.com/rust-lang/rust/issues/148599) forward compatibility of
+  `#![doc(test(attr(forbid(...))))]` for lint groups
+- [rust-lang/nomicon#506](https://github.com/rust-lang/nomicon/issues/506) note that a macro in a
+  `#![forbid(unsafe_code)]` library can emit unsafe
+- [Veykril/tlborm#114](https://github.com/Veykril/tlborm/issues/114) storing & (re)using variadic
+  tuples
+- [rust-lang/rust#15701](https://github.com/rust-lang/rust/issues/15701) attributes on expressions
 
 <!-- 1. Link URLs to be used on GitHub.
      2. Relative links also work auto-magically on https://crates.io/crates/prudent.

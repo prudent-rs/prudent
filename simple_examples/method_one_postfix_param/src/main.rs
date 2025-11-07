@@ -1,5 +1,5 @@
 use prudent::unsafe_method;
 
-pub fn invoke() {
+fn main() {
     let _ = unsafe_method!(1u8, unchecked_add, 0);
 }
