@@ -458,6 +458,13 @@ stable version (available for your Rust) automatically.
 This is special only to `0.*` - it is **not** possible to have a wildcard matching various **major**
 versions `1.0` or higher.
 
+## Procedural macros with side effects
+Several `prudent` macros duplicate their expression "parameter". In the generated Rust code the parameter expression is evaluated only once, but it's present in the code twice - once in an inactive `if false {...}` branch for verification, and once in the following active `else {...}` branch.
+
+That is OK with macros by example (defined with `macro_rules!`), and OK with any well-behaving
+procedural macros. However, if you pass in an expression that invokes a procedural macro that has
+side effects or state, it's your problem. Such a macro contradicts Rust guidelines.
+
 # Quality assurance
 
 Checks and tests are run by [GitHub Actions]. See
