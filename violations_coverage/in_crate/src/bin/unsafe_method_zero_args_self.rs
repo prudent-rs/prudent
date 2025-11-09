@@ -1,0 +1,1 @@
+../../../unsafe_method/zero_args/self.rs
