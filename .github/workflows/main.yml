@@ -37,7 +37,7 @@ jobs:
         run: |
           cargo clippy
           cargo fmt --check
-          cd violations_coverage/format_files
+          cd violations_coverage/in_crate
           cargo fmt --check
 
       - name: Doc (stable, nightly)

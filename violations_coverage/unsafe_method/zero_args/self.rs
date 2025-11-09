@@ -2,5 +2,6 @@ use prudent::unsafe_method;
 
 fn main() {
     #[allow(unused_unsafe)]
+    // str::len is actually not unsafe, but that doesn't matter for this example
     let _ = unsafe_method!(core::str::from_utf8_unchecked(b"hi"), len);
 }
