@@ -39,7 +39,30 @@ const _: u8 = unsafe_fn!(unsafe_fn_two_args, true, 0);
 # use prudent::unsafe_method;
 // Works for Copy types
 const _: u8 = unsafe_method!(1u8, unchecked_add, 0);
+//const _: u8 = unsafe_method!(({#[forbid(unused)] let v = 1u8; v}), unchecked_add, 0);
+//const _: u8 = unsafe_method!(#[allow_unsafe] 1u8, unchecked_add, 0);
+//const _: u8 = unsafe_method!(#[expect_unsafex] 1u8, unchecked_add, 0);
 
+//const _: u8 = unsafe_method!(({#forbid(unused) let v = 1u8; v}), unchecked_add, 0);
+const _: u8 = unsafe_method!(~allow_unsafe 1u8, unchecked_add, 0);
+const _: u8 = unsafe_method!(~expect_unsafe 1u8, unchecked_add, 0);
+
+// @TODO separate 2 files
+//
+```
+
+```rust
+//# use prudent::unsafe_method;
+//const _: u8 = unsafe_method!(~expect_unsafe ~allow_unsafe 1u8, unchecked_add, 0);
+```
+
+```rust
+//# use prudent::unsafe_method;
+//const _: u8 = unsafe_method!(~allow_unsafe ~expect_unsafe 1u8, unchecked_add, 0);
+```
+
+```rust
+# use prudent::unsafe_method;
 struct SNonCopy {}
 impl SNonCopy {
     fn unsafe_method_no_args(&self) {}
