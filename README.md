@@ -471,16 +471,21 @@ Please subscribe for low frequency updates at
 [peter-lyons-kehl/prudent/issues#1](https://github.com/peter-lyons-kehl/prudent/issues/1).
 
 # Side fruit and related issues
+## Side fruit
 Please give thumbs up to:
-- [rust-lang/rust#143874]( https://github.com/rust-lang/rust/issues/143874)
-  `#![feature(const_trait_impl)]`
 - [rust-lang/rust#148599](https://github.com/rust-lang/rust/issues/148599) forward compatibility of
   `#![doc(test(attr(forbid(...))))]` for lint groups
 - [rust-lang/nomicon#506](https://github.com/rust-lang/nomicon/issues/506) note that a macro in a
   `#![forbid(unsafe_code)]` library can emit unsafe
 - [Veykril/tlborm#114](https://github.com/Veykril/tlborm/issues/114) storing & (re)using variadic
   tuples
+
+## Related issues
 - [rust-lang/rust#15701](https://github.com/rust-lang/rust/issues/15701) attributes on expressions
+- [rust-lang/rust#87022](https://github.com/rust-lang/rust/issues/87022) `--no-run` flag in
+  `rustdoc`
+- [rust-lang/rust#143874]( https://github.com/rust-lang/rust/issues/143874)
+  `#![feature(const_trait_impl)]`
 
 <!-- 1. Link URLs to be used on GitHub.
      2. Relative links also work auto-magically on https://crates.io/crates/prudent.

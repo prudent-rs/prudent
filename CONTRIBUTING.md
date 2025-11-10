@@ -4,6 +4,22 @@
 
 No merge pull requests. Instead, rebase on `main`.
 
+## Both stable and nightly
+
+`prudent` works 100% on `stable` Rust. However, doctests need both `stable` and `nightly` Rust
+toolchains. That's because some `compile_fail` doctests have their error number verified (search for
+`compile_fail,E` in [src/lib.rs](src/lib.rs)). That's a long term/permanently `nightly`-only
+feature.
+
+GitHub Actions also need `nightly`, since they use [MIRI](https://github.com/rust-lang/miri). See
+also [.github/workflows/main.yml](.github/workflows/main.yml).
+
+## Fast doctest checks
+
+`cargo check` doesn't check doctests. For that, you need `nightly` Rust toolchain, and run:
+
+`RUSTDOCFLAGS="-Z unstable-options --no-run" cargo +nightly test`
+
 ## File formatting
 
 - Use `cargo fmt` for Rust source.
