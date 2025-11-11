@@ -1,0 +1,1 @@
+../../../unsafe_method/sneaked_unsafe/self_zero_args.rs
