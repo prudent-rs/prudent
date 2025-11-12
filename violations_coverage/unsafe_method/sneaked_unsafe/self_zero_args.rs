@@ -1,3 +1,4 @@
+#![forbid(unknown_lints)]
 use prudent::unsafe_method;
 
 fn main() {

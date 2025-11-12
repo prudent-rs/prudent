@@ -1,1 +1,0 @@
-../../../unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs
