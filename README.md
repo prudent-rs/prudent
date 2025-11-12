@@ -52,11 +52,13 @@ const _: u8 = unsafe_method!(~expect_unsafe 1u8, unchecked_add, 0);
 ```
 
 ```rust
+let _todo = ();
 //# use prudent::unsafe_method;
 //const _: u8 = unsafe_method!(~expect_unsafe ~allow_unsafe 1u8, unchecked_add, 0);
 ```
 
 ```rust
+let _todo = ();
 //# use prudent::unsafe_method;
 //const _: u8 = unsafe_method!(~allow_unsafe ~expect_unsafe 1u8, unchecked_add, 0);
 ```
@@ -487,7 +489,7 @@ Please give thumbs up to:
 - [rust-lang/rust#143874]( https://github.com/rust-lang/rust/issues/143874)
   `#![feature(const_trait_impl)]`
 - [rust-lang/rust#83527](https://github.com/rust-lang/rust/issues/83527) `${ignore(..._}`
-  metavariable/metafunction in `macro_rules!
+  metavariable/metafunction in `macro_rules!`
 
 <!-- 1. Link URLs to be used on GitHub.
      2. Relative links also work auto-magically on https://crates.io/crates/prudent.
