@@ -473,16 +473,13 @@ Please subscribe for low frequency updates at
 [peter-lyons-kehl/prudent/issues#1](https://github.com/peter-lyons-kehl/prudent/issues/1).
 
 # Side fruit and related issues
-Please give thumbs up to:
-## Side fruit
-- [rust-lang/rust#148599](https://github.com/rust-lang/rust/issues/148599) forward compatibility of
-  `#![doc(test(attr(forbid(...))))]` for lint groups
-- [rust-lang/nomicon#506](https://github.com/rust-lang/nomicon/issues/506) note that a macro in a
-  `#![forbid(unsafe_code)]` library can emit unsafe
-- [Veykril/tlborm#114](https://github.com/Veykril/tlborm/issues/114) storing & (re)using variadic
-  tuples
+Please contribute, or at least give thumbs up, to:
 
 ## Related issues
+- [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) Forbidding lints doesn't
+  really work in macros
+- [rust-lang/rust#39412](https://github.com/rust-lang/rust/issues/39412) declarative macros 2.0
+- [rust-lang/rust#65860](https://github.com/rust-lang/rust/issues/65860) Re-land early syntax feature gating
 - [rust-lang/rust#15701](https://github.com/rust-lang/rust/issues/15701) attributes on expressions
 - [rust-lang/rust#87022](https://github.com/rust-lang/rust/issues/87022) `--no-run` flag in
   `rustdoc`
@@ -490,6 +487,16 @@ Please give thumbs up to:
   `#![feature(const_trait_impl)]`
 - [rust-lang/rust#83527](https://github.com/rust-lang/rust/issues/83527) `${ignore(..._}`
   metavariable/metafunction in `macro_rules!`
+- [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) `unboxed_closures` and
+  `fn_traits` feature.
+
+## Side fruit
+- [rust-lang/rust#148599](https://github.com/rust-lang/rust/issues/148599) forward compatibility of
+  `#![doc(test(attr(forbid(...))))]` for lint groups
+- [rust-lang/nomicon#506](https://github.com/rust-lang/nomicon/issues/506) note that a macro in a
+  `#![forbid(unsafe_code)]` library can emit unsafe
+- [Veykril/tlborm#114](https://github.com/Veykril/tlborm/issues/114) storing & (re)using variadic
+  tuples
 
 <!-- 1. Link URLs to be used on GitHub.
      2. Relative links also work auto-magically on https://crates.io/crates/prudent.
