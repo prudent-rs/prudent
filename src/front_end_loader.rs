@@ -16,7 +16,7 @@ macro_rules! load {
     ( $module_name:ident ) => {
         /// prudent exported in a module
         mod $module_name {
-            $crate::reexport_macros!( ::prudent::internal_front_end );
+            $crate::reexport_macros!( ::prudent );
             $crate::reexport_non_macros!( ::prudent::internal_front_end );
         }
     };// -----------
@@ -103,15 +103,29 @@ macro_rules! load {
       $prudent_front_end:literal
       -> $module_name:ident
     ) => {
+        // We do NOT load the file into a separate submodule, like:
+        // ```
+        // #[cfg(any( $( $cfg_filter )* ))]
+        // #[allow(unused)]
+        // #[path = $prudent_front_end]
+        // mod internal_prudent_front_end_loaded_or_aliased;
+        // ``
+        // Why? because https://github.com/rust-lang/rust/issues/52234 makes it very difficult (or
+        // impossible?) to re-export such macros. But using
+        // `#![allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]` didn't help, so
+        // there may be other restrictions, too.
+        // Life is too short. So we ARE using ::core::include!(...);
+        /*#[cfg(any( $( $cfg_filter )* ))]
+        #[allow(unused)]
+        mod internal_prudent_front_end_loaded_or_aliased {
+            ::core::include!( $prudent_front_end);
+        }*/
+
         #[cfg(any( $( $cfg_filter )* ))]
         #[allow(unused)]
         #[path = $prudent_front_end]
         mod internal_prudent_front_end_loaded_or_aliased;
 
-        //const CFG_FILTER: [&'static str;2] = [ stringify!( $( $cfg_filter )* ) ];
-
-        //#[cfg(not(any( $( $cfg_filter )* )))]
-        //compile_error!(CFG_FILTER);
         //compile_error!("WOULD RE-EXPORT INSTEAD OF LOAD FRONTEND");
 
         #[cfg(not(any( $( $cfg_filter )* )))]
@@ -126,7 +140,16 @@ macro_rules! load {
                 ( $( $cfg_filter )* )
                 : $prudent_front_end
             );*/
-
+            
+            // @TODO
+            //
+            // #[cfg(not(any( $( $cfg_filter )* )))]
+            //
+            // $crate::reexport_macros!( ::prudent );
+            //
+            // #[cfg(any( $( $cfg_filter )* ))]
+            //
+            // $crate::reexport_macros!( crate );
             $crate::reexport_macros!( crate );
             $crate::reexport_non_macros!( super::internal_prudent_front_end_loaded_or_aliased );
         }
@@ -181,9 +204,11 @@ macro_rules! load_module_content {
 #[macro_export]
 macro_rules! reexport_macros {
     ($front_end_path:path) => {
+        pub use internal_prudent_unsafe_fn as unsafe_fn;
         #[allow(unused)]
-        pub use $front_end_path::{
-            internal_prudent_unsafe_fn as unsafe_fn,
+        //pub use $front_end_path::{
+        pub use crate::{
+            //internal_prudent_unsafe_fn as unsafe_fn,
             internal_prudent_unsafe_fn_internal_build_tuple_tree as unsafe_fn_internal_build_tuple_tree,
             internal_prudent_unsafe_fn_internal_build_accessors_and_call as unsafe_fn_internal_build_accessors_and_call,
             internal_prudent_unsafe_fn_internal_access_tuple_tree_field as unsafe_fn_internal_access_tuple_tree_field,
@@ -204,7 +229,7 @@ macro_rules! reexport_macros {
 macro_rules! reexport_non_macros {
     ($front_end_path:path) => {
         #[allow(unused)]
-        pub use $front_end_path::INTERNAL_FRONT_END_VERSION;
+        pub use $front_end_path::{INTERNAL_FRONT_END_VERSION};
 
         #[allow(unused)]
         pub use ::prudent::back_end::*;
