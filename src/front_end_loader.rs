@@ -16,7 +16,8 @@ macro_rules! load {
     ( $module_name:ident ) => {
         /// prudent exported in a module
         mod $module_name {
-            $crate::reexport_macros!( ::prudent );
+            use ::prudent::internal_front_end::*;
+            $crate::reexport_macros!();
             $crate::reexport_non_macros!( ::prudent::internal_front_end );
         }
     };// -----------
@@ -124,23 +125,23 @@ macro_rules! load {
         #[cfg(any( $( $cfg_filter )* ))]
         #[allow(unused)]
         #[path = $prudent_front_end]
-        mod internal_prudent_front_end_loaded_or_aliased;
+        pub mod internal_prudent_front_end_loaded_or_aliased;
 
         //compile_error!("WOULD RE-EXPORT INSTEAD OF LOAD FRONTEND");
 
         #[cfg(not(any( $( $cfg_filter )* )))]
         #[allow(unused)]
-        use ::prudent::internal_front_end as internal_prudent_front_end_loaded_or_aliased;
+        pub use ::prudent::internal_front_end as internal_prudent_front_end_loaded_or_aliased;
 
-        // For non-doctest build, the module is private. No need to re-export (instead, the clients
-        // can load and import this crate themselves).
+        // For non-doctest build, the module is private. No need to re-export as public (instead,
+        // the clients can load and import this crate themselves).
         #[cfg(not(any(doctest, doc)))]
         mod $module_name {
             /*$crate::load_module_content!(
                 ( $( $cfg_filter )* )
                 : $prudent_front_end
             );*/
-            
+
             // @TODO
             //
             // #[cfg(not(any( $( $cfg_filter )* )))]
@@ -150,7 +151,26 @@ macro_rules! load {
             // #[cfg(any( $( $cfg_filter )* ))]
             //
             // $crate::reexport_macros!( crate );
-            $crate::reexport_macros!( crate );
+
+            #[cfg(any( $( $cfg_filter )* ))]
+            //#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
+            #[allow(unused)]
+            use crate::*;
+
+            #[cfg(not(any( $( $cfg_filter )* )))]
+            #[allow(unused)]
+            use ::prudent::internal_front_end::*;
+
+            //$crate::reexport_macros!();
+            //#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
+
+            //pub use crate::internal_prudent_unsafe_fn as unsafe_fn;
+
+            //pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn_ as unsafe_fn;
+            //
+            // OR:
+            pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn as unsafe_fn;
+
             $crate::reexport_non_macros!( super::internal_prudent_front_end_loaded_or_aliased );
         }
         // - For doctests, the module is public, because doctests are build in a separate crate.
@@ -163,8 +183,26 @@ macro_rules! load {
                 ( $( $cfg_filter )* )
                 : $prudent_front_end
             );*/
-            
-            $crate::reexport_macros!( crate );
+
+            #[cfg(any( $( $cfg_filter )* ))]
+            //#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
+            #[allow(unused)]
+            use crate::*;
+
+            #[cfg(not(any( $( $cfg_filter )* )))]
+            #[allow(unused)]
+            use ::prudent::internal_front_end::*;
+
+            //$crate::reexport_macros!();
+            //#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
+
+            //pub use crate::internal_prudent_unsafe_fn as unsafe_fn;
+
+            //pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn_ as unsafe_fn;
+            //
+            // OR:
+            pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn as unsafe_fn;
+
             $crate::reexport_non_macros!( super::internal_prudent_front_end_loaded_or_aliased );
         }
 
@@ -183,7 +221,7 @@ macro_rules! load {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! load_module_content {
-        (
+    (
         ( $( $cfg_filter:tt )* ) :
         $prudent_front_end:literal
     ) => {
@@ -194,7 +232,7 @@ macro_rules! load_module_content {
         //include_str! -> substring: first line (a comment with version)
 
         // `prudent`'s "frontend" macros, loaded into the user's crate
-    }
+    };
 }
 
 /// Re-export `front_end_loaded_or_aliased` and `::prudent::back_end`.
@@ -203,11 +241,11 @@ macro_rules! load_module_content {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! reexport_macros {
-    ($front_end_path:path) => {
-        pub use internal_prudent_unsafe_fn as unsafe_fn;
+    () => {
+        //pub use internal_prudent_unsafe_fn as unsafe_fn;
         #[allow(unused)]
-        //pub use $front_end_path::{
-        pub use crate::{
+        pub use {
+        //pub use crate::{
             //internal_prudent_unsafe_fn as unsafe_fn,
             internal_prudent_unsafe_fn_internal_build_tuple_tree as unsafe_fn_internal_build_tuple_tree,
             internal_prudent_unsafe_fn_internal_build_accessors_and_call as unsafe_fn_internal_build_accessors_and_call,
@@ -229,9 +267,9 @@ macro_rules! reexport_macros {
 macro_rules! reexport_non_macros {
     ($front_end_path:path) => {
         #[allow(unused)]
-        pub use $front_end_path::{INTERNAL_FRONT_END_VERSION};
+        pub use $front_end_path::INTERNAL_FRONT_END_VERSION;
 
         #[allow(unused)]
         pub use ::prudent::back_end::*;
-    }
+    };
 }

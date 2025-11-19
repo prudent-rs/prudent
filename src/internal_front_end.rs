@@ -26,21 +26,21 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
 /// ::prudent::load!("front_end.rs");
-/// use prudent::*;
+/// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
 /// ```
 /// Some arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
 /// ::prudent::load!("front_end.rs");
-/// use prudent::*;
+/// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
 /// ```
 /// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
 /// ::prudent::load!("front_end.rs");
-/// use prudent::*;
+/// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
 /// ```
 /// The target function is safe, hence no need for `unsafe_fn`. Zero args.
@@ -52,19 +52,21 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
 /// ::prudent::load!("front_end.rs");
-/// use prudent::*;
+/// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
 /// ```
 /// Use the result of `unsafe_fn!` immediately as an array/slice.
 /// ```
-/// # use prudent::unsafe_fn;
+/// # ::prudent::load!("front_end.rs");
+/// # use self::prudent::*;
 /// unsafe fn return_array() -> [bool; 1] { [true] }
 ///
 /// let _ = unsafe_fn!( return_array)[0];
 /// ```
 /// Use the result of `unsafe_fn!` immediately as a mutable array/slice (assign/modify its slot(s)).
 /// ```
-/// # use prudent::unsafe_fn;
+/// # ::prudent::load!("front_end.rs");
+/// # use self::prudent::*;
 /// // NOT running under MIRI, because of the intentional leak.
 /// if !cfg!(miri) {
 ///     unsafe fn return_mut_ref_array() -> &'static mut [bool; 1] {
@@ -77,7 +79,8 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// ```
 /// The same, but the function takes an argument (and no leak):
 /// ```
-/// # use prudent::unsafe_fn;
+/// # ::prudent::load!("front_end.rs");
+/// # use self::prudent::*;
 /// unsafe fn return_same_mut_ref<T>(mref: &mut T) -> &mut T {
 ///    mref
 /// }
@@ -153,6 +156,13 @@ macro_rules! internal_prudent_unsafe_fn {
         })
     };
 }
+
+// Such aliases are needed: https://github.com/rust-lang/rust/pull/52234#issuecomment-976702997
+//
+// pub use internal_prudent_unsafe_fn as internal_prudent_unsafe_fn_;
+//
+// OR:
+pub use internal_prudent_unsafe_fn;
 
 // Same `compile_fail` tests as listed above for `unsafe_fn`, but here we validate the error
 // numbers.
