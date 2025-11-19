@@ -170,7 +170,20 @@ macro_rules! load_module_content {
 macro_rules! reexport {
     () => {
         #[allow(unused)]
-        pub use front_end_loaded_or_aliased::*;
+        pub use front_end_loaded_or_aliased::{
+            internal_prudent_unsafe_fn as unsafe_fn,
+            internal_prudent_unsafe_fn_internal_build_tuple_tree as unsafe_fn_internal_build_tuple_tree,
+            internal_prudent_unsafe_fn_internal_build_accessors_and_call as unsafe_fn_internal_build_accessors_and_call,
+            internal_prudent_unsafe_fn_internal_access_tuple_tree_field as unsafe_fn_internal_access_tuple_tree_field,
+            internal_prudent_unsafe_method as unsafe_method,
+            internal_prudent_unsafe_method_internal_check_args_etc as unsafe_method_internal_check_args_etc,
+            internal_prudent_unsafe_method_internal_build_accessors_check_args_call as unsafe_method_internal_build_accessors_check_args_call,
+            internal_prudent_unsafe_static_set as unsafe_static_set,
+            internal_prudent_unsafe_ref as unsafe_ref,
+            internal_prudent_unsafe_mut as unsafe_mut,
+            internal_prudent_unsafe_val as unsafe_val,
+            internal_prudent_unsafe_set as unsafe_set
+        };
 
         #[allow(unused)]
         pub use ::prudent::back_end::*;
