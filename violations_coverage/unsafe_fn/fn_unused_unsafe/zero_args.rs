@@ -1,4 +1,5 @@
-use prudent::unsafe_fn;
+::prudent::load!("../../../../src/internal_front_end.rs");
+use self::prudent::*;
 
 fn safe_fn_zero_args() {}
 

@@ -25,21 +25,23 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// Zero arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
-/// ::prudent::load!("front_end.rs");
+/// ::prudent::load!("internal_front_end.rs");
+/// // @TODO Docs: at your crate's top level, use either self::prudent, or crate:;prudent (but NOT
+/// // just prudent, which will fail, fortunately).
 /// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
 /// ```
 /// Some arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
-/// ::prudent::load!("front_end.rs");
+/// ::prudent::load!("internal_front_end.rs");
 /// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
 /// ```
 /// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
-/// ::prudent::load!("front_end.rs");
+/// ::prudent::load!("internal_front_end.rs");
 /// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
 /// ```
@@ -51,13 +53,13 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// The target function is safe, hence no need for `unsafe_fn`. Some args.
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
-/// ::prudent::load!("front_end.rs");
+/// ::prudent::load!("internal_front_end.rs");
 /// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
 /// ```
 /// Use the result of `unsafe_fn!` immediately as an array/slice.
 /// ```
-/// # ::prudent::load!("front_end.rs");
+/// # ::prudent::load!("internal_front_end.rs");
 /// # use self::prudent::*;
 /// unsafe fn return_array() -> [bool; 1] { [true] }
 ///
@@ -65,7 +67,7 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// ```
 /// Use the result of `unsafe_fn!` immediately as a mutable array/slice (assign/modify its slot(s)).
 /// ```
-/// # ::prudent::load!("front_end.rs");
+/// # ::prudent::load!("internal_front_end.rs");
 /// # use self::prudent::*;
 /// // NOT running under MIRI, because of the intentional leak.
 /// if !cfg!(miri) {
@@ -79,7 +81,7 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// ```
 /// The same, but the function takes an argument (and no leak):
 /// ```
-/// # ::prudent::load!("front_end.rs");
+/// # ::prudent::load!("internal_front_end.rs");
 /// # use self::prudent::*;
 /// unsafe fn return_same_mut_ref<T>(mref: &mut T) -> &mut T {
 ///    mref

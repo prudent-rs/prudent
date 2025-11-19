@@ -206,9 +206,9 @@ macro_rules! load {
             $crate::reexport_non_macros!( super::internal_prudent_front_end_loaded_or_aliased );
         }
 
-        const _VERIFY_VERSION: () = {
+        /*const _VERIFY_VERSION: () = {
             ::prudent::back_end::verify_front_end_version( $module_name::INTERNAL_FRONT_END_VERSION );
-        };
+        };*/
     }
 }
 
@@ -267,7 +267,7 @@ macro_rules! reexport_macros {
 macro_rules! reexport_non_macros {
     ($front_end_path:path) => {
         #[allow(unused)]
-        pub use $front_end_path::INTERNAL_FRONT_END_VERSION;
+        pub use $front_end_path::{INTERNAL_FRONT_END_VERSION};
 
         #[allow(unused)]
         pub use ::prudent::back_end::*;

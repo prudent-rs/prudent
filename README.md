@@ -23,9 +23,11 @@ each `prudent` macro.
 
 # unsafe_fn
 ```rust
-# mod prevent_extern_crate_name_collision {
-# ::prudent::load!("front_end.rs");
-# use self::prudent::*;
+::prudent::load!("internal_front_end.rs");
+mod prevent_extern_crate_name_collision {
+      //use super::prudent::*;
+      use crate::prudent::*;
+
 # //use prudent::unsafe_fn;
 const unsafe fn unsafe_fn_no_args() {}
 const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
