@@ -1,0 +1,178 @@
+// - "frontend" macros can (and do) invoke "backend" macros, but not the other way. That's because
+//   "backend" macros don't know the crate name where "frontend" macros were loaded.
+// - "frontend" macros can be recursive (between themselves, but not through "backend" macros")
+/// Invoke from the top level of your crate, and only once (once per crate).
+#[macro_export]
+macro_rules! load {
+    // No lints.
+    //
+    // re-export all (both "backend" and "frontend") from `prudent` crate under module `prudent`.
+    () => {
+        $crate::load!( prudent );
+    };
+    // No lints.
+    //
+    // re-export all (both "backend" and "frontend") from `prudent` crate, under given module name.
+    ( $module_name:ident ) => {
+        /// prudent exported in a module
+        mod $module_name {
+            use ::prudent::front_end as front_end_loaded_or_aliased;
+
+            reexport!();
+        }
+    };// -----------
+
+    // load "frontend" from the given file; re-export "backend" from `prudent` crate; blend them
+    // under a module with the given name. If `$module_name` is not given, it's `prudent`.
+    //
+    // Since `any` is **not** specified, this applies to `$[cfg(doctest)]` and `$[cfg(test)` only.
+    // - under `$[cfg(doctest)]` the exported module is `pub` (because doctests are in separate
+    //   crate(s))
+    // - under `$[cfg(test)]` the exported module is private
+    ( $prudent_front_end_first:literal
+      $( $prudent_front_end_second:literal )?
+      $( -> $module_name:ident )?
+    ) => {
+        $crate::load!( ~
+            doctest,test :
+            $prudent_front_end_first
+            $( $prudent_front_end_second )?
+             $( -> $module_name )?
+        );
+    };
+    // `any`` doesn't mean any of `doctest` and/or `test`, but it means any
+    // build/`$cfg`/profile/target...
+    ( any :
+      $prudent_front_end_first:literal
+      $( $prudent_front_end_second:literal )?
+      $( -> $module_name:ident )?
+     ) => {
+        $crate::load!( ~
+            test,not(test) :
+             $prudent_front_end_first
+             $( $prudent_front_end_second )?
+             $( -> $module_name )?
+        );
+    };
+    ( ~
+      $( $cfg_filter:tt )* :
+      $prudent_front_end_first:literal
+      $( $prudent_front_end_second:literal )?
+    ) => {
+        $crate::load!( ~
+            $( $cfg_filter )* :
+            $prudent_front_end_first
+            $( $prudent_front_end_second )?
+            -> prudent
+        );
+      };
+    ( ~
+      $( $cfg_filter:tt )* :
+      $prudent_front_end_same:literal
+      -> $module_name:ident
+    ) => {
+        $crate::load!( ~
+            $( $cfg_filter )* :
+            $prudent_front_end_same
+            $prudent_front_end_same
+            -> $module_name
+        );
+    };
+    ( ~
+      $( $cfg_filter:tt )* :
+      $prudent_front_end_first:literal
+      $prudent_front_end_second:literal
+      -> $module_name:ident
+    ) => {
+        #[cfg(not(windows))]
+        $crate::load!( ~~
+            $( $cfg_filter )* :
+            $prudent_front_end_first
+            -> $module_name
+        );
+        #[cfg(windows)]
+        $crate::load!( ~~
+            $( $cfg_filter )* :
+            $prudent_front_end_second
+            -> $module_name
+        );
+    };
+    ( ~~
+      $( $cfg_filter:tt )* :
+      $prudent_front_end:literal
+      -> $module_name:ident
+    ) => {
+        // For non-doctest build, the module is private. No need to re-export (instead, the clients
+        // can load and import this crate themselves).
+        #[cfg(not(any(doctest, doc)))]
+        mod $module_name {
+            $crate::load_module_content!(
+                $( $cfg_filter )*
+                : $prudent_front_end
+            );
+        }
+        // - For doctests, the module is public, because doctests are build in a separate crate.
+        // - For documentation, even though the consumer does NOT access the front end as
+        //   `::prudent::prudent::*`, but instead, as `crate::prudent::*` or
+        //   `crate::module_name_given::*`.
+        #[cfg(any(doctest, doc))]
+        pub mod $module_name {
+            $crate::load_module_content!(
+                $( $cfg_filter )*
+                : $prudent_front_end
+            );
+        }
+
+        const _VERIFY_VERSION: () = {
+            back_end::verify_front_end_version( $module_name::INTERNAL_FRONT_END_VERSION );
+        };
+    }
+}
+
+/// Shared functionality between
+/// - public module (for `$[cfg(doctest)]`) - public, because doctests are build in a separate
+///   crate; and
+/// - private module (for $[cfg(test)]` or "any" builds).
+///
+/// NOT a part of public API - internal.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! load_module_content {
+        (
+        $( $cfg_filter:tt )* :
+        $prudent_front_end:literal
+    ) => {
+        // @TODO const time validation
+        //
+        // #[cfg(any( $( $cfg_filter )* ))]
+        //
+        //include_str! -> substring: first line (a comment with version)
+
+        /// `prudent`'s "frontend" macros, loaded into the user's crate
+        #[cfg(any( $( $cfg_filter )* ))]
+        #[allow(unused)]
+        #[path = $prudent_front_end]
+        mod front_end_loaded_or_aliased;
+
+        #[cfg(not(any( $( $cfg_filter )* )))]
+        #[allow(unused)]
+        use ::prudent::front_end as front_end_loaded_or_aliased;
+
+        reexport!();
+    }
+}
+
+/// Re-export `front_end_loaded_or_aliased` and `::prudent::back_end`.
+///
+/// NOT a part of public API - internal.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! reexport {
+    () => {
+        #[allow(unused)]
+        pub use front_end_loaded_or_aliased::*;
+
+        #[allow(unused)]
+        pub use ::prudent::back_end::*;
+    };
+}
