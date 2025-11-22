@@ -1,4 +1,4 @@
-::prudent::load!(any: "../../../../src/internal_front_end.rs");
+::prudent::load!(any: "linted.rs");
 use self::prudent::*;
 
 fn safe_fn_one_arg(_: bool) {}

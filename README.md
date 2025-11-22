@@ -23,8 +23,8 @@ each `prudent` macro.
 
 # unsafe_fn
 ```rust
-::prudent::load!("linted.rs");
-mod prevent_extern_crate_name_collision {
+::prudent::load!(any: "linted.rs");
+mod module {
       //use super::prudent::*;
       use crate::prudent::*;
 
@@ -44,7 +44,8 @@ const _: u8 = unsafe_fn!(unsafe_fn_two_args, true, 0);
 ## unsafe_method > self: shared reference
 ```rust
 ::prudent::load!("linted.rs");
-# use self::prudent::*;
+//# use crate::prudent::*;
+use prudent::*;x
 // Works for Copy types
 const _: u8 = unsafe_method!(1u8, unchecked_add, 0);
 //const _: u8 = unsafe_method!(({#[forbid(unused)] let v = 1u8; v}), unchecked_add, 0);

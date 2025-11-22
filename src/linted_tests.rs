@@ -18,19 +18,13 @@ const _VERIFY_MODULE_PATH: () = {
 /// # unsafe_fn
 ///
 /// Zero arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
-/// ```ignore
-/// TODO GOOD
-/// compile_fail
-///  #![allow(clippy::needless_doctest_main)]
+/// ```compile_fail
 /// // @TODO Docs: at your crate's top level, use either self::prudent, or crate:;prudent (but NOT
 /// // just prudent, which will fail, fortunately).
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
 /// ```
 /// Some arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
-/// ```ignore
-/// TODO GOOD
-/// compile_fail
-///  #![allow(clippy::needless_doctest_main)]
+/// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
 /// ```
 /// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`
@@ -66,12 +60,10 @@ const _VERIFY_MODULE_PATH: () = {
 /// const _: bool = unsafe_fn!( return_array)[0];
 /// ```
 /// Use the result of `unsafe_fn!` immediately as a mutable array/slice (assign/modify its slot(s)):
-/// ```ignore
-/// TODO failing
-/// ::prudent::load!("linted.rs");
+/// ```
+/// ::prudent::load!(any: "linted.rs");
 /// use self::prudent::*;
-/// #[test]
-/// fn test_unsafe_fn_returning_mut_ref() {
+/// fn _test_unsafe_fn_returning_mut_ref() {
 ///     // NOT running under MIRI, because of an intentional leak.
 ///     if !cfg!(miri) {
 ///         unsafe fn return_mut_ref_array() -> &'static mut [bool; 1] {
@@ -80,19 +72,22 @@ const _VERIFY_MODULE_PATH: () = {
 ///         }
 ///
 ///     unsafe_fn!( return_mut_ref_array)[0] = true;
+///     }
 /// }
+/// fn main() {}
 /// ```
 /// The same, but the function takes an argument (and no leak):
-/// ```ignore
-/// TODO FAILING
-/// # ::prudent::load!("linted.rs");
-/// # use self::prudent::*;
+/// ```
+/// ::prudent::load!(any: "linted.rs");
+/// use crate::prudent::*;
 /// unsafe fn return_same_mut_ref<T>(mref: &mut T) -> &mut T {
 ///    mref
 /// }
 ///
-/// let mut marray = [true];
-/// unsafe_fn!( return_same_mut_ref, &mut marray )[0] = true;
+/// fn main() {
+///     let mut marray = [true];
+///     unsafe_fn!( return_same_mut_ref, &mut marray )[0] = true;
+/// }
 /// ```
 /// TODO docs about tuple tree
 pub fn internal_prudent_unsafe_fn() {}
@@ -106,46 +101,32 @@ pub fn internal_prudent_unsafe_fn() {}
 //
 // Even though the following constant is "pub", it will **not** be a part of the public API, neither
 // a part of the documentation - it's used for doctest only.
-/// ```ignore
-/// TODO Good
-/// compile_fail,E0133
+/// ```compile_fail,E0133
 ///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// ```ignore
-/// TODO FAILING
-/// compile_fail,E0133
-///  #![allow(clippy::needless_doctest_main)]
+/// ```compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// ```ignore
-/// TODO FAILING
-/// compile_fail,E0133
-///  #![allow(clippy::needless_doctest_main)]
+/// ```compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// ```ignore
-/// TODO good
-/// compile_fail,E0308
-///  #![allow(clippy::needless_doctest_main)]
+/// ```compile_fail,E0308
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/zero_args.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// ```ignore
-/// TODO FAILING
-/// compile_fail,E0308
-///  #![allow(clippy::needless_doctest_main)]
+/// ```compile_fail,E0308
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
 /// ```
 #[cfg(doctest)]
@@ -172,29 +153,23 @@ pub const _: () = {};
 #[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/zero_args.rs")]
 /// ```
 ///
-/// ```
-///  #![allow(clippy::needless_doctest_main)]
-//#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
+/// ```compile_fail
+#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
 /// ```
 pub fn internal_prudent_unsafe_method() {}
 
-/// ```ignore
-/// /// TODO FAILING
-/// compile_fail,E0133
+/// ```compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// ```ignore
-/// TODO FAILING
-/// compile_fail,E0133
+/// ```compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// TODO good -> bad
 /// ```compile_fail
 /// compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
@@ -203,10 +178,10 @@ pub const _: () = {};
 pub const _: () = {};
 //----------------------
 
-/// ```ignore
-/// TODO failing
-/// ::prudent::load!("linted.rs");
+/// ```
+/// ::prudent::load!(any: "linted.rs");
 /// use self::prudent::*;
+/// fn main() {
 /// {
 ///     static mut S: (bool,) = (true,);
 ///
@@ -241,6 +216,7 @@ pub const _: () = {};
 ///     //
 ///     // Have to use oval parenthesis:
 ///     ( unsafe {&mut *mptr} )[ 0 ] = true;
+/// }
 /// }
 /// ```
 pub fn internal_prudent_unsafe_static_set() {}

@@ -1,4 +1,4 @@
-::prudent::load!("internal_front_end.rs");
+::prudent::load!(any: "linted.rs");
 use self::prudent::*;
 
 fn main() {

@@ -1,4 +1,4 @@
-::prudent::load!("../../../../src/internal_front_end.rs");
+::prudent::load!(any: "linted.rs");
 use self::prudent::*;
 
 unsafe fn add_three(left: u64, middle: u64, right: u64) -> u64 {
