@@ -10,7 +10,7 @@ fn main() {
         add_three,
         1,
         {
-            let _ = core::str::from_utf8_unchecked(b"hi");
+            let _ = core::str::from_utf8_unchecked(b"G'Day");
             2
         },
         3

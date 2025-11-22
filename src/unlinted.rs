@@ -1,4 +1,4 @@
-//! "back end":
+//! "Unlinted" ("back end") functionality:
 //! - macros that don't need `warn/deny/forbid/allow/expect` lint rules
 //! - non-macro functionality.
 
@@ -6,31 +6,28 @@
 ///
 /// NOT a part of public API - internal.
 #[doc(hidden)]
-pub const fn verify_front_end_version(front_end_version: &'static str) {
+pub const fn verify_linted_version(linted_version: &'static str) {
     // https://github.com/rust-lang/rust/issues/143874 we can't (yet) use == on &str constants, not
     // even matches! macro.
     //
-    //assert!( front_end_version==env!("CARGO_PKG_VERSION") );
+    //assert!( linted_version==env!("CARGO_PKG_VERSION") );
     //
-    //assert!( matches!(front_end_version, env!("CARGO_PKG_VERSION")) );
-    let front_end_version = front_end_version.as_bytes();
+    //assert!( matches!(linted_version, env!("CARGO_PKG_VERSION")) );
+    let linted_version = linted_version.as_bytes();
     //
-    //assert!( matches!(front_end_version, env!("CARGO_PKG_VERSION").as_bytes()) );
+    //assert!( matches!(linted_version, env!("CARGO_PKG_VERSION").as_bytes()) );
     // Can't yet:
     //
-    //assert!( front_end_version == env!("CARGO_PKG_VERSION").as_bytes() );
+    //assert!( linted_version == env!("CARGO_PKG_VERSION").as_bytes() );
     //
     // Can't yet:
     //
-    // assert!( matches!(&front_end_version[0..5], b"0.0.3") );
+    // assert!( matches!(&linted_version[0..5], b"0.0.3") );
     //
     // Can now:
     //
-    //assert!( matches!(front_end_version, b"0.0.3-beta") );
-    assert!(matches!(
-        front_end_version,
-        [b'0', b'.', b'0', b'.', b'3', ..]
-    ));
+    //assert!( matches!(linted_version, b"0.0.3-beta") );
+    assert!(matches!(linted_version, [b'0', b'.', b'0', b'.', b'3', ..]));
 }
 
 /// For casting/ensuring that a user-provided function is unsafe. Used by `unsafe_fn`.
@@ -283,7 +280,7 @@ pub mod expecting_unsafe_fn {
 #[doc(hidden)]
 macro_rules! expecting_unsafe_fn_path {
     ( $( $arg:expr ),+ ) => {
-        $crate::expecting_unsafe_fn_path!( ~ { $( $arg ),+ }, $crate::back_end::expecting_unsafe_fn )
+        $crate::expecting_unsafe_fn_path!( ~ { $( $arg ),+ }, $crate::unlinted::expecting_unsafe_fn )
     };
     ( ~ { $arg_first:expr, $( $arg_rest:expr ),+ }, $( $path_part:tt )+ ) => {
         $crate::expecting_unsafe_fn_path!( ~ { $( $arg_rest ),+ }, $( $path_part )+ ::arg )

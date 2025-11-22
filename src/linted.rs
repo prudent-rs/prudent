@@ -1,6 +1,6 @@
 #[doc(hidden)]
 #[allow(unused)]
-pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
+pub const INTERNAL_LINTED_VERSION: &'static str = "0.0.3-beta";
 
 // Implementation notes ARE a part of the documentation:
 // - Otherwise it's a pain to edit them/render them in VS Code. Yes, that matters.
@@ -8,6 +8,7 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 //   - macros are much more difficult to read than Rust non-macro code, and
 //   - macros inject code, so they are not as sandboxed/isolated as non-macro code.
 //
+
 /// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
 /// - If `$fn`, that is, the function itself, is NOT given as an identifier/qualified path, but it's
 ///   given as an expression, then this expression is treated as if evaluated **outside** `unsafe
@@ -21,81 +22,10 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// This does NOT accept closures, since, closures cannot be `unsafe`.
 ///
 /// # Possible violations
-///
-/// Zero arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
-/// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
-/// // @TODO Docs: at your crate's top level, use either self::prudent, or crate:;prudent (but NOT
-/// // just prudent, which will fail, fortunately).
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
-/// ```
-/// Some arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
-/// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
-/// ```
-/// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`
-/// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
-/// ```
-/// The target function is safe, hence no need for `unsafe_fn`. Zero args.
-/// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/zero_args.rs")]
-/// ```
-/// The target function is safe, hence no need for `unsafe_fn`. Some args.
-/// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
-/// ```
-/// test cfg test:
-/// ```
-/// #[test_harness]
-/// {
-/// #[cfg(not(test))]
-/// //#[cfg(doctest)]
-/// compile_error!("NOT DOCTEST!");
-/// }
-/// ```
-/// Use the result of `unsafe_fn!` immediately as an array/slice:
-/// ```
-/// //TODO failing
-/// //# ::prudent::load!("internal_front_end.rs");
-/// # ::prudent::load!(any: "internal_front_end.rs");
-/// # use self::prudent::*;
-/// unsafe fn return_array() -> [bool; 1] { [true] }
-///
-/// let _ = unsafe_fn!( return_array)[0];
-/// ```
-/// Use the result of `unsafe_fn!` immediately as a mutable array/slice (assign/modify its slot(s)):
-/// ```ignore
-/// TODO failing
-/// ::prudent::load!("internal_front_end.rs");
-/// use self::prudent::*;
-/// // NOT running under MIRI, because of an intentional leak.
-/// if !cfg!(miri) {
-///     unsafe fn return_mut_ref_array() -> &'static mut [bool; 1] {
-///         let boxed = Box::new([true]);
-///         Box::leak(boxed)
-///     }
-///
-///     unsafe_fn!( return_mut_ref_array)[0] = true;
-/// }
-/// ```
-/// The same, but the function takes an argument (and no leak):
-/// ```ignore
-/// TODO FAILING
-/// # ::prudent::load!("internal_front_end.rs");
-/// # use self::prudent::*;
-/// unsafe fn return_same_mut_ref<T>(mref: &mut T) -> &mut T {
-///    mref
-/// }
-///
-/// let mut marray = [true];
-/// unsafe_fn!( return_same_mut_ref, &mut marray )[0] = true;
-/// ```
-/// TODO docs about tuple tree
+/// - Zero arguments. The given expression (which evaluates to the function to be called) is
+///   `unsafe.`
+/// - Some arguments. The given expression (which evaluates to the function to be called) is
+///   `unsafe.`
 #[macro_export]
 macro_rules! internal_prudent_unsafe_fn {
     ( $fn:expr $(, $arg:expr)+ ) => {
@@ -146,7 +76,7 @@ macro_rules! internal_prudent_unsafe_fn {
                 // Ensure that $fn is not safe, but `unsafe`. Using
                 // https://doc.rust-lang.org/reference/types/function-item.html#r-type.fn-item.coercion
                 let _ = if false {
-                    ::prudent::back_end::expecting_unsafe_fn::fun
+                    ::prudent::unlinted::expecting_unsafe_fn::fun
                 } else {
                     fun
                 };
@@ -171,58 +101,7 @@ macro_rules! internal_prudent_unsafe_fn {
 // OR:
 pub use internal_prudent_unsafe_fn;
 
-// Same `compile_fail` tests as listed above for `unsafe_fn`, but here we validate the error
-// numbers.
-//
-// Error numbers are validated with `cargo +nightly test`, but NOT with
-// - `cargo +stable test` nor
-// - RUSTDOCFLAGS="..." cargo +nightly doc ...
-//
-// Even though the following constant is "pub", it will **not** be a part of the public API, neither
-// a part of the documentation - it's used for doctest only.
-/// ```ignore
-/// TODO Good
-/// compile_fail,E0133
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// ```ignore
-/// TODO FAILING
-/// compile_fail,E0133
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// ```compile_fail,E0133
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// ```ignore
-/// TODO good
-/// compile_fail,E0308
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/zero_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// ```ignore
-/// TODO FAILING
-/// compile_fail,E0308
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
+/// INTERNAL. Do NOT use directly - subject to change.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! internal_prudent_unsafe_fn_internal_build_tuple_tree {
@@ -238,9 +117,9 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_tuple_tree {
 }
 pub use internal_prudent_unsafe_fn_internal_build_tuple_tree;
 
+/// INTERNAL. Do NOT use directly - subject to change.
 #[doc(hidden)]
 #[macro_export]
-/// INTERNAL. Do NOT use directly - subject to change.
 macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
     // Access tuple_tree parts and get ready to call the function:
     ( $fn:expr, $tuple_tree:ident,
@@ -251,7 +130,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
     ) => {
         unsafe_fn_internal_build_accessors_and_call!{
             $fn, $tuple_tree, ( $($other_arg),+ ),
-            // Insert a new accessor to front (left): 0.
+            // Insert a new accessor to the front (left): 0.
             (0),
             $(  // Prepend 1 to each supplied/existing accessor
                  ( 1, $($accessor_part),+ )
@@ -305,31 +184,6 @@ pub use internal_prudent_unsafe_fn_internal_access_tuple_tree_field;
 /// - `$allow_unsafe_empty_indicator`
 ///
 /// as they are internal.
-///
-/// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
-/// ```
-///
-/// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
-/// ```
-///
-/// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
-/// ```
-///
-/// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
-#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/zero_args.rs")]
-/// ```
-///
-/// ```
-///  #![allow(clippy::needless_doctest_main)]
-//#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
-/// ```
 #[macro_export]
 macro_rules! internal_prudent_unsafe_method {
     (
@@ -374,7 +228,7 @@ macro_rules! internal_prudent_unsafe_method {
                         rref
                     };
                     //
-                    let mref = ::prudent::back_end::shared_to_mut(rref);
+                    let mref = ::prudent::unlinted::shared_to_mut(rref);
                     let mut owned_receiver = ::core::mem::replace(mref, unsafe{ ::core::mem::zeroed() });
                     // Detect code where unsafe_fn! or unsafe_method! is not needed at all. That is,
                     // where a function/method used to be `unsafe`, but it stopped being so.
@@ -412,29 +266,6 @@ macro_rules! internal_prudent_unsafe_method {
     }
 }
 pub use internal_prudent_unsafe_method;
-
-/// ```ignore
-/// /// TODO FAILING
-/// compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// ```ignore
-/// TODO FAILING
-/// compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// TODO good
-/// ```compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
 
 #[doc(hidden)]
 #[macro_export]
@@ -500,7 +331,7 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
             $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
             $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
             $self, $fn, $tuple_tree, ( $($other_arg),+ ),
-            // Insert a new accessor to front (left): 0.
+            // Insert a new accessor to the front (left): 0.
             (0),
             $(  // Prepend 1 to each supplied/existing accessor
                  ( 1, $($accessor_part),+ )
@@ -550,51 +381,9 @@ pub use internal_prudent_unsafe_method_internal_build_accessors_check_args_call;
 /// variables and pass them in.
 ///
 /// We do **not** have a similar macro to get a value of a `static mut`. For that, simply enclose it
-/// in `unsafe{...}`.
-///
-/// TODO:
+/// in `unsafe{...}`. TODO reconsider.
 ///
 /// NOT for `static` variables (or their fields/components) of `union` types.
-/// ```ignore
-/// TODO failing
-/// ::prudent::load!("internal_front_end.rs");
-/// use self::prudent::*;
-/// {
-///     static mut S: (bool,) = (true,);
-///
-///     let mptr = &raw mut S;
-///     unsafe { *mptr = (false,); }
-///
-///     let _mref = unsafe {&mut *mptr};
-///     
-///     // The following IS accepted:
-///     //
-///     //{unsafe {&mut *mptr}}.0 = true;
-///     //
-///     // BUT, because the outer curly brackets {...} are **refused** just left of
-///     // [index_here] when indexing arrays (see below), we use oval parenthesis (...)
-///     // which work for both: the tuple access .usize_literal and for array access
-///     // [usize_expression].
-/// }
-/// {
-///     static mut ARR: [bool; 1] = [true];
-///     let mptr = &raw mut ARR;
-///     unsafe { *mptr = [false]; }
-///
-///     let _mref = unsafe {&mut *mptr};
-///     *_mref = [false];
-///     _mref[ 0 ] = true;
-///     
-///     // Read access OK:
-///     let _b: bool = { unsafe {&mut *mptr} }[ 0 ];
-///     // Mut access - bad: The following refused:
-///     //
-///     //{ unsafe {&mut *mptr} }[ 0 ] = true;
-///     //
-///     // Have to use oval parenthesis:
-///     ( unsafe {&mut *mptr} )[ 0 ] = true;
-/// }
-/// ```
 #[macro_export]
 macro_rules! internal_prudent_unsafe_static_set {
     ($static:path, $val:expr) => {{
@@ -684,13 +473,13 @@ pub use internal_prudent_unsafe_mut;
 macro_rules! internal_prudent_unsafe_val {
     ($ptr:expr) => {{
         let ptr: *const _ = $ptr;
-        ::prudent::back_end::expect_copy_ptr(ptr);
+        ::prudent::unlinted::expect_copy_ptr(ptr);
         unsafe { *ptr }
     }};
     ($ptr:expr, $ptr_type:ty) => {{
         let ptr = $ptr;
         let ptr = ptr as *const $ptr_type;
-        ::prudent::back_end::expect_copy_ptr(ptr);
+        ::prudent::unlinted::expect_copy_ptr(ptr);
         unsafe { *ptr }
     }};
 }
