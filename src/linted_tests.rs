@@ -1,5 +1,6 @@
 // This separate module exists to workaround the issue of no lint control in cross-crate macro_rules
-// https://github.com/rust-lang/rust/issues/110613). Without this separate file we got (when "linted" used to be called "front_end"):
+// https://github.com/rust-lang/rust/issues/110613). Without this separate file we got (when
+// "linted" used to be called "front_end"):
 /*
 ---- src/internal_front_end.rs - internal_front_end::internal_prudent_unsafe_fn (line 117) stdout ----
 error: circular modules: src/internal_front_end.rs -> src/internal_front_end.rs

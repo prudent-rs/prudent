@@ -66,8 +66,8 @@ macro_rules! internal_prudent_unsafe_fn {
     };
     ($fn:expr) => {
         ({
-            // Ensure that $fn (the expression itself, one that yields a function to call)
-            // doesn't include an unnecessary `unsafe{...}` block:
+            // Ensure that $fn (the expression itself, one that yields a function to call) doesn't
+            // include an unnecessary `unsafe{...}` block:
             #[deny(unused_unsafe)]
             // Ensure that $fn (the expression itself) doesn't include any unsafe code/calls/casts
             // on its own without its own `unsafe{...}` block(s):
@@ -82,9 +82,9 @@ macro_rules! internal_prudent_unsafe_fn {
                 };
                 unreachable!()
             }
-            // `#[deny(unused_unsafe)]` does NOT work here. Why? Because when we assigned `let
-            // fun = $fn` above, that then happily coerces/infers to an unsafe function, even
-            // though it's safe. That's why we have `expecting_unsafe_fn` module.
+            // `#[deny(unused_unsafe)]` does NOT work here. Why? Because when we assigned `let fun =
+            // $fn` above, that then happily coerces/infers to an unsafe function, even though it's
+            // safe. That's why we have `expecting_unsafe_fn` module.
             #[allow(unsafe_code)]
             let result = unsafe {
                 fun()
@@ -173,7 +173,7 @@ pub use internal_prudent_unsafe_fn_internal_access_tuple_tree_field;
 /// `self`). For associated functions (implemented for a type but with no receiver) use `unsafe_fn`,
 /// and pass the qualified name of the associated function to it.
 ///
-/// Like [unsafe_fn], but
+/// Like [internal_prudent_unsafe_fn], but
 /// - This accepts a receiver `&self`, `&mut self` and `self`. TODO Box/Rc/Arc, dyn?
 /// - This treats `self` as if it were evaluated **outside** the `unsafe {...}` block.
 /// - $fn can **NOT** be an expression or a qualified path (which doesn't work in standard methods
@@ -442,9 +442,9 @@ pub use internal_prudent_unsafe_ref;
 
 /// Deref a `mut` pointer and yield a `mut` reference.
 ///
-/// Like for [unsafe_ref]: If `$type` is given, it's expected to be the referenced type (NOT the
-/// given pointer, NOT the target reference type) and the given pointer is cast to `* const $type`.
-/// `$type` may start with `dyn`. `$type` may be a slice `[...]`.
+/// Like for [internal_prudent_unsafe_ref]: If `$type` is given, it's expected to be the referenced
+/// type (NOT the given pointer, NOT the target reference type) and the given pointer is cast to `*
+/// const $type`. `$type` may start with `dyn`. `$type` may be a slice `[...]`.
 #[macro_export]
 macro_rules! internal_prudent_unsafe_mut {
     ($ptr:expr) => {{

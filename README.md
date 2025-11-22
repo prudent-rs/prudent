@@ -478,7 +478,7 @@ That allows you to specify `prudent` as a dependency with version `0.*`, which w
 This is special only to `0.*` - it is **not** possible to have a wildcard matching various **major**
 versions `1.0` or higher.
 
-## Procedural macros with side effects
+## Not supported: Procedural macros with side effects
 Several `prudent` macros duplicate their expression "parameter". In the generated Rust code the parameter expression is evaluated only once, but it's present in the code twice - once in an inactive `if false {...}` branch for verification, and once in the following active `else {...}` branch.
 
 That is OK with macros by example (defined with `macro_rules!`), and OK with any well-behaving
@@ -521,6 +521,7 @@ Please contribute, or at least give thumbs up, to:
   where art þou? (Add a way to run clippy on doctests)
 - [rust-lang/rust#127893](https://github.com/rust-lang/rust/issues/127893) doctest line number is
   incorrect if used with #![doc = include_str!()]
+- [rust-lang/rustfmt#6047](https://github.com/rust-lang/rustfmt/issues/6047) Braces are removed from single-item import in macro where they are required
 - [rust-lang/rust#39412](https://github.com/rust-lang/rust/issues/39412) declarative macros 2.0
 - [rust-lang/rust#65860](https://github.com/rust-lang/rust/issues/65860) Re-land early syntax feature gating
 - [rust-lang/rust#15701](https://github.com/rust-lang/rust/issues/15701) attributes on expressions

@@ -16,7 +16,8 @@ pub const fn verify_linted_version(linted_version: &'static str) {
     let linted_version = linted_version.as_bytes();
     //
     //assert!( matches!(linted_version, env!("CARGO_PKG_VERSION").as_bytes()) );
-    // Can't yet:
+    //
+    //Can't yet:
     //
     //assert!( linted_version == env!("CARGO_PKG_VERSION").as_bytes() );
     //
@@ -290,7 +291,8 @@ macro_rules! expecting_unsafe_fn_path {
     };
 }
 
-/// NOT a part of public API. Ensure that maximum one of `~allow_unsafe` or `~expect_unsafe` is passed to [unsafe_method].
+/// NOT a part of public API. Ensure that maximum one of `~allow_unsafe` or `~expect_unsafe` is
+/// passed to [unsafe_method].
 #[doc(hidden)]
 #[macro_export]
 macro_rules! allow_unsafe_expect_unsafe_is_correct {
@@ -318,7 +320,8 @@ pub const fn shared_to_mut<T>(_: &T) -> &mut T {
     unreachable!()
 }
 
-/// This is an "early" type check for [unsafe_val], so that the user knows to use [unsafe_val] with [core::marker::Copy] types only.
+/// This is an "early" type check for [unsafe_val], so that the user knows to use [unsafe_val] with
+/// [core::marker::Copy] types only.
 ///
 /// NOT a part of public API!
 #[doc(hidden)]

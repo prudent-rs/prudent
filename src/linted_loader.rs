@@ -17,8 +17,7 @@ macro_rules! load {
     ( $module_name:ident ) => {
         /// prudent exported in a module
         mod $module_name {
-            //use ::prudent::linted::*;
-            $crate::reexport_macros!(crate);
+            $crate::reexport_macros!( ::prudent::linted );
             $crate::reexport_non_macros!( ::prudent::linted );
         }
     };// -----------
@@ -177,22 +176,20 @@ macro_rules! load {
     }
 }
 
-/// Re-export `linted`_module/path.
+/// Re-export macros from the given `linted`_module/path.
 ///
 /// NOT a part of public API - internal.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! reexport_macros {
     ($path:path) => {
-        //pub use internal_prudent_unsafe_fn as unsafe_fn;
         #[allow(unused)]
         pub use $path::{
-        //pub use crate::{
-            internal_prudent_unsafe_fn as unsafe_fn,
             // Without re-exporting all internal macros, we hit
             // https://github.com/rust-lang/rust/issues/52234. The consumer crate would have to
             // `#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]`, which is NOT
             // future-compatible!
+            internal_prudent_unsafe_fn as unsafe_fn,
             internal_prudent_unsafe_fn_internal_build_tuple_tree as unsafe_fn_internal_build_tuple_tree,
             internal_prudent_unsafe_fn_internal_build_accessors_and_call as unsafe_fn_internal_build_accessors_and_call,
             internal_prudent_unsafe_fn_internal_access_tuple_tree_field as unsafe_fn_internal_access_tuple_tree_field,
@@ -208,9 +205,15 @@ macro_rules! reexport_macros {
     };
 }
 
+/// Re-export
+/// 1. non-macros from the given `linted`_module/path. And
+/// 2. anything needed from `unlinted`.
+///
+/// NOT a part of public API - internal.
 #[doc(hidden)]
 #[macro_export]
-// otherwise `cargo fmt` removes `{` and `}` around INTERNAL_LINTED_VERSION, which fails to compile.
+// `cargo fmt` removes `{` and `}` around INTERNAL_LINTED_VERSION, which fails to compile. See
+// https://github.com/rust-lang/rustfmt/issues/6047.
 #[rustfmt::skip]
 macro_rules! reexport_non_macros {
     ($linted_path:path) => {
