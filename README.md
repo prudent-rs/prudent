@@ -2,16 +2,47 @@
 results](https://github.com/peter-lyons-kehl/prudent/actions/workflows/main.yml/badge.svg)](https://github.com/peter-lyons-kehl/prudent/actions)
 
 # Summary
-
 `prudent` helps you minimize the amount of Rust code that is marked as `unsafe`.
 
-- ergonomic (short)
-- clear
+- ergonomic (as much as possible)
 - obvious (easy to search for and review)
 - lightweight (no dependencies, no procedural macros, fast build)
+- zero-cost (for binary size, speed and memory), checked in compile time
 
 # const-friendly
-Results of `prudent`'s macro invocations are `const` if the original invocation would also be `const`.
+Results of `prudent`'s macro invocations are `const` (if the original invocation would also be
+`const`).
+
+# Loading and lints
+If your crate already uses `prudent` identifier, you can choose a different identifier for `prudent`'s top-level module.
+
+If you want to apply lints to the macro-generated code (highly recommended), your crate needs to
+contain/refer to `prudent's` file [src/linted.rs](src/linted.rs), which you "load" with
+`::prudent::load!(...)`.
+
+
+# Temporary annoyance
+`prudent` is badly affected by lack of lint control in macros:
+[rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) - please give it thumbs up.
+The pains (that pend [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613)):
+- [`prudent`'s documentation on docs.rs](<https://docs.rs/prudent/latest/prudent/) shows code
+  examples first, and only then documentation text (prose).
+- You need a wildcard import `use crate::prudent::*` - not an import of just the specific "top
+  level" (client code-facing) macro(s) that you invoke. That is regardless of whether you apply the
+  lints (and hence your include [src/linted.rs](src/linted.rs)) or not. (At the top level of your
+  crate you could `use self::prudent::*` instead, but that will not work in your modules - while
+  `use crate::prudent::*` works everywhere).
+  
+  It's not enough to import just specific macros that you invoke (because the internal "linted"
+  macros are loaded in your crate's namespace, and hence they can't use `$crate` metavariable to
+  refer to the rest of the macros and non-macro functionality).
+- In doctests
+  - load with `any:` like `::prudent::load!(any: "linted.rs");`
+  - import with `use crate::prudent::*;` which you put outside of your `fn main()`
+  - have `fn main()` - do not have the test "logic" at the top level, otherwise rustdoc/doctest mechanism automatically puts the whole doctest code inside `fn main()`, which will include `::prudent::load!(...)` and `use self::prudent::*`, which will fail with very strange errors.
+
+## Limitation of lint control for unsafe_method
+`unsafe_method` (normally accessed as `crate::prudent::unsafe_method`)
 
 # API and examples
 All the following examples are also run as
@@ -23,11 +54,8 @@ each `prudent` macro.
 # unsafe_fn
 ```rust
 ::prudent::load!(any: "linted.rs");
-mod module {
-      //use super::prudent::*;
-      use crate::prudent::*;
+use crate::prudent::*;
 
-# //use prudent::unsafe_fn;
 const unsafe fn unsafe_fn_no_args() {}
 const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
 const unsafe fn unsafe_fn_two_args(_: bool, u: u8) -> u8 { u }
@@ -35,28 +63,26 @@ const unsafe fn unsafe_fn_two_args(_: bool, u: u8) -> u8 { u }
 const _: () = unsafe_fn!(unsafe_fn_no_args);
 const _: bool = unsafe_fn!(unsafe_fn_one_arg, true);
 const _: u8 = unsafe_fn!(unsafe_fn_two_args, true, 0);
-# }
-# fn main() {}
+fn main() {}
 ```
 
 # unsafe_method
 ## unsafe_method > self: shared reference
 ```rust
-::prudent::load!("linted.rs");
-//# use crate::prudent::*;
-use prudent::*;x
-// Works for Copy types
-const _: u8 = unsafe_method!(1u8, unchecked_add, 0);
-//const _: u8 = unsafe_method!(({#[forbid(unused)] let v = 1u8; v}), unchecked_add, 0);
-//const _: u8 = unsafe_method!(#[allow_unsafe] 1u8, unchecked_add, 0);
-//const _: u8 = unsafe_method!(#[expect_unsafex] 1u8, unchecked_add, 0);
+::prudent::load!(any: "linted.rs");
+mod module {
+  use crate::prudent::*;
+  // Works for Copy types
+  const _: u8 = unsafe_method!(1u8, unchecked_add, 0);
+  //const _: u8 = unsafe_method!(({#[forbid(unused)] let v = 1u8; v}), unchecked_add, 0);
+  //const _: u8 = unsafe_method!(#[allow_unsafe] 1u8, unchecked_add, 0);
+  //const _: u8 = unsafe_method!(#[expect_unsafex] 1u8, unchecked_add, 0);
 
-//const _: u8 = unsafe_method!(({#forbid(unused) let v = 1u8; v}), unchecked_add, 0);
-const _: u8 = unsafe_method!(~allow_unsafe 1u8, unchecked_add, 0);
-const _: u8 = unsafe_method!(~expect_unsafe 1u8, unchecked_add, 0);
-
-// @TODO separate 2 files
-//
+  //const _: u8 = unsafe_method!(({#forbid(unused) let v = 1u8; v}), unchecked_add, 0);
+  const _: u8 = unsafe_method!(~allow_unsafe 1u8, unchecked_add, 0);
+  const _: u8 = unsafe_method!(~expect_unsafe 1u8, unchecked_add, 0);
+}
+fn main() {}
 ```
 
 ```rust
@@ -72,66 +98,72 @@ let _todo = ();
 ```
 
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 struct SNonCopy {}
 impl SNonCopy {
-    fn unsafe_method_no_args(&self) {}
-    fn unsafe_method_one_arg(&self, _: bool) {}
-    fn unsafe_method_two_args(&self, _: bool, _: bool) {}
+    unsafe fn unsafe_method_no_args(&self) {}
+    unsafe fn unsafe_method_one_arg(&self, _: bool) {}
+    unsafe fn unsafe_method_two_args(&self, _: bool, _: bool) {}
 }
 
-let s = SNonCopy {};
-// Works for non-Copy types
-unsafe_method!(s, unsafe_method_no_args);
-unsafe_method!(s, unsafe_method_one_arg, true);
-unsafe_method!(s, unsafe_method_two_args, true, false);
+fn main() {
+    let s = SNonCopy {};
+    // Works for non-Copy types
+    unsafe_method!(s, unsafe_method_no_args);
+    unsafe_method!(s, unsafe_method_one_arg, true);
+    unsafe_method!(s, unsafe_method_two_args, true, false);
+}
 ```
 
 ## unsafe_method > self: mutable reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 struct SNonCopy {}
 impl SNonCopy {
-    fn unsafe_method_no_args(&mut self) {}
-    fn unsafe_method_one_arg(&mut self, _: bool) {}
-    fn unsafe_method_two_args(&mut self, _: bool, _: bool) {}
+    unsafe fn unsafe_method_no_args(&mut self) {}
+    unsafe fn unsafe_method_one_arg(&mut self, _: bool) {}
+    unsafe fn unsafe_method_two_args(&mut self, _: bool, _: bool) {}
 }
 
-let mut s = SNonCopy {};
-unsafe_method!(s, unsafe_method_no_args);
-unsafe_method!(s, unsafe_method_one_arg, true);
-unsafe_method!(s, unsafe_method_two_args, true, false);
+fn main() {
+    let mut s = SNonCopy {};
+    unsafe_method!(s, unsafe_method_no_args);
+    unsafe_method!(s, unsafe_method_one_arg, true);
+    unsafe_method!(s, unsafe_method_two_args, true, false);
+}
 ```
 
 ## unsafe_method > self: by value
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-{
-    struct SNonCopy {}
-    impl SNonCopy {
-        fn unsafe_method_no_args(self) {}
-        fn unsafe_method_one_arg(self, _: bool) {}
-        fn unsafe_method_two_args(self, _: bool, _: bool) {}
-    }
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    {
+        struct SNonCopy {}
+        impl SNonCopy {
+            unsafe fn unsafe_method_no_args(self) {}
+            unsafe fn unsafe_method_one_arg(self, _: bool) {}
+            unsafe fn unsafe_method_two_args(self, _: bool, _: bool) {}
+        }
 
-    unsafe_method!(SNonCopy {}, unsafe_method_no_args);
-    unsafe_method!(SNonCopy {}, unsafe_method_one_arg, true);
-    unsafe_method!(SNonCopy {}, unsafe_method_two_args, true, false);
-}
-{
-    #[derive(Clone, Copy)]
-    struct SCopy {}
-    impl SCopy {
-        fn unsafe_method_no_args(self) {}
+        unsafe_method!(SNonCopy {}, unsafe_method_no_args);
+        unsafe_method!(SNonCopy {}, unsafe_method_one_arg, true);
+        unsafe_method!(SNonCopy {}, unsafe_method_two_args, true, false);
     }
+    {
+        #[derive(Clone, Copy)]
+        struct SCopy {}
+        impl SCopy {
+            unsafe fn unsafe_method_no_args(self) {}
+        }
 
-    let sCopy = SCopy {};
-    unsafe_method!(sCopy, unsafe_method_no_args);
-    unsafe_method!(sCopy, unsafe_method_no_args);
-    let _ = sCopy;
+        let sCopy = SCopy {};
+        unsafe_method!(sCopy, unsafe_method_no_args);
+        unsafe_method!(sCopy, unsafe_method_no_args);
+        let _ = sCopy;
+    }
 }
 ```
 <!-- ------- -->
@@ -139,210 +171,244 @@ unsafe_method!(s, unsafe_method_two_args, true, false);
 # unsafe_ref
 ## unsafe_ref - one arg, basic reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
 const _: &bool = unsafe_ref!(PT);
-let _ = unsafe_ref!(PT);
+fn main() {
+    let _ = unsafe_ref!(PT);
+}
 ```
 
 ## unsafe_ref - one arg, slice
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
 const _: &[bool] = unsafe_ref!(PT);
-let _ = unsafe_ref!(PT);
+fn main() {
+    let _ = unsafe_ref!(PT);
+}
 ```
 
 ## unsafe_ref - one arg, dyn reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 # use core::fmt::Display;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
 const _: &dyn Display = unsafe_ref!(PT);
+fn main() {}
 ```
 
 ## unsafe_ref - two args, lifetimed reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
 const _: &'static bool = unsafe_ref!(PT, 'static);
-let _ = unsafe_ref!(PT, 'static);
+fn main() {
+    let _ = unsafe_ref!(PT, 'static);
+}
 ```
 
 ## unsafe_ref - two args, lifetimed dyn reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-# use core::fmt::Display;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+use core::fmt::Display;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
 const _: &'static dyn Display = unsafe_ref!(PT, 'static);
+fn main() {}
 ```
 
 ## unsafe_ref - two args, lifetimed slice
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
 const _: &'static [bool] = unsafe_ref!(PT, 'static);
-let _ = unsafe_ref!(PT, 'static);
+fn main() {
+    let _ = unsafe_ref!(PT, 'static);
+}
 ```
 
 ## unsafe_ref - two args, typed basic reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
 const _: &bool = unsafe_ref!(PT, bool);
-let _ = unsafe_ref!(PT, bool);
+fn main() {
+    let _ = unsafe_ref!(PT, bool);
+}
 ```
 
 ## unsafe_ref - two args, typed slice
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
 const _: &[bool] = unsafe_ref!(PT, [bool]);
-let _ = unsafe_ref!(PT, [bool]);
+fn main() {
+    let _ = unsafe_ref!(PT, [bool]);
+}
 ```
 
 ## unsafe_ref - two args, typed dyn reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 # use core::fmt::Display;
 const B: bool = true;
 const PT: *const dyn Display = &B as *const dyn Display;
 
 const _: &dyn Display = unsafe_ref!(PT, dyn Display);
-let _ = unsafe_ref!(PT, dyn Display);
+fn main() {
+    let _ = unsafe_ref!(PT, dyn Display);
+}
 ```
 <!-- ------- -->
 
 # unsafe_mut
 ## unsafe_mut - one arg, basic reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-let mut b: bool = true;
-let pt: *mut bool = &mut b as *mut bool;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    let mut b: bool = true;
+    let pt: *mut bool = &mut b as *mut bool;
 
-let _: &bool = unsafe_mut!(pt);
-let _ = unsafe_mut!(pt);
+    let _: &bool = unsafe_mut!(pt);
+    let _ = unsafe_mut!(pt);
+}
 ```
 
 ## unsafe_mut - one arg, slice
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-let mut bs: [bool; 2] = [true, false];
-let pt: *mut [bool] = &mut bs as *mut [bool];
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    let mut bs: [bool; 2] = [true, false];
+    let pt: *mut [bool] = &mut bs as *mut [bool];
 
-let _: &[bool] = unsafe_mut!(pt);
-let _ = unsafe_mut!(pt);
+    let _: &[bool] = unsafe_mut!(pt);
+    let _ = unsafe_mut!(pt);
+}
 ```
 
 ## unsafe_mut - one arg, dyn reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 # use core::fmt::Display;
-let mut b: bool = true;
-let pt: *mut bool = &mut b as *mut bool;
+fn main() {
+    let mut b: bool = true;
+    let pt: *mut bool = &mut b as *mut bool;
 
-let _: &mut dyn Display = unsafe_mut!(pt);
-let _: &dyn Display = unsafe_mut!(pt);
+    let _: &mut dyn Display = unsafe_mut!(pt);
+    let _: &dyn Display = unsafe_mut!(pt);
+}
 ```
 
 ## unsafe_mut - two args, lifetimed reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-let b: &'static mut bool = Box::leak( Box::new(true) );
-let pt: *mut bool = b as *mut bool;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    let b: &'static mut bool = Box::leak( Box::new(true) );
+    let pt: *mut bool = b as *mut bool;
 
-let _: &'static mut bool = unsafe_mut!(pt, 'static);
-let _ = unsafe_mut!(pt, 'static);
-# let _drop_for_miri = unsafe { Box::from_raw(b) };
+    let _: &'static mut bool = unsafe_mut!(pt, 'static);
+    let _ = unsafe_mut!(pt, 'static);
+    # let _drop_for_miri = unsafe { Box::from_raw(b) };
+}
 ```
 
 ## unsafe_mut - two args, lifetimed dyn reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 # use core::fmt::Display;
-let b: &'static mut bool = Box::leak( Box::new(true) );
-let pt: *mut bool = b as *mut bool;
+fn main() {
+    let b: &'static mut bool = Box::leak( Box::new(true) );
+    let pt: *mut bool = b as *mut bool;
 
-let _: &'static mut dyn Display = unsafe_mut!(pt, 'static);
-let _ = unsafe_mut!(pt, 'static);
-# let _drop_for_miri = unsafe { Box::from_raw(b) };
+    let _: &'static mut dyn Display = unsafe_mut!(pt, 'static);
+    let _ = unsafe_mut!(pt, 'static);
+    # let _drop_for_miri = unsafe { Box::from_raw(b) };
+}
 ```
 
 ## unsafe_mut - two args, lifetimed slice
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
-let pt: *mut [bool] = bs as *mut [bool];
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
+    let pt: *mut [bool] = bs as *mut [bool];
 
-let _: &'static mut [bool] = unsafe_mut!(pt, 'static);
-let _ = unsafe_mut!(pt, 'static);
-# let _drop_for_miri = unsafe { Box::from_raw(bs) };
+    let _: &'static mut [bool] = unsafe_mut!(pt, 'static);
+    let _ = unsafe_mut!(pt, 'static);
+    # let _drop_for_miri = unsafe { Box::from_raw(bs) };
+}
 ```
 
 ## unsafe_mut - two args, typed basic reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-let mut b: bool = true;
-let pt: *mut bool = &mut b as *mut bool;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    let mut b: bool = true;
+    let pt: *mut bool = &mut b as *mut bool;
 
-let _: &mut bool = unsafe_mut!(pt, bool);
-let _ = unsafe_mut!(pt, bool);
+    let _: &mut bool = unsafe_mut!(pt, bool);
+    let _ = unsafe_mut!(pt, bool);
+}
 ```
 
 ## unsafe_mut - two args, typed slice
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
-let pt: *mut [bool] = bs as *mut [bool];
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
+    let pt: *mut [bool] = bs as *mut [bool];
 
-let _: &mut [bool] = unsafe_mut!(pt, [bool]);
-let _ = unsafe_mut!(pt, [bool]);
-# let _drop_for_miri = unsafe { Box::from_raw(bs) };
+    let _: &mut [bool] = unsafe_mut!(pt, [bool]);
+    let _ = unsafe_mut!(pt, [bool]);
+    # let _drop_for_miri = unsafe { Box::from_raw(bs) };
+}
 ```
 
 ## unsafe_mut - two args, typed dyn reference
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 # use core::fmt::Display;
-let mut b: bool = true;
-let pt: *mut dyn Display = &mut b as *mut dyn Display;
+fn main() {
+    let mut b: bool = true;
+    let pt: *mut dyn Display = &mut b as *mut dyn Display;
 
-let _: &mut dyn Display = unsafe_mut!(pt, dyn Display);
-let _ = unsafe_mut!(pt, dyn Display);
+    let _: &mut dyn Display = unsafe_mut!(pt, dyn Display);
+    let _ = unsafe_mut!(pt, dyn Display);
+}
 ```
 
 <!-- This is independent of [`![feature(as_ref_unchecked)]` rust-lang/rust#122034](https://github.com/rust-lang/rust/issues/122034). -->
@@ -354,57 +420,67 @@ Only for types that implement/derive [core::marker::Copy].
 
 ## unsafe_val - one arg, basic
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-const B: bool = true;
-const PT: *const bool = &B as *const bool;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    const B: bool = true;
+    const PT: *const bool = &B as *const bool;
 
-const _: bool = unsafe_val!(PT);
-let _ = unsafe_val!(PT);
+    const _: bool = unsafe_val!(PT);
+    let _ = unsafe_val!(PT);
+}
 ```
 
 ## unsafe_val - two args, typed
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-const B: bool = true;
-const PT: *const bool = &B as *const bool;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    const B: bool = true;
+    const PT: *const bool = &B as *const bool;
 
-const _: bool = unsafe_val!(PT, bool);
-let _ = unsafe_val!(PT, bool);
+    const _: bool = unsafe_val!(PT, bool);
+    let _ = unsafe_val!(PT, bool);
+}
 ```
 
 # unsafe_set
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
-let mut b: bool = true;
-let pt: *mut bool = &mut b as *mut bool;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
+fn main() {
+    let mut b: bool = true;
+    let pt: *mut bool = &mut b as *mut bool;
 
-unsafe_set!(pt, false);
-unsafe_set!(pt, true);
+    unsafe_set!(pt, false);
+    unsafe_set!(pt, true);
+}
 ```
 
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 struct SNonCopy {}
-let mut s: SNonCopy = SNonCopy {};
-let pt: *mut SNonCopy = &mut s as *mut SNonCopy;
+fn main() {
+    let mut s: SNonCopy = SNonCopy {};
+    let pt: *mut SNonCopy = &mut s as *mut SNonCopy;
 
-let setFrom: SNonCopy = SNonCopy {};
-unsafe_set!(pt, setFrom);
-let setFrom: SNonCopy = SNonCopy {};
-unsafe_set!(pt, setFrom);
+    let setFrom: SNonCopy = SNonCopy {};
+    unsafe_set!(pt, setFrom);
+    let setFrom: SNonCopy = SNonCopy {};
+    unsafe_set!(pt, setFrom);
+}
 ```
 
 # unsafe_static_set
 ```rust
-::prudent::load!("linted.rs");
-# use self::prudent::*;
+::prudent::load!(any: "linted.rs");
+use crate::prudent::*;
 static mut B: bool = true;
 
-unsafe_static_set!(B, false);
+fn main() {
+    unsafe_static_set!(B, false);
+}
 ```
 
 # Details
@@ -454,11 +530,6 @@ doesn't accept (please do report it). Most likely if it involves advanced patter
 `prudent` is to help you make `unsafe` code stand out more. Mixing `unsafe` with advanced pattern
 matching or other complex syntax may sound exciting, but it makes reading the code difficult. Can
 that be an opportunity to refactor?
-
-# Zero cost
-
-`prudent` is a zero-cost abstraction (for both binary size/speed and memory). Rust/LLVM easily
-optimizes it out.
 
 # Compatibility
 

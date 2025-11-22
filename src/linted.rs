@@ -5,6 +5,26 @@
 #[allow(unused)]
 pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
 
+/// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
+/// - If `$fn`, that is, the function itself, is NOT given as an identifier/qualified path, but it's
+///   given as an expression, then this expression is treated as if evaluated **outside** `unsafe
+///   {...}`.
+/// - Any arguments passed in as expressions are treated as if evaluated **outside** `unsafe {...}`.
+///
+/// There is **no** extra enclosing pair of parenthesis `(...)` around the list of arguments (if
+/// any). If there was such a pair, it could be confused for a tuple. It would also be less readable
+/// when some parameters were tuples/complex expressions.
+///
+/// This does NOT accept closures, since, closures cannot be `unsafe`.
+///
+/// # Possible violations
+/// - Zero arguments. The given expression (which evaluates to the function to be called) is
+///   `unsafe.`
+/// - Some arguments. The given expression (which evaluates to the function to be called) is
+///   `unsafe.`
+///
+/// ## Zero arguments
+/// The given expression (which evaluates to the function to be called) is `unsafe.`
 #[doc(hidden)]
 #[macro_export]
 macro_rules! internal_prudent_unsafe_fn {
@@ -74,11 +94,7 @@ macro_rules! internal_prudent_unsafe_fn {
     };
 }
 
-// Such aliases are needed: https://github.com/rust-lang/rust/pull/52234#issuecomment-976702997
-//
-// pub use internal_prudent_unsafe_fn as internal_prudent_unsafe_fn_;
-//
-// OR:
+// These reexports are needed: https://github.com/rust-lang/rust/pull/52234#issuecomment-976702997
 pub use internal_prudent_unsafe_fn;
 
 /// INTERNAL. Do NOT use directly - subject to change.
@@ -209,6 +225,7 @@ macro_rules! internal_prudent_unsafe_method {
                     };
                     //
                     let mref = ::prudent::unlinted::shared_to_mut(rref);
+                    #[allow(unused_mut)]
                     let mut owned_receiver = ::core::mem::replace(mref, unsafe{ ::core::mem::zeroed() });
                     // Detect code where unsafe_fn! or unsafe_method! is not needed at all. That is,
                     // where a function/method used to be `unsafe`, but it stopped being so.

@@ -28,27 +28,6 @@ const _VERIFY_MODULE_PATH: () = {
 #[allow(unused)]
 pub use crate::linted_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 
-/// # unsafe_fn
-/// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
-/// - If `$fn`, that is, the function itself, is NOT given as an identifier/qualified path, but it's
-///   given as an expression, then this expression is treated as if evaluated **outside** `unsafe
-///   {...}`.
-/// - Any arguments passed in as expressions are treated as if evaluated **outside** `unsafe {...}`.
-///
-/// There is **no** extra enclosing pair of parenthesis `(...)` around the list of arguments (if
-/// any). If there was such a pair, it could be confused for a tuple. It would also be less readable
-/// when some parameters were tuples/complex expressions.
-///
-/// This does NOT accept closures, since, closures cannot be `unsafe`.
-///
-/// # Possible violations
-/// - Zero arguments. The given expression (which evaluates to the function to be called) is
-///   `unsafe.`
-/// - Some arguments. The given expression (which evaluates to the function to be called) is
-///   `unsafe.`
-///
-/// ## Zero arguments
-/// The given expression (which evaluates to the function to be called) is `unsafe.`
 /// ```compile_fail
 /// // @TODO Docs: at your crate's top level, use either self::prudent, or crate:;prudent (but NOT
 /// // just prudent, which will fail, fortunately).
@@ -61,17 +40,14 @@ pub use crate::linted_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// ```
 /// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`
 /// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
 /// ```
 /// The target function is safe, hence no need for `unsafe_fn`. Zero args.
 /// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/zero_args.rs")]
 /// ```
 /// The target function is safe, hence no need for `unsafe_fn`. Some args.
 /// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
 /// ```
 /// test cfg test:
@@ -137,7 +113,6 @@ pub use crate::linted_untested::internal_prudent_unsafe_fn;
 // Even though the following constant is "pub", it will **not** be a part of the public API, neither
 // a part of the documentation - it's used for doctest only.
 /// ```compile_fail,E0133
-///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
 /// ```
 #[cfg(doctest)]
