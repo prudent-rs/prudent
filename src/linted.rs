@@ -1,6 +1,6 @@
 #[doc(hidden)]
 #[allow(unused)]
-pub const INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
+pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
 
 // Implementation notes ARE a part of the documentation:
 // - Otherwise it's a pain to edit them/render them in VS Code. Yes, that matters.

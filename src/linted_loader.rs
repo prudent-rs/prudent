@@ -171,7 +171,7 @@ macro_rules! load {
             $crate::reexport_non_macros!( super::internal_prudent_linted_loaded_or_aliased );
         }
         const _VERIFY_VERSION: () = {
-            ::prudent::unlinted::verify_linted_version( self::INTERNAL_LINTED_VERSION );
+            ::prudent::unlinted::verify_linted_version( self::PRUDENT_INTERNAL_LINTED_VERSION );
         };
     }
 }
@@ -212,13 +212,13 @@ macro_rules! reexport_macros {
 /// NOT a part of public API - internal.
 #[doc(hidden)]
 #[macro_export]
-// `cargo fmt` removes `{` and `}` around INTERNAL_LINTED_VERSION, which fails to compile. See
+// `cargo fmt` removes `{` and `}` around PRUDENT_INTERNAL_LINTED_VERSION, which fails to compile. See
 // https://github.com/rust-lang/rustfmt/issues/6047.
 #[rustfmt::skip]
 macro_rules! reexport_non_macros {
     ($linted_path:path) => {
         #[allow(unused)]
-        pub use $linted_path::{INTERNAL_LINTED_VERSION};
+        pub use $linted_path::{PRUDENT_INTERNAL_LINTED_VERSION};
 
         #[allow(unused)]
         pub use ::prudent::unlinted::*;
