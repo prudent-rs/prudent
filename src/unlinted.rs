@@ -1,4 +1,4 @@
-//! "Unlinted" ("back end") functionality:
+//! "Unlinted" functionality (anything else than linted macros)
 //! - macros that don't need `warn/deny/forbid/allow/expect` lint rules
 //! - non-macro functionality.
 

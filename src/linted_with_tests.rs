@@ -1,3 +1,11 @@
+//! Linted macros.
+//!
+//! Implementation notes ARE a part of the documentation:
+//! - Users deserve documentation of **how** a macro works, because
+//!   - macros are much more difficult to read than Rust non-macro code, and
+//!   - macros inject code, so they are not as sandboxed/isolated as non-macro code.
+//! - Otherwise it's a pain to edit them/render them in VS Code. Yes, that matters.
+
 // This separate module exists to workaround the issue of no lint control in cross-crate macro_rules
 // https://github.com/rust-lang/rust/issues/110613). Without this separate file we got (when
 // "linted" used to be called "front_end"):
@@ -12,7 +20,7 @@ error: circular modules: src/internal_front_end.rs -> src/internal_front_end.rs
 const _VERIFY_MODULE_PATH: () = {
     let path = core::module_path!().as_bytes();
     if !matches!(path, b"prudent::linted") {
-        panic!("Do NOT load linted_tests.rs in other crates. It's internal in prudent only.");
+        panic!("Do NOT load linted_with_tests.rs in other crates. It's internal in prudent only.");
     }
 };
 
@@ -21,14 +29,33 @@ const _VERIFY_MODULE_PATH: () = {
 pub use crate::linted_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 
 /// # unsafe_fn
+/// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
+/// - If `$fn`, that is, the function itself, is NOT given as an identifier/qualified path, but it's
+///   given as an expression, then this expression is treated as if evaluated **outside** `unsafe
+///   {...}`.
+/// - Any arguments passed in as expressions are treated as if evaluated **outside** `unsafe {...}`.
 ///
-/// Zero arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
+/// There is **no** extra enclosing pair of parenthesis `(...)` around the list of arguments (if
+/// any). If there was such a pair, it could be confused for a tuple. It would also be less readable
+/// when some parameters were tuples/complex expressions.
+///
+/// This does NOT accept closures, since, closures cannot be `unsafe`.
+///
+/// # Possible violations
+/// - Zero arguments. The given expression (which evaluates to the function to be called) is
+///   `unsafe.`
+/// - Some arguments. The given expression (which evaluates to the function to be called) is
+///   `unsafe.`
+///
+/// ## Zero arguments
+/// The given expression (which evaluates to the function to be called) is `unsafe.`
 /// ```compile_fail
 /// // @TODO Docs: at your crate's top level, use either self::prudent, or crate:;prudent (but NOT
 /// // just prudent, which will fail, fortunately).
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
 /// ```
-/// Some arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
+/// ## Some arguments
+/// The given expression (which evaluates to the function to be called) is `unsafe.`
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
 /// ```
@@ -94,7 +121,6 @@ pub use crate::linted_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 ///     unsafe_fn!( return_same_mut_ref, &mut marray )[0] = true;
 /// }
 /// ```
-/// TODO docs about tuple tree
 #[doc(inline)]
 pub use crate::linted_untested::internal_prudent_unsafe_fn;
 
@@ -153,25 +179,22 @@ pub use crate::linted_untested::internal_prudent_unsafe_fn_internal_access_tuple
 //----------------------
 
 /// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
 /// ```
 ///
 /// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
 /// ```
 ///
 /// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
 /// ```
 ///
 /// ```compile_fail
-///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/zero_args.rs")]
 /// ```
-///
+#[allow(clippy::useless_attribute)]
+#[allow(clippy::needless_doctest_main)]
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
 /// ```
@@ -205,6 +228,8 @@ pub use crate::linted_untested::internal_prudent_unsafe_method_internal_check_ar
 pub use crate::linted_untested::internal_prudent_unsafe_method_internal_build_accessors_check_args_call;
 //----------------------
 
+#[allow(clippy::useless_attribute)]
+#[allow(clippy::needless_doctest_main)]
 /// ```
 /// ::prudent::load!(any: "linted.rs");
 /// use self::prudent::*;

@@ -1,31 +1,11 @@
+// For docs see linted_with_tests.rs
+#![allow(missing_docs)]
+
 #[doc(hidden)]
 #[allow(unused)]
 pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
 
-// Implementation notes ARE a part of the documentation:
-// - Otherwise it's a pain to edit them/render them in VS Code. Yes, that matters.
-// - Users deserve documentation of how a macro works, because
-//   - macros are much more difficult to read than Rust non-macro code, and
-//   - macros inject code, so they are not as sandboxed/isolated as non-macro code.
-//
-
-/// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
-/// - If `$fn`, that is, the function itself, is NOT given as an identifier/qualified path, but it's
-///   given as an expression, then this expression is treated as if evaluated **outside** `unsafe
-///   {...}`.
-/// - Any arguments passed in as expressions are treated as if evaluated **outside** `unsafe {...}`.
-///
-/// There is **no** extra enclosing pair of parenthesis `(...)` around the list of arguments (if
-/// any). If there was such a pair, it could be confused for a tuple. It would also be less readable
-/// when some parameters were tuples/complex expressions.
-///
-/// This does NOT accept closures, since, closures cannot be `unsafe`.
-///
-/// # Possible violations
-/// - Zero arguments. The given expression (which evaluates to the function to be called) is
-///   `unsafe.`
-/// - Some arguments. The given expression (which evaluates to the function to be called) is
-///   `unsafe.`
+#[doc(hidden)]
 #[macro_export]
 macro_rules! internal_prudent_unsafe_fn {
     ( $fn:expr $(, $arg:expr)+ ) => {
