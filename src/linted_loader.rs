@@ -210,9 +210,10 @@ macro_rules! reexport_macros {
 
 #[doc(hidden)]
 #[macro_export]
+// otherwise `cargo fmt` removes `{` and `}` around INTERNAL_LINTED_VERSION, which fails to compile.
+#[rustfmt::skip]
 macro_rules! reexport_non_macros {
     ($linted_path:path) => {
-        #[rustfmt::skip] // otherwise `cargo fmt` changes this to $linted_path::INTERNAL_LINTED_VERSION, which fails to compile.
         #[allow(unused)]
         pub use $linted_path::{INTERNAL_LINTED_VERSION};
 
