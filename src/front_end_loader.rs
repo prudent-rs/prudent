@@ -17,7 +17,7 @@ macro_rules! load {
         /// prudent exported in a module
         mod $module_name {
             use ::prudent::internal_front_end::*;
-            $crate::reexport_macros!();
+            $crate::reexport_macros!(crate);
             $crate::reexport_non_macros!( ::prudent::internal_front_end );
         }
     };// -----------
@@ -152,14 +152,14 @@ macro_rules! load {
             //
             // $crate::reexport_macros!( crate );
 
-            #[cfg(any( $( $cfg_filter )* ))]
-            //#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
-            #[allow(unused)]
-            use crate::*;
+            //#[cfg(any( $( $cfg_filter )* ))]
+            ////#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
+            //#[allow(unused)]
+            //use crate::*;
 
-            #[cfg(not(any( $( $cfg_filter )* )))]
-            #[allow(unused)]
-            use ::prudent::internal_front_end::*;
+            //#[cfg(not(any( $( $cfg_filter )* )))]
+            //#[allow(unused)]
+            //use ::prudent::internal_front_end::*;
 
             //$crate::reexport_macros!();
             //#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
@@ -169,7 +169,9 @@ macro_rules! load {
             //pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn_ as unsafe_fn;
             //
             // OR:
-            pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn as unsafe_fn;
+
+            $crate::reexport_macros!(super::internal_prudent_front_end_loaded_or_aliased);
+            //pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn as unsafe_fn;
 
             $crate::reexport_non_macros!( super::internal_prudent_front_end_loaded_or_aliased );
         }
@@ -184,14 +186,14 @@ macro_rules! load {
                 : $prudent_front_end
             );*/
 
-            #[cfg(any( $( $cfg_filter )* ))]
-            //#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
-            #[allow(unused)]
-            use crate::*;
+            //#[cfg(any( $( $cfg_filter )* ))]
+            ////#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
+            //#[allow(unused)]
+            //use crate::*;
 
-            #[cfg(not(any( $( $cfg_filter )* )))]
-            #[allow(unused)]
-            use ::prudent::internal_front_end::*;
+            //#[cfg(not(any( $( $cfg_filter )* )))]
+            //#[allow(unused)]
+            //use ::prudent::internal_front_end::*;
 
             //$crate::reexport_macros!();
             //#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
@@ -201,7 +203,8 @@ macro_rules! load {
             //pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn_ as unsafe_fn;
             //
             // OR:
-            pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn as unsafe_fn;
+            $crate::reexport_macros!(super::internal_prudent_front_end_loaded_or_aliased);
+            //pub use super::internal_prudent_front_end_loaded_or_aliased::internal_prudent_unsafe_fn as unsafe_fn;
 
             $crate::reexport_non_macros!( super::internal_prudent_front_end_loaded_or_aliased );
         }
@@ -241,12 +244,16 @@ macro_rules! load_module_content {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! reexport_macros {
-    () => {
+    ($path:path) => {
         //pub use internal_prudent_unsafe_fn as unsafe_fn;
         #[allow(unused)]
-        pub use {
+        pub use $path::{
         //pub use crate::{
-            //internal_prudent_unsafe_fn as unsafe_fn,
+            internal_prudent_unsafe_fn as unsafe_fn,
+            // Without re-exporting all internal macros, we hit
+            // https://github.com/rust-lang/rust/issues/52234. The consumer crate would have to
+            // `#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]`, which is NOT
+            // future-compatible!
             internal_prudent_unsafe_fn_internal_build_tuple_tree as unsafe_fn_internal_build_tuple_tree,
             internal_prudent_unsafe_fn_internal_build_accessors_and_call as unsafe_fn_internal_build_accessors_and_call,
             internal_prudent_unsafe_fn_internal_access_tuple_tree_field as unsafe_fn_internal_access_tuple_tree_field,

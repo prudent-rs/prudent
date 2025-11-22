@@ -1,4 +1,5 @@
-use prudent::unsafe_method;
+::prudent::load!("internal_front_end.rs");
+use self::prudent::*;
 
 fn main() {
     #[allow(unused_unsafe)]

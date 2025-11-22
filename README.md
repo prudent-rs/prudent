@@ -43,7 +43,8 @@ const _: u8 = unsafe_fn!(unsafe_fn_two_args, true, 0);
 # unsafe_method
 ## unsafe_method > self: shared reference
 ```rust
-# use prudent::unsafe_method;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 // Works for Copy types
 const _: u8 = unsafe_method!(1u8, unchecked_add, 0);
 //const _: u8 = unsafe_method!(({#[forbid(unused)] let v = 1u8; v}), unchecked_add, 0);
@@ -71,7 +72,8 @@ let _todo = ();
 ```
 
 ```rust
-# use prudent::unsafe_method;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 struct SNonCopy {}
 impl SNonCopy {
     fn unsafe_method_no_args(&self) {}
@@ -88,7 +90,8 @@ unsafe_method!(s, unsafe_method_two_args, true, false);
 
 ## unsafe_method > self: mutable reference
 ```rust
-# use prudent::unsafe_method;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 struct SNonCopy {}
 impl SNonCopy {
     fn unsafe_method_no_args(&mut self) {}
@@ -104,7 +107,8 @@ unsafe_method!(s, unsafe_method_two_args, true, false);
 
 ## unsafe_method > self: by value
 ```rust
-# use prudent::unsafe_method;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 {
     struct SNonCopy {}
     impl SNonCopy {
@@ -135,7 +139,8 @@ unsafe_method!(s, unsafe_method_two_args, true, false);
 # unsafe_ref
 ## unsafe_ref - one arg, basic reference
 ```rust
-# use prudent::unsafe_ref;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -145,7 +150,8 @@ let _ = unsafe_ref!(PT);
 
 ## unsafe_ref - one arg, slice
 ```rust
-# use prudent::unsafe_ref;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
@@ -155,7 +161,8 @@ let _ = unsafe_ref!(PT);
 
 ## unsafe_ref - one arg, dyn reference
 ```rust
-# use prudent::unsafe_ref;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 # use core::fmt::Display;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
@@ -165,7 +172,8 @@ const _: &dyn Display = unsafe_ref!(PT);
 
 ## unsafe_ref - two args, lifetimed reference
 ```rust
-# use prudent::unsafe_ref;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -175,7 +183,8 @@ let _ = unsafe_ref!(PT, 'static);
 
 ## unsafe_ref - two args, lifetimed dyn reference
 ```rust
-# use prudent::unsafe_ref;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 # use core::fmt::Display;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
@@ -185,7 +194,8 @@ const _: &'static dyn Display = unsafe_ref!(PT, 'static);
 
 ## unsafe_ref - two args, lifetimed slice
 ```rust
-# use prudent::unsafe_ref;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
@@ -195,7 +205,8 @@ let _ = unsafe_ref!(PT, 'static);
 
 ## unsafe_ref - two args, typed basic reference
 ```rust
-# use prudent::unsafe_ref;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -205,7 +216,8 @@ let _ = unsafe_ref!(PT, bool);
 
 ## unsafe_ref - two args, typed slice
 ```rust
-# use prudent::unsafe_ref;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
@@ -215,7 +227,8 @@ let _ = unsafe_ref!(PT, [bool]);
 
 ## unsafe_ref - two args, typed dyn reference
 ```rust
-# use prudent::unsafe_ref;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 # use core::fmt::Display;
 const B: bool = true;
 const PT: *const dyn Display = &B as *const dyn Display;
@@ -228,7 +241,8 @@ let _ = unsafe_ref!(PT, dyn Display);
 # unsafe_mut
 ## unsafe_mut - one arg, basic reference
 ```rust
-# use prudent::unsafe_mut;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 let mut b: bool = true;
 let pt: *mut bool = &mut b as *mut bool;
 
@@ -238,7 +252,8 @@ let _ = unsafe_mut!(pt);
 
 ## unsafe_mut - one arg, slice
 ```rust
-# use prudent::unsafe_mut;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 let mut bs: [bool; 2] = [true, false];
 let pt: *mut [bool] = &mut bs as *mut [bool];
 
@@ -248,7 +263,8 @@ let _ = unsafe_mut!(pt);
 
 ## unsafe_mut - one arg, dyn reference
 ```rust
-# use prudent::unsafe_mut;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 # use core::fmt::Display;
 let mut b: bool = true;
 let pt: *mut bool = &mut b as *mut bool;
@@ -259,7 +275,8 @@ let _: &dyn Display = unsafe_mut!(pt);
 
 ## unsafe_mut - two args, lifetimed reference
 ```rust
-# use prudent::unsafe_mut;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 let b: &'static mut bool = Box::leak( Box::new(true) );
 let pt: *mut bool = b as *mut bool;
 
@@ -270,7 +287,8 @@ let _ = unsafe_mut!(pt, 'static);
 
 ## unsafe_mut - two args, lifetimed dyn reference
 ```rust
-# use prudent::unsafe_mut;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 # use core::fmt::Display;
 let b: &'static mut bool = Box::leak( Box::new(true) );
 let pt: *mut bool = b as *mut bool;
@@ -282,7 +300,8 @@ let _ = unsafe_mut!(pt, 'static);
 
 ## unsafe_mut - two args, lifetimed slice
 ```rust
-# use prudent::unsafe_mut;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
 let pt: *mut [bool] = bs as *mut [bool];
 
@@ -293,7 +312,8 @@ let _ = unsafe_mut!(pt, 'static);
 
 ## unsafe_mut - two args, typed basic reference
 ```rust
-# use prudent::unsafe_mut;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 let mut b: bool = true;
 let pt: *mut bool = &mut b as *mut bool;
 
@@ -303,7 +323,8 @@ let _ = unsafe_mut!(pt, bool);
 
 ## unsafe_mut - two args, typed slice
 ```rust
-# use prudent::unsafe_mut;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
 let pt: *mut [bool] = bs as *mut [bool];
 
@@ -314,7 +335,8 @@ let _ = unsafe_mut!(pt, [bool]);
 
 ## unsafe_mut - two args, typed dyn reference
 ```rust
-# use prudent::unsafe_mut;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 # use core::fmt::Display;
 let mut b: bool = true;
 let pt: *mut dyn Display = &mut b as *mut dyn Display;
@@ -332,7 +354,8 @@ Only for types that implement/derive [core::marker::Copy].
 
 ## unsafe_val - one arg, basic
 ```rust
-# use prudent::unsafe_val;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -342,7 +365,8 @@ let _ = unsafe_val!(PT);
 
 ## unsafe_val - two args, typed
 ```rust
-# use prudent::unsafe_val;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -352,7 +376,8 @@ let _ = unsafe_val!(PT, bool);
 
 # unsafe_set
 ```rust
-# use prudent::unsafe_set;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 let mut b: bool = true;
 let pt: *mut bool = &mut b as *mut bool;
 
@@ -361,7 +386,8 @@ unsafe_set!(pt, true);
 ```
 
 ```rust
-# use prudent::unsafe_set;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 struct SNonCopy {}
 let mut s: SNonCopy = SNonCopy {};
 let pt: *mut SNonCopy = &mut s as *mut SNonCopy;
@@ -374,7 +400,8 @@ unsafe_set!(pt, setFrom);
 
 # unsafe_static_set
 ```rust
-# use prudent::unsafe_static_set;
+::prudent::load!("internal_front_end.rs");
+# use self::prudent::*;
 static mut B: bool = true;
 
 unsafe_static_set!(B, false);
@@ -485,6 +512,12 @@ Please contribute, or at least give thumbs up, to:
 ## Related issues
 - [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) Forbidding lints doesn't
   really work in macros
+- [rust-lang/rust#148942](https://github.com/rust-lang/rust/issues/148942) cfg(test) is not set
+  within the test code while compiling doctests
+- [rust-lang/rust#56232](https://github.com/rust-lang/rust/issues/56232) Oh rust doctest lints,
+  where art þou? (Add a way to run clippy on doctests)
+- [rust-lang/rust#127893](https://github.com/rust-lang/rust/issues/127893) doctest line number is
+  incorrect if used with #![doc = include_str!()]
 - [rust-lang/rust#39412](https://github.com/rust-lang/rust/issues/39412) declarative macros 2.0
 - [rust-lang/rust#65860](https://github.com/rust-lang/rust/issues/65860) Re-land early syntax feature gating
 - [rust-lang/rust#15701](https://github.com/rust-lang/rust/issues/15701) attributes on expressions

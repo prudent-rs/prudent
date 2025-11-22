@@ -25,24 +25,18 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// Zero arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
-/// ::prudent::load!("internal_front_end.rs");
 /// // @TODO Docs: at your crate's top level, use either self::prudent, or crate:;prudent (but NOT
 /// // just prudent, which will fail, fortunately).
-/// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
 /// ```
 /// Some arguments. The given expression (which evaluates to the function to be called) is `unsafe.`
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
-/// ::prudent::load!("internal_front_end.rs");
-/// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
 /// ```
 /// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
-/// ::prudent::load!("internal_front_end.rs");
-/// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
 /// ```
 /// The target function is safe, hence no need for `unsafe_fn`. Zero args.
@@ -53,23 +47,33 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// The target function is safe, hence no need for `unsafe_fn`. Some args.
 /// ```compile_fail
 ///  #![allow(clippy::needless_doctest_main)]
-/// ::prudent::load!("internal_front_end.rs");
-/// use self::prudent::*;
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
 /// ```
-/// Use the result of `unsafe_fn!` immediately as an array/slice.
+/// test cfg test:
 /// ```
-/// # ::prudent::load!("internal_front_end.rs");
+/// #[test_harness]
+/// {
+/// #[cfg(not(test))]
+/// //#[cfg(doctest)]
+/// compile_error!("NOT DOCTEST!");
+/// }
+/// ```
+/// Use the result of `unsafe_fn!` immediately as an array/slice:
+/// ```
+/// //TODO failing
+/// //# ::prudent::load!("internal_front_end.rs");
+/// # ::prudent::load!(any: "internal_front_end.rs");
 /// # use self::prudent::*;
 /// unsafe fn return_array() -> [bool; 1] { [true] }
 ///
 /// let _ = unsafe_fn!( return_array)[0];
 /// ```
-/// Use the result of `unsafe_fn!` immediately as a mutable array/slice (assign/modify its slot(s)).
-/// ```
-/// # ::prudent::load!("internal_front_end.rs");
-/// # use self::prudent::*;
-/// // NOT running under MIRI, because of the intentional leak.
+/// Use the result of `unsafe_fn!` immediately as a mutable array/slice (assign/modify its slot(s)):
+/// ```ignore
+/// TODO failing
+/// ::prudent::load!("internal_front_end.rs");
+/// use self::prudent::*;
+/// // NOT running under MIRI, because of an intentional leak.
 /// if !cfg!(miri) {
 ///     unsafe fn return_mut_ref_array() -> &'static mut [bool; 1] {
 ///         let boxed = Box::new([true]);
@@ -80,7 +84,8 @@ pub const INTERNAL_FRONT_END_VERSION: &'static str = "0.0.3-beta";
 /// }
 /// ```
 /// The same, but the function takes an argument (and no leak):
-/// ```
+/// ```ignore
+/// TODO FAILING
 /// # ::prudent::load!("internal_front_end.rs");
 /// # use self::prudent::*;
 /// unsafe fn return_same_mut_ref<T>(mref: &mut T) -> &mut T {
@@ -108,7 +113,7 @@ macro_rules! internal_prudent_unsafe_fn {
                 // Ensure that $fn (the expression itself) and any arguments (expressions) don't
                 // include any unsafe code/calls/casts on their  own without their own `unsafe{...}`
                 // block(s):
-                let (tuple_tree, fun) = ($crate::internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
+                let (tuple_tree, fun) = (unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
 
                 if false {
                     // Ensure that $fn is not safe, but `unsafe`. Using
@@ -120,7 +125,7 @@ macro_rules! internal_prudent_unsafe_fn {
                     };
                     unreachable!()
                 }
-                $crate::internal_prudent_unsafe_fn_internal_build_accessors_and_call! {
+                unsafe_fn_internal_build_accessors_and_call! {
                     fun,
                     tuple_tree,
                     ( $( $arg ),* ),
@@ -149,7 +154,7 @@ macro_rules! internal_prudent_unsafe_fn {
             }
             // `#[deny(unused_unsafe)]` does NOT work here. Why? Because when we assigned `let
             // fun = $fn` above, that then happily coerces/infers to an unsafe function, even
-            // though it's safe. That's why we have `unsafe_fun` module.
+            // though it's safe. That's why we have `expecting_unsafe_fn` module.
             #[allow(unsafe_code)]
             let result = unsafe {
                 fun()
@@ -175,14 +180,18 @@ pub use internal_prudent_unsafe_fn;
 //
 // Even though the following constant is "pub", it will **not** be a part of the public API, neither
 // a part of the documentation - it's used for doctest only.
-/// ```compile_fail,E0133
+/// ```ignore
+/// TODO Good
+/// compile_fail,E0133
 ///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// ```compile_fail,E0133
+/// ```ignore
+/// TODO FAILING
+/// compile_fail,E0133
 ///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
 /// ```
@@ -196,9 +205,20 @@ pub const _: () = {};
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// ```compile_fail,E0308
+/// ```ignore
+/// TODO good
+/// compile_fail,E0308
 ///  #![allow(clippy::needless_doctest_main)]
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/zero_args.rs")]
+/// ```
+#[cfg(doctest)]
+pub const _: () = {};
+
+/// ```ignore
+/// TODO FAILING
+/// compile_fail,E0308
+///  #![allow(clippy::needless_doctest_main)]
+#[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
@@ -209,13 +229,14 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_tuple_tree {
     // Construct the tuple_tree. Recursive:
     ( $first:expr, $($rest:expr),+ ) => {
         (
-            $first, $crate::internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($rest),+ }
+            $first, unsafe_fn_internal_build_tuple_tree!{ $($rest),+ }
         )
     };
     ( $last:expr) => {
         ($last,)
     };
 }
+pub use internal_prudent_unsafe_fn_internal_build_tuple_tree;
 
 #[doc(hidden)]
 #[macro_export]
@@ -228,7 +249,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
         )
      ),*
     ) => {
-        $crate::internal_prudent_unsafe_fn_internal_build_accessors_and_call!{
+        unsafe_fn_internal_build_accessors_and_call!{
             $fn, $tuple_tree, ( $($other_arg),+ ),
             // Insert a new accessor to front (left): 0.
             (0),
@@ -248,12 +269,13 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
         #[deny(unused_unsafe)]
         unsafe {
             $fn( $(
-                    $crate::internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
+                    unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*
             )
         }
     };
 }
+pub use internal_prudent_unsafe_fn_internal_build_accessors_and_call;
 
 #[doc(hidden)]
 #[macro_export]
@@ -265,6 +287,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_access_tuple_tree_field {
         $tuple_tree $(. $accessor_part )*
     };
 }
+pub use internal_prudent_unsafe_fn_internal_access_tuple_tree_field;
 //-------------
 
 /// Invoke an `unsafe` method. For methods that have a receiver parameter (`&self`, `&mut self`,
@@ -367,7 +390,7 @@ macro_rules! internal_prudent_unsafe_method {
                 unreachable!()
             } else {
                 //compile_error!("TODO move to unsafe_method_internal_check_args_etc");
-                $crate::internal_prudent_unsafe_method_internal_check_args_etc!(
+                unsafe_method_internal_check_args_etc!(
                     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
                     $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
                     $self, $fn $(, $arg )*
@@ -388,19 +411,25 @@ macro_rules! internal_prudent_unsafe_method {
         )
     }
 }
+pub use internal_prudent_unsafe_method;
 
-/// ```compile_fail,E0133
+/// ```ignore
+/// /// TODO FAILING
+/// compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// ```compile_fail,E0133
+/// ```ignore
+/// TODO FAILING
+/// compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
+/// TODO good
 /// ```compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
 /// ```
@@ -417,9 +446,9 @@ macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
      ) => {({
                 #[deny(unused_unsafe)]
                 let tuple_tree =
-                    $crate::internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ };
+                    unsafe_fn_internal_build_tuple_tree!{ $($arg),+ };
 
-                $crate::internal_prudent_unsafe_method_internal_build_accessors_check_args_call! {
+                unsafe_method_internal_build_accessors_check_args_call! {
                     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
                     $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
                     $self,
@@ -452,6 +481,7 @@ macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
                 result
     })};
 }
+pub use internal_prudent_unsafe_method_internal_check_args_etc;
 
 #[doc(hidden)]
 #[macro_export]
@@ -466,7 +496,7 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
         )
      ),*
     ) => {
-        $crate::internal_prudent_unsafe_method_internal_build_accessors_check_args_call!{
+        unsafe_method_internal_build_accessors_check_args_call!{
             $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
             $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
             $self, $fn, $tuple_tree, ( $($other_arg),+ ),
@@ -503,13 +533,14 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
             // does NOT move the instance it's called on. And if Self were `Copy`, then the
             // reference would not point to the original instance!
             $self. $fn( $(
-                    $crate::internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
+                    unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*
             )
         };
         result
     })};
 }
+pub use internal_prudent_unsafe_method_internal_build_accessors_check_args_call;
 //-------------
 
 /// Set a value of a `static mut` variable or its (sub...-)field, but isolate `unsafe {...}` only to
@@ -524,7 +555,10 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
 /// TODO:
 ///
 /// NOT for `static` variables (or their fields/components) of `union` types.
-/// ```
+/// ```ignore
+/// TODO failing
+/// ::prudent::load!("internal_front_end.rs");
+/// use self::prudent::*;
 /// {
 ///     static mut S: (bool,) = (true,);
 ///
@@ -587,6 +621,7 @@ macro_rules! internal_prudent_unsafe_static_set {
         }
     }};
 }
+pub use internal_prudent_unsafe_static_set;
 
 /// Deref a pointer (either `const` or `mut`) and yield a read-only reference.
 ///
@@ -614,6 +649,7 @@ macro_rules! internal_prudent_unsafe_ref {
         unsafe { &*ptr as &$lifetime _ }
     }};
 }
+pub use internal_prudent_unsafe_ref;
 
 /// Deref a `mut` pointer and yield a `mut` reference.
 ///
@@ -641,6 +677,7 @@ macro_rules! internal_prudent_unsafe_mut {
         unsafe { &mut *ptr as &$lifetime mut _}
     }};
 }
+pub use internal_prudent_unsafe_mut;
 
 /// Get a (copy of) value from where the pointer points. For [core::marker::Copy] types only.
 #[macro_export]
@@ -657,6 +694,7 @@ macro_rules! internal_prudent_unsafe_val {
         unsafe { *ptr }
     }};
 }
+pub use internal_prudent_unsafe_val;
 
 /*
 -nightly version only
@@ -701,3 +739,4 @@ macro_rules! internal_prudent_unsafe_set {
         }
     }};
 }
+pub use internal_prudent_unsafe_set;

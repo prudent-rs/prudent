@@ -1,6 +1,5 @@
-use prudent::unsafe_method;
-
-prudent::unsafe_method_macro_definition!();
+::prudent::load!("internal_front_end.rs");
+use self::prudent::*;
 
 #[allow(unused_macros)]
 #[macro_export]
