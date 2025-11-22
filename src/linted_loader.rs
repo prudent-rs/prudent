@@ -171,7 +171,7 @@ macro_rules! load {
             $crate::reexport_non_macros!( super::internal_prudent_linted_loaded_or_aliased );
         }
         const _VERIFY_VERSION: () = {
-            ::prudent::unlinted::verify_linted_version( self::PRUDENT_INTERNAL_LINTED_VERSION );
+            ::prudent::unlinted::verify_linted_version( $module_name::PRUDENT_INTERNAL_LINTED_VERSION );
         };
     }
 }

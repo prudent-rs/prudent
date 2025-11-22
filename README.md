@@ -10,28 +10,35 @@ results](https://github.com/peter-lyons-kehl/prudent/actions/workflows/main.yml/
 - zero-cost (for binary size, speed and memory), checked in compile time
 
 # const-friendly
-Results of `prudent`'s macro invocations are `const` (if the original invocation would also be
-`const`).
+Results of `prudent`'s macro invocations are `const` (if the original invocation/expression would
+also be `const`).
 
-# Loading and lints
-If your crate already uses `prudent` identifier, you can choose a different identifier for `prudent`'s top-level module.
+# Lints, loading and  import
+Because of some Rust annoyances (more below), a part of this crate needs to be "loaded". (That is
+__not__ dynamic, but it's done at compile time.)
+
+If your crate already uses `prudent` identifier,
+you can choose a different identifier for `prudent`'s top-level module.
 
 If you want to apply lints to the macro-generated code (highly recommended), your crate needs to
 contain/refer to `prudent's` file [src/linted.rs](src/linted.rs), which you "load" with
 `::prudent::load!(...)`.
 
-
-# Temporary annoyance
-`prudent` is badly affected by lack of lint control in macros:
-[rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) - please give it thumbs up.
-The pains (that pend [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613)):
-- [`prudent`'s documentation on docs.rs](<https://docs.rs/prudent/latest/prudent/) shows code
-  examples first, and only then documentation text (prose).
-- You need a wildcard import `use crate::prudent::*` - not an import of just the specific "top
+`use crate::prudent::*` - not an import of just the specific "top
   level" (client code-facing) macro(s) that you invoke. That is regardless of whether you apply the
   lints (and hence your include [src/linted.rs](src/linted.rs)) or not. (At the top level of your
   crate you could `use self::prudent::*` instead, but that will not work in your modules - while
   `use crate::prudent::*` works everywhere).
+
+# Annoyances
+## Rust annoyances
+`prudent` is badly affected by lack of lint control in macros:
+[rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) - please give it thumbs up.
+The pains (that pend [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613)):
+- [`prudent`'s documentation on docs.rs](https://docs.rs/prudent/latest/prudent/) shows code
+  examples first, and only then documentation text (prose).
+- You need a wildcard import `use crate::prudent::*` - not just import a specific "top
+  level" (client code-facing) macro(s) that you invoke.
   
   It's not enough to import just specific macros that you invoke (because the internal "linted"
   macros are loaded in your crate's namespace, and hence they can't use `$crate` metavariable to
@@ -39,17 +46,34 @@ The pains (that pend [rust-lang/rust#110613](https://github.com/rust-lang/rust/i
 - In doctests
   - load with `any:` like `::prudent::load!(any: "linted.rs");`
   - import with `use crate::prudent::*;` which you put outside of your `fn main()`
-  - have `fn main()` - do not have the test "logic" at the top level, otherwise rustdoc/doctest mechanism automatically puts the whole doctest code inside `fn main()`, which will include `::prudent::load!(...)` and `use self::prudent::*`, which will fail with very strange errors.
+  - have `fn main()` - do not have the test "logic" at the top level, otherwise rustdoc/doctest mechanism automatically puts the whole doctest code inside `fn main()`, which will include `::prudent::load!(...)` and `use crate::prudent::*`, which will fail with very strange errors.
 
 ## Limitation of lint control for unsafe_method
 `unsafe_method` (normally accessed as `crate::prudent::unsafe_method`)
 
-# API and examples
-All the following examples are also run as
-[doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html).
+# Quality assurance
 
-For negative examples, which catch unintended `unsafe` functions/expressions, see documentation of
-each `prudent` macro.
+Checks and tests are run by [GitHub Actions]. See
+[results](https://github.com/peter-lyons-kehl/prudent/actions). All tests <!--scripts--> run on
+Alpine Linux (without `libc`, in a `rust:1.87-alpine` container)<!-- and are POSIX-compliant-->:
+
+- `rustup component add clippy rustfmt`
+- `cargo clippy`
+- `cargo fmt --check`
+- `cargo doc --no-deps --quiet`
+- `cargo test`
+- `cargo test --release`
+- with [`MIRI`]
+  - `rustup install nightly --profile minimal`
+  - `rustup +nightly component add miri`
+  - `cargo +nightly miri test`
+
+# API and examples
+All of the above tests are also a part of
+[doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html). Following are all the positive examples.
+
+For negative examples, which catch unintended `unsafe` functions/expressions/access, see
+documentation of each `prudent` macro.
 
 # unsafe_fn
 ```rust
@@ -521,16 +545,6 @@ However,
 <!-- # Details -->
 <!-- ## Problem -->
 
-## Scope
-
-Rust is a rich language and it allows complex statements/expressions. `prudent` tries to be
-flexible, but it also needs to be manageable and testable. So, there may be code that `prudent`
-doesn't accept (please do report it). Most likely if it involves advanced pattern matching.
-
-`prudent` is to help you make `unsafe` code stand out more. Mixing `unsafe` with advanced pattern
-matching or other complex syntax may sound exciting, but it makes reading the code difficult. Can
-that be an opportunity to refactor?
-
 # Compatibility
 
 `prudent` is `no-std`-compatible.
@@ -548,29 +562,23 @@ That allows you to specify `prudent` as a dependency with version `0.*`, which w
 This is special only to `0.*` - it is **not** possible to have a wildcard matching various **major**
 versions `1.0` or higher.
 
+# Scope
+
+## Not supported: pattern matching with prudent macros
+Rust is a rich language and it allows complex statements/expressions. `prudent` tries to be
+flexible, but it also needs to be manageable and testable. So, there may be code that `prudent`
+doesn't accept (please do report it). Most likely if it involves advanced pattern matching.
+
+`prudent` is to help you make `unsafe` code stand out more. Mixing `unsafe` with advanced pattern
+matching or other complex syntax may sound exciting, but it makes reading the code difficult. Can
+that be an opportunity to refactor?
+
 ## Not supported: Procedural macros with side effects
 Several `prudent` macros duplicate their expression "parameter". In the generated Rust code the parameter expression is evaluated only once, but it's present in the code twice - once in an inactive `if false {...}` branch for verification, and once in the following active `else {...}` branch.
 
 That is OK with macros by example (defined with `macro_rules!`), and OK with any well-behaving
 procedural macros. However, if you pass in an expression that invokes a procedural macro that has
 side effects or state, it's your problem. Such a macro contradicts Rust guidelines.
-
-# Quality assurance
-
-Checks and tests are run by [GitHub Actions]. See
-[results](https://github.com/peter-lyons-kehl/prudent/actions). All tests <!--scripts--> run on
-Alpine Linux (without `libc`, in a `rust:1.87-alpine` container)<!-- and are POSIX-compliant-->:
-
-- `rustup component add clippy rustfmt`
-- `cargo clippy`
-- `cargo fmt --check`
-- `cargo doc --no-deps --quiet`
-- `cargo test`
-- `cargo test --release`
-- with [`MIRI`]
-  - `rustup install nightly --profile minimal`
-  - `rustup +nightly component add miri`
-  - `cargo +nightly miri test`
 
 # Updates
 

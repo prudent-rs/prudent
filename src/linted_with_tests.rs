@@ -207,7 +207,7 @@ pub use crate::linted_untested::internal_prudent_unsafe_method_internal_build_ac
 #[allow(clippy::needless_doctest_main)]
 /// ```
 /// ::prudent::load!(any: "linted.rs");
-/// use self::prudent::*;
+/// //use self::prudent::*;
 /// fn main() {
 /// {
 ///     static mut S: (bool,) = (true,);
