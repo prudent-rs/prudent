@@ -132,7 +132,6 @@ macro_rules! load {
         #[allow(unused)]
         pub use ::prudent::linted as internal_prudent_linted_loaded_or_aliased;
 
-        #[cfg(any( $( $cfg_filter )* ))]
         mod $module_name {
             /*$crate::load_module_content!(
                 ( $( $cfg_filter )* )
@@ -178,29 +177,6 @@ macro_rules! load {
     }
 }
 
-/// Shared functionality between
-/// - public module (for `$[cfg(doctest)]`) - public, because doctests are build in a separate
-///   crate; and
-/// - private module (for $[cfg(test)]` or "any" builds).
-///
-/// NOT a part of public API - internal.
-#[doc(hidden)]
-#[macro_export]
-macro_rules! load_module_content {
-    (
-        ( $( $cfg_filter:tt )* ) :
-        $prudent_linted:literal
-    ) => {
-        // @TODO const time validation
-        //
-        // #[cfg(any( $( $cfg_filter )* ))]
-        //
-        //include_str! -> substring: first line (a comment with version)
-
-        // `prudent`'s linted macros, loaded into the user's crate
-    };
-}
-
 /// Re-export `linted`_module/path.
 ///
 /// NOT a part of public API - internal.
@@ -236,6 +212,7 @@ macro_rules! reexport_macros {
 #[macro_export]
 macro_rules! reexport_non_macros {
     ($linted_path:path) => {
+        #[rustfmt::skip] // otherwise `cargo fmt` changes this to $linted_path::INTERNAL_LINTED_VERSION, which fails to compile.
         #[allow(unused)]
         pub use $linted_path::{INTERNAL_LINTED_VERSION};
 
