@@ -11,8 +11,7 @@ results](https://github.com/peter-lyons-kehl/prudent/actions/workflows/main.yml/
 - lightweight (no dependencies, no procedural macros, fast build)
 
 # const-friendly
-Results of `prudent`'s macro invocations are `const` if the original invocation would be `const`
-also.
+Results of `prudent`'s macro invocations are `const` if the original invocation would also be `const`.
 
 # API and examples
 All the following examples are also run as

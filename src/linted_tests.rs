@@ -96,7 +96,10 @@ pub fn internal_prudent_unsafe_fn() {}
 // Same `compile_fail` tests as listed above for `unsafe_fn`, but here we validate the error
 // numbers.
 //
-// Error numbers are validated with `cargo +nightly test`, but NOT with
+// Error numbers are validated with `cargo +nightly test`, ([The Rustdoc book > Unstable features >
+// Error numbers for compile-fail
+// doctests](https://doc.rust-lang.org/rustdoc/unstable-features.html#error-numbers-for-compile-fail-doctests))
+// but NOT with
 // - `cargo +stable test` nor
 // - RUSTDOCFLAGS="..." cargo +nightly doc ...
 //
