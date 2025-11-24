@@ -5,30 +5,35 @@ results](https://github.com/peter-lyons-kehl/prudent/actions/workflows/main.yml/
 `prudent` helps you minimize the amount of Rust code that is marked as `unsafe`.
 
 - ergonomic (as much as possible)
-- obvious (easy to search for and review)
-- lightweight (no dependencies, no procedural macros, fast build)
-- zero-cost (for binary size, speed and memory), checked in compile time
+- obvious
+- lightweight (no dependencies, no procedural macros - fast build)
+- zero-cost (for binary size, speed and memory), verified in compile time
 
 # const-friendly
 Results of `prudent`'s macro invocations are `const` (if the original invocation/expression would
 also be `const`).
 
-# Lints, loading and  import
+# Lints, loading and import
+## Lints and loading
 Because of some Rust annoyances (more below), a part of this crate needs to be "loaded". (That is
-__not__ dynamic, but it's done at compile time.)
+_not_ at runtime/dynamic, but it's done at compile time.) You do it only once per your crate
+(usually in `src/lib.rs`):
+- If you want to apply lints to the macro-generated code (which is highly recommended), your crate
+needs to contain/have access to (a copy of) `prudent`'s file [src/linted.rs](src/linted.rs), which
+you "load" with `::prudent::load!(...)`.
+- If you don't need lints, just `::prudent::load()`.
 
-If your crate already uses `prudent` identifier,
-you can choose a different identifier for `prudent`'s top-level module.
+Both ways of `::prudent::load!(...)` create a module, called `prudent` by default. If your crate
+already uses `prudent` identifier, you can choose a different identifier for `prudent`'s top-level
+module (by passing an optional "parameter" to `::prudent::load!(...)`).
 
-If you want to apply lints to the macro-generated code (highly recommended), your crate needs to
-contain/refer to `prudent's` file [src/linted.rs](src/linted.rs), which you "load" with
-`::prudent::load!(...)`.
+## Import
+Have a wildcard import `use crate::prudent::*`. Do not import just a specific "top level" (client
+code-facing) macro(s) that you invoke. That is regardless of whether you apply the lints (where
+your include [src/linted.rs](src/linted.rs)), or not.
 
-`use crate::prudent::*` - not an import of just the specific "top
-  level" (client code-facing) macro(s) that you invoke. That is regardless of whether you apply the
-  lints (and hence your include [src/linted.rs](src/linted.rs)) or not. (At the top level of your
-  crate you could `use self::prudent::*` instead, but that will not work in your modules - while
-  `use crate::prudent::*` works everywhere).
+(At the top level of your crate you _could_ `use self::prudent::*` instead, but that will not work in
+modules. However, `use crate::prudent::*` works everywhere).
 
 # Annoyances
 ## Rust annoyances
@@ -46,10 +51,14 @@ The pains (that pend [rust-lang/rust#110613](https://github.com/rust-lang/rust/i
 - In doctests
   - load with `any:` like `::prudent::load!(any: "linted.rs");`
   - import with `use crate::prudent::*;` which you put outside of your `fn main()`
-  - have `fn main()` - do not have the test "logic" at the top level, otherwise rustdoc/doctest mechanism automatically puts the whole doctest code inside `fn main()`, which will include `::prudent::load!(...)` and `use crate::prudent::*`, which will fail with very strange errors.
+  - have `fn main()` - do not have the test "logic" at the top level, otherwise rustdoc/doctest
+    mechanism automatically puts the whole doctest code inside `fn main()`, which will include
+    `::prudent::load!(...)` and `use crate::prudent::*`, which will fail with very strange errors.
+    If all you are testing is `const`, have an empty `fn main() {}`. (If you run `cargo clippy` and
+    it complains, see `prudent`'s source code on how to allow `clippy::needless_doctest_main`.)
 
 ## Limitation of lint control for unsafe_method
-`unsafe_method` (normally accessed as `crate::prudent::unsafe_method`)
+Macro `unsafe_method` (normally accessed as `crate::prudent::unsafe_method`)
 
 # Quality assurance
 
@@ -69,8 +78,8 @@ Alpine Linux (without `libc`, in a `rust:1.87-alpine` container)<!-- and are POS
   - `cargo +nightly miri test`
 
 # API and examples
-All of the above tests are also a part of
-[doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html). Following are all the positive examples.
+Following are all the positive examples. They are also run by the above [GitHub Actions] as
+[doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html).
 
 For negative examples, which catch unintended `unsafe` functions/expressions/access, see
 documentation of each `prudent` macro.
@@ -583,12 +592,13 @@ side effects or state, it's your problem. Such a macro contradicts Rust guidelin
 # Updates
 
 Please subscribe for low frequency updates at
-[peter-lyons-kehl/prudent/issues#1](https://github.com/peter-lyons-kehl/prudent/issues/1).
+[peter-lyons-kehl/prudent#1](https://github.com/peter-lyons-kehl/prudent/issues/1).
 
 # Side fruit and related issues
 Please contribute, or at least give thumbs up, to:
 
 ## Related issues
+Sorted by importance (for `prudent`):
 - [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) Forbidding lints doesn't
   really work in macros
 - [rust-lang/rust#148942](https://github.com/rust-lang/rust/issues/148942) cfg(test) is not set
@@ -598,7 +608,7 @@ Please contribute, or at least give thumbs up, to:
 - [rust-lang/rust#56232](https://github.com/rust-lang/rust/issues/56232) Oh rust doctest lints,
   where art þou? (Add a way to run clippy on doctests)
 - [rust-lang/rust#127893](https://github.com/rust-lang/rust/issues/127893) doctest line number is
-  incorrect if used with #![doc = include_str!()]
+  incorrect if used with `#![doc = include_str!()]`
 - [rust-lang/rustfmt#6047](https://github.com/rust-lang/rustfmt/issues/6047) Braces are removed from single-item import in macro where they are required
 - [rust-lang/rust#39412](https://github.com/rust-lang/rust/issues/39412) declarative macros 2.0
 - [rust-lang/rust#65860](https://github.com/rust-lang/rust/issues/65860) Re-land early syntax feature gating
@@ -616,7 +626,7 @@ Please contribute, or at least give thumbs up, to:
 - [rust-lang/rust#148599](https://github.com/rust-lang/rust/issues/148599) forward compatibility of
   `#![doc(test(attr(forbid(...))))]` for lint groups
 - [rust-lang/nomicon#506](https://github.com/rust-lang/nomicon/issues/506) note that a macro in a
-  `#![forbid(unsafe_code)]` library can emit unsafe
+  `#![forbid(unsafe_code)]` library can emit `unsafe`
 - [Veykril/tlborm#114](https://github.com/Veykril/tlborm/issues/114) storing & (re)using variadic
   tuples
 

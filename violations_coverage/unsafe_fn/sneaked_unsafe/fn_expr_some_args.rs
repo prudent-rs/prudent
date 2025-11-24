@@ -1,5 +1,5 @@
 ::prudent::load!(any: "linted.rs");
-use self::prudent::*;
+use crate::prudent::*;
 
 unsafe fn fn_itself(b: bool) -> bool {
     b

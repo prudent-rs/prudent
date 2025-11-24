@@ -1,5 +1,5 @@
 ::prudent::load!(any: "linted.rs");
-use self::prudent::*;
+use crate::prudent::*;
 
 fn safe_fn_one_arg(_: bool) {}
 

@@ -100,74 +100,17 @@ macro_rules! load {
       $prudent_linted:literal
       -> $module_name:ident
     ) => {
-        // TODO obsolete docs:
-        //
-        // We do NOT load the file into a separate submodule, like:
-        // ```
-        // #[cfg(any( $( $cfg_filter )* ))]
-        // #[allow(unused)]
-        // #[path = $prudent_linted]
-        // mod internal_prudent_linted_loaded_or_aliased;
-        // ``
-        // Why? because https://github.com/rust-lang/rust/issues/52234 makes it very difficult (or
-        // impossible?) to re-export such macros. But using
-        // `#![allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]` didn't help, so
-        // there may be other restrictions, too.
-        // Life is too short. So we ARE using ::core::include!(...);
-        /*#[cfg(any( $( $cfg_filter )* ))]
-        #[allow(unused)]
-        mod internal_prudent_linted_loaded_or_aliased {
-            ::core::include!( $prudent_linted);
-        }*/
-
         #[cfg(any( $( $cfg_filter )* ))]
         #[allow(unused)]
         #[path = $prudent_linted]
         pub mod internal_prudent_linted_loaded_or_aliased;
-
-        //compile_error!("WOULD RE-EXPORT INSTEAD OF LOAD FRONTEND");
 
         #[cfg(not(any( $( $cfg_filter )* )))]
         #[allow(unused)]
         pub use ::prudent::linted as internal_prudent_linted_loaded_or_aliased;
 
         mod $module_name {
-            /*$crate::load_module_content!(
-                ( $( $cfg_filter )* )
-                : $prudent_linted
-            );*/
-
-            // @TODO
-            //
-            // #[cfg(not(any( $( $cfg_filter )* )))]
-            //
-            // $crate::reexport_macros!( ::prudent );
-            //
-            // #[cfg(any( $( $cfg_filter )* ))]
-            //
-            // $crate::reexport_macros!( crate );
-
-            //#[cfg(any( $( $cfg_filter )* ))]
-            ////#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
-            //#[allow(unused)]
-            //use crate::*;
-
-            //#[cfg(not(any( $( $cfg_filter )* )))]
-            //#[allow(unused)]
-            //use ::prudent::linted::*;
-
-            //$crate::reexport_macros!();
-            //#[allow(macro_expanded_macro_exports_accessed_by_absolute_paths)]
-
-            //pub use crate::internal_prudent_unsafe_fn as unsafe_fn;
-
-            //pub use super::internal_prudent_linted_loaded_or_aliased::internal_prudent_unsafe_fn_ as unsafe_fn;
-            //
-            // OR:
-
             $crate::reexport_macros!(super::internal_prudent_linted_loaded_or_aliased);
-            //pub use super::internal_prudent_linted_loaded_or_aliased::internal_prudent_unsafe_fn as unsafe_fn;
-
             $crate::reexport_non_macros!( super::internal_prudent_linted_loaded_or_aliased );
         }
         const _VERIFY_VERSION: () = {

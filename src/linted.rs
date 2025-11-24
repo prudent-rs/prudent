@@ -1,3 +1,11 @@
+// This is a copy of prudent's linted.rs. It's triple-licensed under Apache 2.0, MIT and BSD
+// license.
+//
+// For the version of this file see PRUDENT_INTERNAL_LINTED_VERSION below. This may, or may not, be
+// compatible with newer versions of prudent. For the most recent version available see
+// https://github.com/prudent-rs/prudent/blob/main/src/linted.rs, https://crates.io/crates/prudent
+// and https://docs.rs/prudent/latest/prudent.
+
 // For docs see linted_with_tests.rs
 #![allow(missing_docs)]
 
@@ -6,9 +14,8 @@
 pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
 
 /// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
-/// - If `$fn`, that is, the function itself, is NOT given as an identifier/qualified path, but it's
-///   given as an expression, then this expression is treated as if evaluated **outside** `unsafe
-///   {...}`.
+/// - If `$fn` (the function itself) is NOT given as an identifier/qualified path, but it's given as
+///   an expression, then this expression is treated as if evaluated **outside** `unsafe {...}`.
 /// - Any arguments passed in as expressions are treated as if evaluated **outside** `unsafe {...}`.
 ///
 /// There is **no** extra enclosing pair of parenthesis `(...)` around the list of arguments (if
@@ -29,6 +36,7 @@ pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
 #[macro_export]
 macro_rules! internal_prudent_unsafe_fn {
     ( $fn:expr $(, $arg:expr)+ ) => {
+
         // Enclosed in (...) and NOT in {...}. Why? Because the later does NOT work if the result is
         // an array/slice and then it's indexed with array access suffix [usize_idx].
         (
