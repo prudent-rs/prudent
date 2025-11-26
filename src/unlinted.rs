@@ -316,7 +316,7 @@ macro_rules! allow_unsafe_expect_unsafe_is_correct {
 /// NOT a part of public API. Pretend to get a mutable reference from a shared reference. For
 /// internal/generated **compile-time** checks only.
 #[doc(hidden)]
-pub const fn shared_to_mut<T>(_: &T) -> &mut T {
+pub const fn shared_to_mut<T>(_: &T) -> &'static mut T {
     unreachable!()
 }
 

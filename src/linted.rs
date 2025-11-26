@@ -214,7 +214,7 @@ macro_rules! internal_prudent_unsafe_method {
                     // We **cannot** just move/take/assign $self by value, in case it's a non-Copy
                     // **static** variable. See also comments in
                     // unsafe_method_internal_build_accessors_check_args_call.
-                    let rref = {
+                    let mref = {
                         #[rustfmt::skip]
                         #[deny(unused_unsafe)]
                         // @TODO simplify once https://github.com/rust-lang/rust/issues/15701
@@ -230,10 +230,8 @@ macro_rules! internal_prudent_unsafe_method {
                             #[expect(unsafe_code)]
                         )?
                         let rref = &( $self );
-                        rref
+                        ::prudent::unlinted::shared_to_mut( rref )
                     };
-                    //
-                    let mref = ::prudent::unlinted::shared_to_mut(rref);
                     #[allow(unused_mut)]
                     #[allow(invalid_value)]
                     let mut owned_receiver = ::core::mem::replace(mref, unsafe{ ::core::mem::zeroed() });

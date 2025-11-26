@@ -56,6 +56,7 @@ pub use crate::linted_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// ```
 /// test cfg test:
 /// ```test_harness
+/// // test_harness -as per https://github.com/rust-lang/rust/issues/148942#issuecomment-3565011334
 /// #[cfg(not(test))]
 /// compile_error!("NOT DOCTEST!");
 /// ```
@@ -195,13 +196,13 @@ pub use crate::linted_untested::internal_prudent_unsafe_method;
 pub const _: () = {};
 
 /// ```compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
+#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};
 
 /// ```compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
+#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
 /// ```
 #[cfg(doctest)]
 pub const _: () = {};

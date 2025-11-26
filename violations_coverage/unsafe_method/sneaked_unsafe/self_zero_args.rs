@@ -8,7 +8,7 @@ impl S {
 }
 
 unsafe fn new_receiver() -> S {
-    unreachable!();
+    unreachable!()
 }
 
 fn main() {
