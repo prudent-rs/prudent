@@ -1,0 +1,45 @@
+error: unnecessary `unsafe` block
+   --> /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/linted.rs:242:29
+    |
+242 |                     let _ = unsafe { owned_receiver. $fn( $( $arg ),* ) };
+    |                             ^^^^^^ unnecessary `unsafe` block
+    |
+   ::: /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/unsafe_method-fn_unused_unsafe-some_args.rs:11:5
+    |
+ 11 |     unsafe_method!(s, use_it, true);
+    |     ------------------------------- in this macro invocation
+    |
+note: the lint level is defined here
+   --> /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/linted.rs:241:28
+    |
+241 |                     #[deny(unused_unsafe)]
+    |                            ^^^^^^^^^^^^^
+    |
+   ::: /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/unsafe_method-fn_unused_unsafe-some_args.rs:11:5
+    |
+ 11 |     unsafe_method!(s, use_it, true);
+    |     ------------------------------- in this macro invocation
+    = note: this error originates in the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unnecessary `unsafe` block
+   --> /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/linted.rs:367:22
+    |
+367 |         let result = unsafe {
+    |                      ^^^^^^ unnecessary `unsafe` block
+    |
+   ::: /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/unsafe_method-fn_unused_unsafe-some_args.rs:11:5
+    |
+ 11 |     unsafe_method!(s, use_it, true);
+    |     ------------------------------- in this macro invocation
+    |
+note: the lint level is defined here
+   --> /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/linted.rs:358:16
+    |
+358 |         #[deny(unused_unsafe)]
+    |                ^^^^^^^^^^^^^
+    |
+   ::: /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/unsafe_method-fn_unused_unsafe-some_args.rs:11:5
+    |
+ 11 |     unsafe_method!(s, use_it, true);
+    |     ------------------------------- in this macro invocation
+    = note: this error originates in the macro `unsafe_method_internal_build_accessors_check_args_call` which comes from the expansion of the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)

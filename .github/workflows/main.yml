@@ -49,7 +49,7 @@ jobs:
             -Zcrate-attr=feature(rustdoc_missing_doc_code_examples)" \
             cargo +nightly doc --no-deps --quiet
 
-      - name: Tests (debug, release, MIRI)
+      - name: Tests (debug, release, MIRI, verify_error_messages=trybuild)
         shell: sh
         run: |
           cargo test
@@ -58,3 +58,6 @@ jobs:
           cargo +nightly test
           cargo test --release
           cargo +nightly miri test
+          cd violations_coverage/verify_error_messages
+          cargo test
+          cargo fmt --check

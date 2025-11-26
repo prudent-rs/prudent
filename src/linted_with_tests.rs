@@ -33,19 +33,23 @@ pub use crate::linted_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// // just prudent, which will fail, fortunately).
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
 /// ```
+///
 /// ## Some arguments
 /// The given expression (which evaluates to the function to be called) is `unsafe.`
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
 /// ```
+///
 /// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
 /// ```
+///
 /// The target function is safe, hence no need for `unsafe_fn`. Zero args.
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/zero_args.rs")]
 /// ```
+///
 /// The target function is safe, hence no need for `unsafe_fn`. Some args.
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
@@ -158,11 +162,11 @@ pub use crate::linted_untested::internal_prudent_unsafe_fn_internal_access_tuple
 /// ```
 ///
 /// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
+#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
 /// ```
 ///
 /// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
+#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
 /// ```
 ///
 /// ```compile_fail
@@ -173,9 +177,11 @@ pub use crate::linted_untested::internal_prudent_unsafe_fn_internal_access_tuple
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
 /// ```
+///
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/unused_expect_unsafe/zero_args.rs")]
 /// ```
+///
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/unused_expect_unsafe/some_args.rs")]
 /// ```
