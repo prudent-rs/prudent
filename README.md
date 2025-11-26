@@ -29,11 +29,11 @@ module (by passing an optional "parameter" to `::prudent::load!(...)`).
 
 ## Import
 Have a wildcard import `use crate::prudent::*`. Do not import just a specific "top level" (client
-code-facing) macro(s) that you invoke. That is regardless of whether you apply the lints (where
-your include [src/linted.rs](src/linted.rs)), or not.
+code-facing) macro(s) that you invoke. That is regardless of whether you apply the lints (where your
+include [src/linted.rs](src/linted.rs)), or not.
 
-(At the top level of your crate you _could_ `use self::prudent::*` instead, but that will not work in
-modules. However, `use crate::prudent::*` works everywhere).
+(At the top level of your crate you _could_ `use self::prudent::*` instead, but that will not work
+in modules. However, `use crate::prudent::*` works everywhere).
 
 # Annoyances
 ## Rust annoyances
@@ -42,8 +42,8 @@ modules. However, `use crate::prudent::*` works everywhere).
 The pains (that pend [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613)):
 - [`prudent`'s documentation on docs.rs](https://docs.rs/prudent/latest/prudent/) shows code
   examples first, and only then documentation text (prose).
-- You need a wildcard import `use crate::prudent::*` - not just import a specific "top
-  level" (client code-facing) macro(s) that you invoke.
+- You need a wildcard import `use crate::prudent::*` - not just import a specific "top level"
+  (client code-facing) macro(s) that you invoke.
   
   It's not enough to import just specific macros that you invoke (because the internal "linted"
   macros are loaded in your crate's namespace, and hence they can't use `$crate` metavariable to
@@ -51,11 +51,13 @@ The pains (that pend [rust-lang/rust#110613](https://github.com/rust-lang/rust/i
 - In doctests
   - load with `any:` like `::prudent::load!(any: "linted.rs");`
   - import with `use crate::prudent::*;` which you put outside of your `fn main()`
-  - have `fn main()` - do not have the test "logic" at the top level, otherwise rustdoc/doctest
-    mechanism automatically puts the whole doctest code inside `fn main()`, which will include
-    `::prudent::load!(...)` and `use crate::prudent::*`, which will fail with very strange errors.
-    If all you are testing is `const`, have an empty `fn main() {}`. (If you run `cargo clippy` and
-    it complains, see `prudent`'s source code on how to allow `clippy::needless_doctest_main`.)
+  - have `fn main()`
+    - do **not** have the test logic at the top level, otherwise rustdoc/doctest mechanism
+      automatically puts the whole doctest code inside `fn main()`, which will include
+      `::prudent::load!(...)` and `use crate::prudent::*`, which will fail with very strange errors.
+      If all you are testing is `const`, have an empty `fn main() {}`. (If you run `cargo clippy`
+      and it complains, see `prudent`'s source code on how to allow
+      `clippy::needless_doctest_main`.)
 
 ## Limitation of lint control for unsafe_method
 Macro `unsafe_method` (normally accessed as `crate::prudent::unsafe_method`)
@@ -76,6 +78,20 @@ Alpine Linux (without `libc`, in a `rust:1.87-alpine` container)<!-- and are POS
   - `rustup install nightly --profile minimal`
   - `rustup +nightly component add miri`
   - `cargo +nightly miri test`
+
+## Verification of expected errors
+- Error code validation: Where possible, expected error numbers are validated  with `cargo +nightly
+  test`, ([The Rustdoc book > Unstable features > Error numbers for compile-fail
+  doctests](https://doc.rust-lang.org/rustdoc/unstable-features.html#error-numbers-for-compile-fail-doctests)).
+  The error codes are validated by [GitHub Actions](.github/workflows/main.yml), see
+  [results](https://github.com/prudent-rs/prudent/actions). Error code validation requires `nightly`
+  Rust toolchain. See also [`src/linted_with_tests.rs`](src/linted_with_tests.rs) for expected
+  compilation error codes.
+- Error output validation: Some lint violations don't have a special error code. So we validate the
+  error message in
+  [violations_coverage/verify_error_messages](violations_coverage/verify_error_messages) with
+  [dtolnay/trybuild](https://github.com/dtolnay/trybuild/)
+  [crates.io/crates/trybuild](https://crates.io/crates/trybuild).
 
 # API and examples
 Following are all the positive examples. They are also run by the above [GitHub Actions] as
@@ -565,7 +581,8 @@ it will be forward compatible. (If a need ever arises for big incompatibility, t
 crate.)
 
 That allows you to specify `prudent` as a dependency with version `0.*`, which will match ANY
-**major** versions (below `1.0`, of course). That will match the newest <!-- (**even**-numbered major)-->
+**major** versions (below `1.0`, of course). That will match the newest <!-- (**even**-numbered
+major)-->
 <!-- stable--> version (available for your Rust) automatically.
 
 This is special only to `0.*` - it is **not** possible to have a wildcard matching various **major**
@@ -583,7 +600,10 @@ matching or other complex syntax may sound exciting, but it makes reading the co
 that be an opportunity to refactor?
 
 ## Not supported: Procedural macros with side effects
-Several `prudent` macros duplicate their expression "parameter". In the generated Rust code the parameter expression is evaluated only once, but it's present in the code twice - once in an inactive `if false {...}` branch for verification, and once in the following active `else {...}` branch.
+Several `prudent` macros duplicate their expression "parameter". In the generated Rust code the
+parameter expression is evaluated only once, but it's present in the code twice - once in an
+inactive `if false {...}` branch for verification, and once in the following active `else {...}`
+branch.
 
 That is OK with macros by example (defined with `macro_rules!`), and OK with any well-behaving
 procedural macros. However, if you pass in an expression that invokes a procedural macro that has
@@ -609,9 +629,11 @@ Sorted by importance (for `prudent`):
   where art þou? (Add a way to run clippy on doctests)
 - [rust-lang/rust#127893](https://github.com/rust-lang/rust/issues/127893) doctest line number is
   incorrect if used with `#![doc = include_str!()]`
-- [rust-lang/rustfmt#6047](https://github.com/rust-lang/rustfmt/issues/6047) Braces are removed from single-item import in macro where they are required
+- [rust-lang/rustfmt#6047](https://github.com/rust-lang/rustfmt/issues/6047) Braces are removed from
+  single-item import in macro where they are required
 - [rust-lang/rust#39412](https://github.com/rust-lang/rust/issues/39412) declarative macros 2.0
-- [rust-lang/rust#65860](https://github.com/rust-lang/rust/issues/65860) Re-land early syntax feature gating
+- [rust-lang/rust#65860](https://github.com/rust-lang/rust/issues/65860) Re-land early syntax
+  feature gating
 - [rust-lang/rust#15701](https://github.com/rust-lang/rust/issues/15701) attributes on expressions
 - [rust-lang/rust#87022](https://github.com/rust-lang/rust/issues/87022) `--no-run` flag in
   `rustdoc`

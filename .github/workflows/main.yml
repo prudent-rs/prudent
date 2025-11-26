@@ -31,6 +31,9 @@ jobs:
           rustup component add clippy rustfmt
           rustup install nightly --profile minimal
           rustup +nightly component add miri
+          # violations_coverage/verify_error_messages uses trybuild, which uses Serde (a proc
+          # macro), which needs to be run as a dynamic library, so it needs musl-dev
+          apk add --no-cache musl-dev
 
       - name: Clippy, fmt
         shell: sh
