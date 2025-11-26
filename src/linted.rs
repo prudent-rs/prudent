@@ -235,6 +235,7 @@ macro_rules! internal_prudent_unsafe_method {
                     //
                     let mref = ::prudent::unlinted::shared_to_mut(rref);
                     #[allow(unused_mut)]
+                    #[allow(invalid_value)]
                     let mut owned_receiver = ::core::mem::replace(mref, unsafe{ ::core::mem::zeroed() });
                     // Detect code where unsafe_fn! or unsafe_method! is not needed at all. That is,
                     // where a function/method used to be `unsafe`, but it stopped being so.

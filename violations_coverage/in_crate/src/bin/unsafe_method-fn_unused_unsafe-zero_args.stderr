@@ -1,63 +1,45 @@
 error: unnecessary `unsafe` block
-   --> /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/linted.rs:242:29
-    |
-242 |                     let _ = unsafe { owned_receiver. $fn( $( $arg ),* ) };
-    |                             ^^^^^^ unnecessary `unsafe` block
-    |
-   ::: /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/unsafe_method-fn_unused_unsafe-zero_args.rs:5:13
-    |
-  5 |     let _ = unsafe_method!("hi", len);
-    |             ------------------------- in this macro invocation
-    |
+ --> violations/linted.rs
+  |
+  |                     let _ = unsafe { owned_receiver. $fn( $( $arg ),* ) };
+  |                             ^^^^^^ unnecessary `unsafe` block
+  |
+ ::: violations/unsafe_method-fn_unused_unsafe-zero_args.rs:5:13
+  |
+5 |     let _ = unsafe_method!("hi", len);
+  |             ------------------------- in this macro invocation
+  |
 note: the lint level is defined here
-   --> /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/linted.rs:241:28
-    |
-241 |                     #[deny(unused_unsafe)]
-    |                            ^^^^^^^^^^^^^
-    |
-   ::: /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/unsafe_method-fn_unused_unsafe-zero_args.rs:5:13
-    |
-  5 |     let _ = unsafe_method!("hi", len);
-    |             ------------------------- in this macro invocation
-    = note: this error originates in the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
+ --> violations/linted.rs
+  |
+  |                     #[deny(unused_unsafe)]
+  |                            ^^^^^^^^^^^^^
+  |
+ ::: violations/unsafe_method-fn_unused_unsafe-zero_args.rs:5:13
+  |
+5 |     let _ = unsafe_method!("hi", len);
+  |             ------------------------- in this macro invocation
+  = note: this error originates in the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: unnecessary `unsafe` block
-   --> /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/linted.rs:317:30
-    |
-317 |                 let result = unsafe { $self. $fn () };
-    |                              ^^^^^^ unnecessary `unsafe` block
-    |
-   ::: /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/unsafe_method-fn_unused_unsafe-zero_args.rs:5:13
-    |
-  5 |     let _ = unsafe_method!("hi", len);
-    |             ------------------------- in this macro invocation
-    |
+ --> violations/linted.rs
+  |
+  |                 let result = unsafe { $self. $fn () };
+  |                              ^^^^^^ unnecessary `unsafe` block
+  |
+ ::: violations/unsafe_method-fn_unused_unsafe-zero_args.rs:5:13
+  |
+5 |     let _ = unsafe_method!("hi", len);
+  |             ------------------------- in this macro invocation
+  |
 note: the lint level is defined here
-   --> /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/linted.rs:316:24
-    |
-316 |                 #[deny(unused_unsafe)]
-    |                        ^^^^^^^^^^^^^
-    |
-   ::: /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/unsafe_method-fn_unused_unsafe-zero_args.rs:5:13
-    |
-  5 |     let _ = unsafe_method!("hi", len);
-    |             ------------------------- in this macro invocation
-    = note: this error originates in the macro `unsafe_method_internal_check_args_etc` which comes from the expansion of the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-warning: the type `&str` does not permit zero-initialization
-   --> /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/linted.rs:238:81
-    |
-238 |                     let mut owned_receiver = ::core::mem::replace(mref, unsafe{ ::core::mem::zeroed() });
-    |                                                                                 ^^^^^^^^^^^^^^^^^^^^^
-    |                                                                                 |
-    |                                                                                 this code causes undefined behavior when executed
-    |                                                                                 help: use `MaybeUninit<T>` instead, and only call `assume_init` after initialization is done
-    |
-   ::: /share/pkehl/GIT/prudent/violations_coverage/in_crate/src/bin/unsafe_method-fn_unused_unsafe-zero_args.rs:5:13
-    |
-  5 |     let _ = unsafe_method!("hi", len);
-    |             ------------------------- in this macro invocation
-    |
-    = note: references must be non-null
-    = note: `#[warn(invalid_value)]` on by default
-    = note: this warning originates in the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
+ --> violations/linted.rs
+  |
+  |                 #[deny(unused_unsafe)]
+  |                        ^^^^^^^^^^^^^
+  |
+ ::: violations/unsafe_method-fn_unused_unsafe-zero_args.rs:5:13
+  |
+5 |     let _ = unsafe_method!("hi", len);
+  |             ------------------------- in this macro invocation
+  = note: this error originates in the macro `unsafe_method_internal_check_args_etc` which comes from the expansion of the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)

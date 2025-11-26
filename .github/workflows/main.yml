@@ -20,10 +20,7 @@ jobs:
     # However, with Rust 1.88.0 or older, we were getting false positive errors from `cargo test`,
     # reporting constants in doctests as unused, even though they were used. That's why we need at
     # least 1.89.
-    #
-    # But, with Rust 1.89 (and most likely any older), trybuild generates files incompatible with
-    # Rust 1.91.1. It seems that we need around 1.90.0.
-    container: rust:1.90.0-alpine
+    container: rust:1.89.0-alpine
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
