@@ -1,8 +1,16 @@
 ::prudent::load!(any: "linted.rs");
 use crate::prudent::*;
 
+struct S;
+
+impl S {
+    unsafe fn method(&self) {}
+}
+
+unsafe fn new_receiver() -> S {
+    unreachable!();
+}
+
 fn main() {
-    #[allow(unused_unsafe)]
-    // str::len is actually not unsafe, but that doesn't matter for this example
-    let _ = unsafe_method!(core::str::from_utf8_unchecked(b"hello"), len);
+    let _ = unsafe_method!(new_receiver(), method);
 }

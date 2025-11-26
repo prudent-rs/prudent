@@ -220,6 +220,7 @@ macro_rules! internal_prudent_unsafe_method {
                         // @TODO simplify once https://github.com/rust-lang/rust/issues/15701
                         // (attributes on expressions)
                         #[deny(unsafe_code)]
+                        #[deny(unfulfilled_lint_expectations)]
                         $(
                             $( { $allow_unsafe_empty_indicator } )?
                             #[allow(unsafe_code)]

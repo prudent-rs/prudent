@@ -173,6 +173,12 @@ pub use crate::linted_untested::internal_prudent_unsafe_fn_internal_access_tuple
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
 /// ```
+/// ```compile_fail
+#[doc = include_str!("../violations_coverage/unsafe_method/unused_expect_unsafe/zero_args.rs")]
+/// ```
+/// ```compile_fail
+#[doc = include_str!("../violations_coverage/unsafe_method/unused_expect_unsafe/some_args.rs")]
+/// ```
 #[doc(inline)]
 pub use crate::linted_untested::internal_prudent_unsafe_method;
 
@@ -188,8 +194,7 @@ pub const _: () = {};
 #[cfg(doctest)]
 pub const _: () = {};
 
-/// ```compile_fail
-/// compile_fail,E0133
+/// ```compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
 /// ```
 #[cfg(doctest)]

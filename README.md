@@ -113,7 +113,7 @@ mod module {
 
   //const _: u8 = unsafe_method!(({#forbid(unused) let v = 1u8; v}), unchecked_add, 0);
   const _: u8 = unsafe_method!(~allow_unsafe 1u8, unchecked_add, 0);
-  const _: u8 = unsafe_method!(~expect_unsafe 1u8, unchecked_add, 0);
+  //const _: u8 = unsafe_method!(~expect_unsafe 1u8, unchecked_add, 0);
 }
 fn main() {}
 ```
@@ -595,7 +595,7 @@ Please subscribe for low frequency updates at
 [peter-lyons-kehl/prudent#1](https://github.com/peter-lyons-kehl/prudent/issues/1).
 
 # Side fruit and related issues
-Please contribute, or at least give thumbs up, to:
+Please contribute, or at least subscribe, and give thumbs up, to:
 
 ## Related issues
 Sorted by importance (for `prudent`):

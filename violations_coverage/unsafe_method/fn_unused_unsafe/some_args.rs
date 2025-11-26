@@ -3,7 +3,7 @@ use crate::prudent::*;
 
 struct S;
 impl S {
-    fn use_it(_: bool) {}
+    fn use_it(&self, _: bool) {}
 }
 
 fn main() {
