@@ -2,5 +2,5 @@
 use crate::prudent::*;
 
 fn main() {
-    let _ = unsafe_method!("hi", len);
+    let _ = unsafe_method!("hi" =>@ len);
 }

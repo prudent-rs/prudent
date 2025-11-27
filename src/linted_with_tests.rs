@@ -99,7 +99,7 @@ pub use crate::linted_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 ///
 /// fn main() {
 ///     let mut marray = [true];
-///     unsafe_fn!( return_same_mut_ref, &mut marray )[0] = true;
+///     unsafe_fn!( return_same_mut_ref => &mut marray )[0] = true;
 /// }
 /// ```
 #[doc(inline)]

@@ -10,5 +10,5 @@ unsafe fn get_fn_itself() -> unsafe fn(b: bool) -> bool {
 }
 
 fn main() {
-    unsafe_fn!(get_fn_itself(), true);
+    unsafe_fn!(get_fn_itself() => true);
 }

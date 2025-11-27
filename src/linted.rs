@@ -29,13 +29,10 @@ pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
 ///   `unsafe.`
 /// - Some arguments. The given expression (which evaluates to the function to be called) is
 ///   `unsafe.`
-///
-/// ## Zero arguments
-/// The given expression (which evaluates to the function to be called) is `unsafe.`
 #[doc(hidden)]
 #[macro_export]
 macro_rules! internal_prudent_unsafe_fn {
-    ( $fn:expr $(, $arg:expr)+ ) => {
+    ( $fn:expr => $( $arg:expr ),+ ) => {
 
         // Enclosed in (...) and NOT in {...}. Why? Because the later does NOT work if the result is
         // an array/slice and then it's indexed with array access suffix [usize_idx].
@@ -193,7 +190,18 @@ macro_rules! internal_prudent_unsafe_method {
     (
         $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
         $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
-        $self:expr, $fn:ident $(, $arg:expr )*
+        $self:expr =>@ $fn:ident
+     ) => {
+        unsafe_method!(
+            $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
+            $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
+            $self =>@ $fn =>
+        )
+     };
+    (
+        $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
+        $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
+        $self:expr =>@ $fn:ident => $( $arg:expr ),*
      ) => {
         // See unsafe_fn for why here we enclose in (...) and not in {...}.
         (

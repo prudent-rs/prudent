@@ -8,5 +8,5 @@ impl S {
 
 fn main() {
     let s = S;
-    unsafe_method!(s, use_it, true);
+    unsafe_method!(s =>@ use_it => true);
 }

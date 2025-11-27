@@ -110,8 +110,8 @@ const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
 const unsafe fn unsafe_fn_two_args(_: bool, u: u8) -> u8 { u }
 
 const _: () = unsafe_fn!(unsafe_fn_no_args);
-const _: bool = unsafe_fn!(unsafe_fn_one_arg, true);
-const _: u8 = unsafe_fn!(unsafe_fn_two_args, true, 0);
+const _: bool = unsafe_fn!(unsafe_fn_one_arg=> true);
+const _: u8 = unsafe_fn!(unsafe_fn_two_args=> true, 0);
 fn main() {}
 ```
 
@@ -122,13 +122,13 @@ fn main() {}
 mod module {
   use crate::prudent::*;
   // Works for Copy types
-  const _: u8 = unsafe_method!(1u8, unchecked_add, 0);
+  const _: u8 = unsafe_method!(1u8 =>@ unchecked_add => 0);
   //const _: u8 = unsafe_method!(({#[forbid(unused)] let v = 1u8; v}), unchecked_add, 0);
   //const _: u8 = unsafe_method!(#[allow_unsafe] 1u8, unchecked_add, 0);
   //const _: u8 = unsafe_method!(#[expect_unsafex] 1u8, unchecked_add, 0);
 
   //const _: u8 = unsafe_method!(({#forbid(unused) let v = 1u8; v}), unchecked_add, 0);
-  const _: u8 = unsafe_method!(~allow_unsafe 1u8, unchecked_add, 0);
+  const _: u8 = unsafe_method!(~allow_unsafe 1u8 =>@ unchecked_add => 0);
   //const _: u8 = unsafe_method!(~expect_unsafe 1u8, unchecked_add, 0);
 }
 fn main() {}
@@ -159,9 +159,9 @@ impl SNonCopy {
 fn main() {
     let s = SNonCopy {};
     // Works for non-Copy types
-    unsafe_method!(s, unsafe_method_no_args);
-    unsafe_method!(s, unsafe_method_one_arg, true);
-    unsafe_method!(s, unsafe_method_two_args, true, false);
+    unsafe_method!(s =>@ unsafe_method_no_args);
+    unsafe_method!(s =>@ unsafe_method_one_arg => true);
+    unsafe_method!(s =>@ unsafe_method_two_args => true, false);
 }
 ```
 
@@ -178,9 +178,9 @@ impl SNonCopy {
 
 fn main() {
     let mut s = SNonCopy {};
-    unsafe_method!(s, unsafe_method_no_args);
-    unsafe_method!(s, unsafe_method_one_arg, true);
-    unsafe_method!(s, unsafe_method_two_args, true, false);
+    unsafe_method!(s =>@ unsafe_method_no_args);
+    unsafe_method!(s =>@ unsafe_method_one_arg => true);
+    unsafe_method!(s =>@ unsafe_method_two_args => true, false);
 }
 ```
 
@@ -197,9 +197,9 @@ fn main() {
             unsafe fn unsafe_method_two_args(self, _: bool, _: bool) {}
         }
 
-        unsafe_method!(SNonCopy {}, unsafe_method_no_args);
-        unsafe_method!(SNonCopy {}, unsafe_method_one_arg, true);
-        unsafe_method!(SNonCopy {}, unsafe_method_two_args, true, false);
+        unsafe_method!(SNonCopy {} =>@ unsafe_method_no_args);
+        unsafe_method!(SNonCopy {} =>@ unsafe_method_one_arg => true);
+        unsafe_method!(SNonCopy {} =>@ unsafe_method_two_args => true, false);
     }
     {
         #[derive(Clone, Copy)]
@@ -209,8 +209,8 @@ fn main() {
         }
 
         let sCopy = SCopy {};
-        unsafe_method!(sCopy, unsafe_method_no_args);
-        unsafe_method!(sCopy, unsafe_method_no_args);
+        unsafe_method!(sCopy =>@ unsafe_method_no_args);
+        unsafe_method!(sCopy =>@ unsafe_method_no_args);
         let _ = sCopy;
     }
 }

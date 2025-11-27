@@ -10,5 +10,5 @@ impl S {
 }
 
 fn main() {
-    let _ = unsafe_method!(~expect_unsafe S_INSTANCE, method, true);
+    let _ = unsafe_method!(~expect_unsafe S_INSTANCE =>@ method => true);
 }
