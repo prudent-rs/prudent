@@ -29,7 +29,7 @@ module (by passing an optional "parameter" to `::prudent::load!(...)`).
 
 ## Import
 Have a wildcard import `use crate::prudent::*`. Do not import just a specific "top level" (client
-code-facing) macro(s) that you invoke. That is regardless of whether you apply the lints (where your
+code-facing) macro(s) that you invoke. That is regardless of whether you apply the lints (where you
 include [src/linted.rs](src/linted.rs)), or not.
 
 (At the top level of your crate you _could_ `use self::prudent::*` instead, but that will not work

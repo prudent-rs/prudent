@@ -186,6 +186,7 @@ pub use internal_prudent_unsafe_fn_internal_access_tuple_tree_field;
 ///
 /// as they are internal.
 #[macro_export]
+#[doc(hidden)]
 macro_rules! internal_prudent_unsafe_method {
     (
         $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
@@ -398,6 +399,7 @@ pub use internal_prudent_unsafe_method_internal_build_accessors_check_args_call;
 ///
 /// NOT for `static` variables (or their fields/components) of `union` types.
 #[macro_export]
+#[doc(hidden)]
 macro_rules! internal_prudent_unsafe_static_set {
     ($static:path, $val:expr) => {{
         if false {
@@ -431,6 +433,7 @@ pub use internal_prudent_unsafe_static_set;
 /// reference based on the given pointer), and the given pointer is cast to `* const $type`. `$type`
 /// may start with `dyn`. `$type` may be a slice `[...]`.
 #[macro_export]
+#[doc(hidden)]
 macro_rules! internal_prudent_unsafe_ref {
     ($ptr:expr) => {{
         let ptr: *const _ = $ptr;
@@ -459,6 +462,7 @@ pub use internal_prudent_unsafe_ref;
 /// type (NOT the given pointer, NOT the target reference type) and the given pointer is cast to `*
 /// const $type`. `$type` may start with `dyn`. `$type` may be a slice `[...]`.
 #[macro_export]
+#[doc(hidden)]
 macro_rules! internal_prudent_unsafe_mut {
     ($ptr:expr) => {{
         let ptr: *mut _ = $ptr;
@@ -483,6 +487,7 @@ pub use internal_prudent_unsafe_mut;
 
 /// Get a (copy of) value from where the pointer points. For [core::marker::Copy] types only.
 #[macro_export]
+#[doc(hidden)]
 macro_rules! internal_prudent_unsafe_val {
     ($ptr:expr) => {{
         let ptr: *const _ = $ptr;
@@ -527,6 +532,7 @@ macro_rules! unsafe_use {
 ///
 /// `unsafe_set!( pt ) = false;`
 #[macro_export]
+#[doc(hidden)]
 macro_rules! internal_prudent_unsafe_set {
     ($ptr:expr, $value:expr) => {{
         if false {
