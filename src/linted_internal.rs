@@ -31,7 +31,7 @@ const _VERIFY_MODULE_PATH: () = {
 /// any). If there was such a pair, it could be confused for a tuple. It would also be less readable
 /// when some parameters were tuples/complex expressions.
 ///
-/// This does NOT accept closures, since, closures cannot be `unsafe`.
+/// This does NOT accept closures, since closures cannot be `unsafe`.
 ///
 /// # Possible violations
 /// - Zero arguments. The given expression (which evaluates to the function to be called) is
@@ -63,22 +63,23 @@ macro_rules! internal_prudent_unsafe_fn {
                 //
                 // (That minimizes the number of differences between those two files.)
                 //
-                // Here we can't refer to
-                // - $crate::internal_prudent_unsafe_fn_internal_build_tuple_tree, nor
-                // - crate::internal_prudent_unsafe_fn_internal_build_tuple_tree
+                // If this file is linted.rs (which then is passed to ::prudent::load!(...)), then
+                // here we can *not* refer to
+                // - $crate::unsafe_method, nor
+                // - crate::unsafe_method
                 //
                 // because of error "macro-expanded `macro_export` macros from the current crate
                 // cannot be referred to by absolute paths"
                 // https://github.com/rust-lang/rust/issues/52234
-                // macro_expanded_macro_exports_accessed_by_absolute_paths which also can't be fully
-                // suppressed. So we refer to
-                // `::prudent::internal_prudent_unsafe_fn_internal_build_tuple_tree`.
+                // "macro_expanded_macro_exports_accessed_by_absolute_paths", which can't be fully
+                // suppressed! (See also
+                // https://stackoverflow.com/questions/26731243/how-do-i-use-a-macro-across-module-files).
                 //
-                // If we are in linted.rs was "loaded" by the user "dynamically" from its file, then
-                // by forwarding to ::prudent::XXXX macros here we do use two sets of the same
-                // macros. But that hardly affects the compile time.
+                // Also, we want to avoid name conflicts due to short names (for example
+                // `unsafe_method`). So we add prefix `internal_prudent_`, and we refer to
+                // `internal_prudent_unsafe_method` instead.
                 //
-                // This applies to all other linted-to-linted macros calls in this file.
+                // This applies to all other linted-to-linted macros calls in linted.rs.
                 let (tuple_tree, fun) = (::prudent::internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
 
                 if false {
