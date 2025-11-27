@@ -1,10 +1,9 @@
-// This is a copy of prudent's linted.rs. It's triple-licensed under Apache 2.0, MIT and BSD
-// license.
+// A copy of prudent's linted.rs. Under Apache 2.0, MIT and BSD license.
 //
 // For the version of this file see PRUDENT_INTERNAL_LINTED_VERSION below. This may, or may not, be
 // compatible with newer versions of prudent. For the most recent version available see
-// https://github.com/prudent-rs/prudent/blob/main/src/linted.rs, https://crates.io/crates/prudent
-// and https://docs.rs/prudent/latest/prudent.
+// https://github.com/prudent-rs/prudent/, https://crates.io/crates/prudent and
+// https://docs.rs/prudent/latest/prudent.
 
 // For docs see linted_with_tests.rs
 #![allow(missing_docs)]
@@ -20,7 +19,7 @@ const _VERIFY_MODULE_PATH: () = {
         [b'p', b'r', b'u', b'd', b'e', b'n', b't', b':', b':', ..]
     ) {
         panic!(
-            "Use ONLY linted.rs in your crate(s). Do not use linted_internal.rs, as that is internal."
+            "Use ONLY linted.rs with ::prudent::load in your crate. Do not use linted_internal.rs."
         );
     }
 };

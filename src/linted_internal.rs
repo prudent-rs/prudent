@@ -1,10 +1,7 @@
-// This is a copy of prudent's linted.rs. It's triple-licensed under Apache 2.0, MIT and BSD
-// license.
-//
 // For the version of this file see PRUDENT_INTERNAL_LINTED_VERSION below. This may, or may not, be
 // compatible with newer versions of prudent. For the most recent version available see
-// https://github.com/prudent-rs/prudent/blob/main/src/linted.rs, https://crates.io/crates/prudent
-// and https://docs.rs/prudent/latest/prudent.
+// https://github.com/prudent-rs/prudent/, https://crates.io/crates/prudent and
+// https://docs.rs/prudent/latest/prudent.
 
 // For docs see linted_with_tests.rs
 #![allow(missing_docs)]

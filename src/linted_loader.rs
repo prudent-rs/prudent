@@ -2,7 +2,8 @@
 //   way. That's because unlinted macros don't know the crate name where linted macros were loaded.
 // - linted macros can be recursive (between themselves, but not through unlinted ("backend")
 //   macros")
-/// Invoke from the top level of your crate, and only once (once per crate).
+/// "Load" prudent macros. Invoke this from the top level of your crate, and only once (once per
+/// crate).
 #[macro_export]
 macro_rules! load {
     // No lints.

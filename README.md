@@ -581,7 +581,7 @@ However,
 
 # Compatibility
 
-`prudent` is `no-std`-compatible.
+`prudent` is `no-std`-compatible. It doesn't need allocation either.
 
 ## Always forward compatible
 
@@ -599,14 +599,15 @@ versions `1.0` or higher.
 
 # Scope
 
-## Not supported: pattern matching with prudent macros
+## Not supported: Pattern matching
 Rust is a rich language and it allows complex statements/expressions. `prudent` tries to be
 flexible, but it also needs to be manageable and testable. So, there may be code that `prudent`
-doesn't accept (please do report it). Most likely if it involves advanced pattern matching.
+doesn't accept (please do report it). Most likely if it involves advanced pattern matching
+(destructuring).
 
 `prudent` is to help you make `unsafe` code stand out more. Mixing `unsafe` with advanced pattern
 matching or other complex syntax may sound exciting, but it makes reading the code difficult. Can
-that be an opportunity to refactor?
+that be an opportunity for refactoring?
 
 ## Not supported: Procedural macros with side effects
 Several `prudent` macros duplicate their expression "parameter". In the generated Rust code the
@@ -614,7 +615,7 @@ parameter expression is evaluated only once, but it's present in the code twice 
 inactive `if false {...}` branch for verification, and once in the following active `else {...}`
 branch.
 
-That is OK with macros by example (defined with `macro_rules!`), and OK with any well-behaving
+That IS OK with macros by example (defined with `macro_rules!`), and OK with any well-behaving
 procedural macros. However, if you pass in an expression that invokes a procedural macro that has
 side effects or state, it's your problem. Such a macro contradicts Rust guidelines.
 
