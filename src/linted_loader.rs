@@ -102,6 +102,12 @@ macro_rules! load {
     ) => {
         #[cfg(any( $( $cfg_filter )* ))]
         #[allow(unused)]
+        // Without #[macro_use] we can't refer to internal macro names without importing them, even
+        // if the macros exist in the user's namespace, that is, loaded with
+        // ```
+        // ::prudent::load!(any: "path/to/linted.rs");
+        // ```
+        // or similar.
         #[macro_use]
         #[path = $prudent_linted]
         pub mod internal_prudent_linted_loaded_or_aliased;

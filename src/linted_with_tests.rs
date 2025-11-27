@@ -179,6 +179,7 @@ pub use crate::linted_untested::internal_prudent_unsafe_fn_internal_access_tuple
 #[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
 /// ```
 ///
+/// TODO SHOULD FAIL, but it does NOT
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/unused_expect_unsafe/zero_args.rs")]
 /// ```

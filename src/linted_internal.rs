@@ -15,7 +15,7 @@ pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
 
 const _VERIFY_MODULE_PATH: () = {
     let path = core::module_path!().as_bytes();
-    if matches!(
+    if !matches!(
         path,
         [b'p', b'r', b'u', b'd', b'e', b'n', b't', b':', b':', ..]
     ) {
@@ -73,14 +73,14 @@ macro_rules! internal_prudent_unsafe_fn {
                 // https://github.com/rust-lang/rust/issues/52234
                 // macro_expanded_macro_exports_accessed_by_absolute_paths which also can't be fully
                 // suppressed. So we refer to
-                // `internal_prudent_unsafe_fn_internal_build_tuple_tree`.
+                // `::prudent::internal_prudent_unsafe_fn_internal_build_tuple_tree`.
                 //
                 // If we are in linted.rs was "loaded" by the user "dynamically" from its file, then
                 // by forwarding to ::prudent::XXXX macros here we do use two sets of the same
                 // macros. But that hardly affects the compile time.
                 //
                 // This applies to all other linted-to-linted macros calls in this file.
-                let (tuple_tree, fun) = (internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
+                let (tuple_tree, fun) = (::prudent::internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
 
                 if false {
                     // Ensure that $fn is not safe, but `unsafe`. Using
@@ -92,7 +92,7 @@ macro_rules! internal_prudent_unsafe_fn {
                     };
                     ::core::unreachable!()
                 }
-                internal_prudent_unsafe_fn_internal_build_accessors_and_call! {
+                ::prudent::internal_prudent_unsafe_fn_internal_build_accessors_and_call! {
                     fun,
                     tuple_tree,
                     ( $( $arg ),* ),
@@ -141,7 +141,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_tuple_tree {
     // Construct the tuple_tree. Recursive:
     ( $first:expr, $($rest:expr),+ ) => {
         (
-            $first, internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($rest),+ }
+            $first, ::prudent::internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($rest),+ }
         )
     };
     ( $last:expr) => {
@@ -161,7 +161,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
         )
      ),*
     ) => {
-        internal_prudent_unsafe_fn_internal_build_accessors_and_call!{
+        ::prudent::internal_prudent_unsafe_fn_internal_build_accessors_and_call!{
             $fn, $tuple_tree, ( $($other_arg),+ ),
             // Insert a new accessor to the front (left): 0.
             (0),
@@ -181,7 +181,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
         #[deny(unused_unsafe)]
         unsafe {
             $fn( $(
-                    internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
+                    ::prudent::internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*
             )
         }
@@ -225,7 +225,7 @@ macro_rules! internal_prudent_unsafe_method {
         $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
         $self:expr =>@ $fn:ident
      ) => {
-        internal_prudent_unsafe_method!(
+        ::prudent::internal_prudent_unsafe_method!(
             $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
             $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
             $self =>@ $fn =>
@@ -289,7 +289,7 @@ macro_rules! internal_prudent_unsafe_method {
                 }
                 ::core::unreachable!()
             } else {
-                internal_prudent_unsafe_method_internal_check_args_etc!(
+                ::prudent::internal_prudent_unsafe_method_internal_check_args_etc!(
                     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
                     $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
                     $self, $fn $(, $arg )*
@@ -310,9 +310,9 @@ macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
      ) => {({
                 #[deny(unused_unsafe)]
                 let tuple_tree =
-                    internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ };
+                    ::prudent::internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ };
 
-                internal_prudent_unsafe_method_internal_build_accessors_check_args_call! {
+                ::prudent::internal_prudent_unsafe_method_internal_build_accessors_check_args_call! {
                     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
                     $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
                     $self,
@@ -360,7 +360,7 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
         )
      ),*
     ) => {
-        internal_prudent_unsafe_method_internal_build_accessors_check_args_call!{
+        ::prudent::internal_prudent_unsafe_method_internal_build_accessors_check_args_call!{
             $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
             $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
             $self, $fn, $tuple_tree, ( $($other_arg),+ ),
@@ -397,7 +397,7 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
             // does NOT move the instance it's called on. And if Self were `Copy`, then the
             // reference would not point to the original instance!
             $self. $fn( $(
-                    internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
+                    ::prudent::internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*
             )
         };
