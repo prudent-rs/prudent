@@ -48,7 +48,7 @@ macro_rules! internal_prudent_unsafe_fn {
                 // Ensure that $fn (the expression itself) and any arguments (expressions) don't
                 // include any unsafe code/calls/casts on their  own without their own `unsafe{...}`
                 // block(s):
-                let (tuple_tree, fun) = (unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
+                let (tuple_tree, fun) = (internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
 
                 if false {
                     // Ensure that $fn is not safe, but `unsafe`. Using
@@ -60,7 +60,7 @@ macro_rules! internal_prudent_unsafe_fn {
                     };
                     unreachable!()
                 }
-                unsafe_fn_internal_build_accessors_and_call! {
+                internal_prudent_unsafe_fn_internal_build_accessors_and_call! {
                     fun,
                     tuple_tree,
                     ( $( $arg ),* ),
@@ -109,7 +109,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_tuple_tree {
     // Construct the tuple_tree. Recursive:
     ( $first:expr, $($rest:expr),+ ) => {
         (
-            $first, unsafe_fn_internal_build_tuple_tree!{ $($rest),+ }
+            $first, internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($rest),+ }
         )
     };
     ( $last:expr) => {
@@ -129,7 +129,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
         )
      ),*
     ) => {
-        unsafe_fn_internal_build_accessors_and_call!{
+        internal_prudent_unsafe_fn_internal_build_accessors_and_call!{
             $fn, $tuple_tree, ( $($other_arg),+ ),
             // Insert a new accessor to the front (left): 0.
             (0),
@@ -149,7 +149,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
         #[deny(unused_unsafe)]
         unsafe {
             $fn( $(
-                    unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
+                    internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*
             )
         }
@@ -193,7 +193,7 @@ macro_rules! internal_prudent_unsafe_method {
         $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
         $self:expr =>@ $fn:ident
      ) => {
-        unsafe_method!(
+        internal_prudent_unsafe_method!(
             $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
             $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
             $self =>@ $fn =>
@@ -258,7 +258,7 @@ macro_rules! internal_prudent_unsafe_method {
                 unreachable!()
             } else {
                 //compile_error!("TODO move to unsafe_method_internal_check_args_etc");
-                unsafe_method_internal_check_args_etc!(
+                internal_prudent_unsafe_method_internal_check_args_etc!(
                     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
                     $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
                     $self, $fn $(, $arg )*
@@ -291,9 +291,9 @@ macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
      ) => {({
                 #[deny(unused_unsafe)]
                 let tuple_tree =
-                    unsafe_fn_internal_build_tuple_tree!{ $($arg),+ };
+                    internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ };
 
-                unsafe_method_internal_build_accessors_check_args_call! {
+                internal_prudent_unsafe_method_internal_build_accessors_check_args_call! {
                     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
                     $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
                     $self,
@@ -341,7 +341,7 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
         )
      ),*
     ) => {
-        unsafe_method_internal_build_accessors_check_args_call!{
+        internal_prudent_unsafe_method_internal_build_accessors_check_args_call!{
             $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
             $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
             $self, $fn, $tuple_tree, ( $($other_arg),+ ),
@@ -378,7 +378,7 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
             // does NOT move the instance it's called on. And if Self were `Copy`, then the
             // reference would not point to the original instance!
             $self. $fn( $(
-                    unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
+                    internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*
             )
         };

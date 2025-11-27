@@ -102,6 +102,7 @@ macro_rules! load {
     ) => {
         #[cfg(any( $( $cfg_filter )* ))]
         #[allow(unused)]
+        #[macro_use]
         #[path = $prudent_linted]
         pub mod internal_prudent_linted_loaded_or_aliased;
 
