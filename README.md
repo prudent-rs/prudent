@@ -55,8 +55,8 @@ The pains (that pend [rust-lang/rust#110613](https://github.com/rust-lang/rust/i
     - do **not** have the test logic at the top level, otherwise rustdoc/doctest mechanism
       automatically puts the whole doctest code inside `fn main()`, which will include
       `::prudent::load!(...)` and `use crate::prudent::*`, which will fail with very strange errors.
-      If all you are testing is `const`, have an empty `fn main() {}`. (If you run `cargo clippy`
-      and it complains, see `prudent`'s source code on how to allow
+      Even if all you are testing is `const`, have an empty `fn main() {}`. (If you run `cargo
+      clippy` and it complains, see `prudent`'s source code on how to allow
       `clippy::needless_doctest_main`.)
 
 ## Limitation of lint control for unsafe_method
@@ -91,7 +91,7 @@ Alpine Linux (without `libc`, in a `rust:1.87-alpine` container)<!-- and are POS
   compilation error codes.
 - Error output validation: Some lint violations don't have a special error code. So we validate the
   error message in
-  [violations_coverage/verify_error_messages](violations_coverage/verify_error_messages) with
+  [violations_coverage/verify_error_messages/](violations_coverage/verify_error_messages/) with
   [dtolnay/trybuild](https://github.com/dtolnay/trybuild/)
   [crates.io/crates/trybuild](https://crates.io/crates/trybuild).
 
@@ -653,6 +653,8 @@ Sorted by importance (for `prudent`):
   `#![forbid(unsafe_code)]` library can emit `unsafe`
 - [Veykril/tlborm#114](https://github.com/Veykril/tlborm/issues/114) storing & (re)using variadic
   tuples
+- [dtolnay/trybuild#321](https://github.com/dtolnay/trybuild/pull/321) README: Avoid directory
+  traversal
 
 <!-- 1. Link URLs to be used on GitHub.
      2. Relative links also work auto-magically on https://crates.io/crates/prudent.
