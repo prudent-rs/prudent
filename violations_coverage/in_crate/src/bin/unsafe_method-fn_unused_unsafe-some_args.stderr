@@ -6,8 +6,8 @@ error: unnecessary `unsafe` block
    |
   ::: violations/unsafe_method-fn_unused_unsafe-some_args.rs:11:5
    |
-11 |     unsafe_method!(s, use_it, true);
-   |     ------------------------------- in this macro invocation
+11 |     unsafe_method!(s =>@ use_it => true);
+   |     ------------------------------------ in this macro invocation
    |
 note: the lint level is defined here
   --> violations/linted.rs
@@ -17,8 +17,8 @@ note: the lint level is defined here
    |
   ::: violations/unsafe_method-fn_unused_unsafe-some_args.rs:11:5
    |
-11 |     unsafe_method!(s, use_it, true);
-   |     ------------------------------- in this macro invocation
+11 |     unsafe_method!(s =>@ use_it => true);
+   |     ------------------------------------ in this macro invocation
    = note: this error originates in the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: unnecessary `unsafe` block
@@ -29,8 +29,8 @@ error: unnecessary `unsafe` block
    |
   ::: violations/unsafe_method-fn_unused_unsafe-some_args.rs:11:5
    |
-11 |     unsafe_method!(s, use_it, true);
-   |     ------------------------------- in this macro invocation
+11 |     unsafe_method!(s =>@ use_it => true);
+   |     ------------------------------------ in this macro invocation
    |
 note: the lint level is defined here
   --> violations/linted.rs
@@ -40,6 +40,6 @@ note: the lint level is defined here
    |
   ::: violations/unsafe_method-fn_unused_unsafe-some_args.rs:11:5
    |
-11 |     unsafe_method!(s, use_it, true);
-   |     ------------------------------- in this macro invocation
+11 |     unsafe_method!(s =>@ use_it => true);
+   |     ------------------------------------ in this macro invocation
    = note: this error originates in the macro `unsafe_method_internal_build_accessors_check_args_call` which comes from the expansion of the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
