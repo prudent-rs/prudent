@@ -19,7 +19,9 @@ const _VERIFY_MODULE_PATH: () = {
         path,
         [b'p', b'r', b'u', b'd', b'e', b'n', b't', b':', b':', ..]
     ) {
-        panic!("Use ONLY linted.rs in your crate(s). Do not use linted_internal.rs, as that is internal.");
+        panic!(
+            "Use ONLY linted.rs in your crate(s). Do not use linted_internal.rs, as that is internal."
+        );
     }
 };
 
