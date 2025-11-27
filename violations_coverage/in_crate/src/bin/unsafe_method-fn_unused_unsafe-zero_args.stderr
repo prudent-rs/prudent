@@ -19,7 +19,7 @@ note: the lint level is defined here
   |
 5 |     let _ = unsafe_method!("hi" =>@ len);
   |             ---------------------------- in this macro invocation
-  = note: this error originates in the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
+  = note: this error originates in the macro `internal_prudent_unsafe_method` which comes from the expansion of the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: unnecessary `unsafe` block
  --> violations/linted.rs
@@ -42,4 +42,4 @@ note: the lint level is defined here
   |
 5 |     let _ = unsafe_method!("hi" =>@ len);
   |             ---------------------------- in this macro invocation
-  = note: this error originates in the macro `unsafe_method_internal_check_args_etc` which comes from the expansion of the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
+  = note: this error originates in the macro `internal_prudent_unsafe_method_internal_check_args_etc` which comes from the expansion of the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
