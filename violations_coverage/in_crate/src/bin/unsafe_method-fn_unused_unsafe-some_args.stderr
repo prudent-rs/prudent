@@ -1,5 +1,5 @@
 error: unnecessary `unsafe` block
-  --> violations/linted.rs
+  --> violations/frontend_linted.rs
    |
    |                     let _ = unsafe { owned_receiver. $fn( $( $arg ),* ) };
    |                             ^^^^^^ unnecessary `unsafe` block
@@ -10,7 +10,7 @@ error: unnecessary `unsafe` block
    |     ------------------------------------ in this macro invocation
    |
 note: the lint level is defined here
-  --> violations/linted.rs
+  --> violations/frontend_linted.rs
    |
    |                     #[deny(unused_unsafe)]
    |                            ^^^^^^^^^^^^^
@@ -22,7 +22,7 @@ note: the lint level is defined here
    = note: this error originates in the macro `unsafe_method` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: unnecessary `unsafe` block
-  --> violations/linted.rs
+  --> violations/frontend_linted.rs
    |
    |         let result = unsafe {
    |                      ^^^^^^ unnecessary `unsafe` block
@@ -33,7 +33,7 @@ error: unnecessary `unsafe` block
    |     ------------------------------------ in this macro invocation
    |
 note: the lint level is defined here
-  --> violations/linted.rs
+  --> violations/frontend_linted.rs
    |
    |         #[deny(unused_unsafe)]
    |                ^^^^^^^^^^^^^

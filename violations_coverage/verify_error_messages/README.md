@@ -5,5 +5,5 @@ Otherwise, if it were "tests" AND if it contained any .rs files being checked by
 [dtolnay/trybuild](https://github.com/dtolnay/trybuild), those files would ALSO be loaded by
 standard `cargo test` mechanism - as if they were integration tests. That would cause many errors
 like "the name `internal_prudent_...` is defined multiple times", because in that (symlinked)
-directory we also have (a symlink to) `prudent`'s file `linted.rs`:
-[`violations/linted.rs`](violations/linted.rs).
+directory we also have (a symlink to) `prudent`'s file `frontend_linted.rs`:
+[`violations/frontend_linted.rs`](violations/frontend_linted.rs).

@@ -1,4 +1,4 @@
-//! Linted macros.
+//! Frontend macros.
 //!
 //! Implementation notes ARE a part of the documentation:
 //! - Users deserve documentation of **how** a macro works, because
@@ -7,8 +7,7 @@
 //! - Otherwise it's a pain to edit them/render them in VS Code. Yes, that matters.
 
 // This separate module exists to workaround the issue of no lint control in cross-crate macro_rules
-// https://github.com/rust-lang/rust/issues/110613). Without this separate file we got (when
-// "linted" used to be called "front_end"):
+// https://github.com/rust-lang/rust/issues/110613). Without this separate file we got (in the past):
 /*
 ---- src/internal_front_end.rs - internal_front_end::internal_prudent_unsafe_fn (line 117) stdout ----
 error: circular modules: src/internal_front_end.rs -> src/internal_front_end.rs
@@ -19,7 +18,7 @@ error: circular modules: src/internal_front_end.rs -> src/internal_front_end.rs
 
 const _VERIFY_MODULE_PATH: () = {
     let path = core::module_path!().as_bytes();
-    if !matches!(path, b"prudent::linted") {
+    if !matches!(path, b"prudent::frontend") {
         panic!(
             "Do NOT load frontend_with_tests.rs in other crates. It's internal in prudent only."
         );
@@ -65,10 +64,10 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// Use the result of `unsafe_fn!` immediately as an array/slice:
 /// ```test_harness
 /// //TODO failing
-/// //# ::prudent::load!("linted.rs");
-/// //::prudent::load!(any: "linted.rs");
-/// ::prudent::load!(any: "linted.rs");
-/// // ::prudent::load!( "linted.rs");
+/// //# ::prudent::load!("frontend_linted.rs");
+/// //::prudent::load!(any: "frontend_linted.rs");
+/// ::prudent::load!(any: "frontend_linted.rs");
+/// // ::prudent::load!( "frontend_linted.rs");
 /// # use self::prudent::*;
 /// const unsafe fn return_array() -> [bool; 1] { [true] }
 ///
@@ -76,7 +75,7 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// ```
 /// Use the result of `unsafe_fn!` immediately as a mutable array/slice (assign/modify its slot(s)):
 /// ```
-/// ::prudent::load!(any: "linted.rs");
+/// ::prudent::load!(any: "frontend_linted.rs");
 /// use self::prudent::*;
 /// fn _test_unsafe_fn_returning_mut_ref() {
 ///     // NOT running under MIRI, because of an intentional leak.
@@ -93,7 +92,7 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// ```
 /// The same, but the function takes an argument (and no leak):
 /// ```
-/// ::prudent::load!(any: "linted.rs");
+/// ::prudent::load!(any: "frontend_linted.rs");
 /// use crate::prudent::*;
 /// unsafe fn return_same_mut_ref<T>(mref: &mut T) -> &mut T {
 ///    mref
@@ -220,7 +219,7 @@ pub use crate::frontend_untested::internal_prudent_unsafe_method_internal_build_
 #[allow(clippy::useless_attribute)]
 #[allow(clippy::needless_doctest_main)]
 /// ```
-/// ::prudent::load!(any: "linted.rs");
+/// ::prudent::load!(any: "frontend_linted.rs");
 /// //use self::prudent::*;
 /// fn main() {
 /// {

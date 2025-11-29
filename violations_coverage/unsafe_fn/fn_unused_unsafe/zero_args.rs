@@ -1,4 +1,4 @@
-::prudent::load!(any: "linted.rs");
+::prudent::load!(any: "frontend_linted.rs");
 use crate::prudent::*;
 
 fn safe_fn_zero_args() {}

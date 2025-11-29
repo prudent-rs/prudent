@@ -1,4 +1,4 @@
-::prudent::load!(any: "linted.rs");
+::prudent::load!(any: "frontend_linted.rs");
 use crate::prudent::*;
 
 unsafe fn add_three(left: u64, middle: u64, right: u64) -> u64 {

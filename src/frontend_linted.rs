@@ -1,4 +1,4 @@
-// A copy of prudent's linted.rs. Under Apache 2.0, MIT and BSD license.
+// A copy of prudent's frontend_linted.rs. Under Apache 2.0, MIT and BSD license.
 //
 // For the version of this file see PRUDENT_INTERNAL_LINTED_VERSION below. This may, or may not, be
 // compatible with newer versions of prudent. For the most recent version available see
@@ -19,7 +19,7 @@ const _VERIFY_MODULE_PATH: () = {
         [b'p', b'r', b'u', b'd', b'e', b'n', b't', b':', b':', ..]
     ) {
         panic!(
-            "Use ONLY linted.rs in your crate(s). Do not use frontend_unlinted.rs, as that is internal."
+            "Use ONLY frontend_linted.rs in your crate(s). Do not use frontend_unlinted.rs, as that is internal."
         );
     }
 };
@@ -60,13 +60,13 @@ macro_rules! internal_prudent_unsafe_fn {
                 // include any unsafe code/calls/casts on their  own without their own `unsafe{...}`
                 // block(s).
                 //
-                // The rest of this comment block/lines exists the same in both linted.rs and
-                // frontend_unlinted.rs, but it applies to linted.rs ONLY.
+                // The rest of this comment block/lines exists the same in both frontend_linted.rs
+                // and frontend_unlinted.rs, but it applies to frontend_linted.rs ONLY.
                 //
                 // (That minimizes the number of differences between those two files.)
                 //
-                // If this file is linted.rs (which then is passed to ::prudent::load!(...)), then
-                // here we can *not* refer to
+                // If this file is frontend_linted.rs (which then is passed to
+                // ::prudent::load!(...)), then here we can *not* refer to
                 // - $crate::unsafe_method, nor
                 // - crate::unsafe_method
                 //
@@ -81,7 +81,7 @@ macro_rules! internal_prudent_unsafe_fn {
                 // `unsafe_method`). So we add prefix `internal_prudent_`, and we refer to
                 // `internal_prudent_unsafe_method` instead.
                 //
-                // This applies to all other linted-to-linted macros calls in linted.rs.
+                // This applies to all other linted-to-linted macros calls in frontend_linted.rs.
                 let (tuple_tree, fun) = (internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
 
                 if false {

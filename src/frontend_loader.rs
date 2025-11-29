@@ -1,6 +1,6 @@
-// - Linted ("frontend"_ macros can (and do) invoke backend ("backend") macros, but not the other
-//   way. That's because backend macros don't know the crate name where linted macros were loaded.
-// - linted macros can be recursive (between themselves, but not through backend ("backend")
+// - "Frontend"_ macros can (and do) invoke "backend" macros, but not the other way. That's because
+//   backend macros don't know the crate name where frontend macros were loaded.
+// - frontend macros can be recursive (between themselves, but not through backend ("backend")
 //   macros")
 /// "Load" prudent macros. Invoke this from the top level of your crate, and only once (once per
 /// crate).
@@ -8,22 +8,22 @@
 macro_rules! load {
     // No lints.
     //
-    // re-export all (both `linted` and `backend`) from `prudent` crate under module `prudent`.
+    // re-export all (both `frontend` and `backend`) from `prudent` crate under module `prudent`.
     () => {
         $crate::load!( prudent );
     };
     // No lints.
     //
-    // re-export all (both `linted` and `backend`) from `prudent` crate, under given module name.
+    // re-export all (both `frontend` and `backend`) from `prudent` crate, under given module name.
     ( $module_name:ident ) => {
         /// prudent exported in a module
         mod $module_name {
-            $crate::reexport_macros!( ::prudent::linted );
-            $crate::reexport_non_macros!( ::prudent::linted );
+            $crate::reexport_macros!( ::prudent::frontend);
+            $crate::reexport_non_macros!( ::prudent::frontend );
         }
     };// -----------
 
-    // load `linted` from the given file; re-export `backend` from `prudent` crate; blend them
+    // load `frontend` from the given file; re-export `backend` from `prudent` crate; blend them
     // under a module with the given name. If `$module_name` is not given, it's `prudent`.
     //
     // Since `any` is **not** specified, this applies to `$[cfg(test)` only.
@@ -106,7 +106,7 @@ macro_rules! load {
         // Without #[macro_use] we can't refer to internal macro names without importing them, even
         // if the macros exist in the user's namespace, that is, loaded with
         // ```
-        // ::prudent::load!(any: "path/to/linted.rs");
+        // ::prudent::load!(any: "path/to/frontend_linted.rs");
         // ```
         // or similar.
         #[macro_use]
@@ -115,7 +115,7 @@ macro_rules! load {
 
         #[cfg(not(any( $( $cfg_filter )* )))]
         #[allow(unused)]
-        pub use ::prudent::linted as internal_prudent_linted_loaded_or_aliased;
+        pub use ::prudent::frontend as internal_prudent_linted_loaded_or_aliased;
 
         mod $module_name {
             $crate::reexport_macros!(super::internal_prudent_linted_loaded_or_aliased);
@@ -127,7 +127,7 @@ macro_rules! load {
     }
 }
 
-/// Re-export macros from the given `linted`_module/path.
+/// Re-export macros from the given "frontend"_module/path.
 ///
 /// NOT a part of public API - internal.
 #[doc(hidden)]
@@ -157,7 +157,7 @@ macro_rules! reexport_macros {
 }
 
 /// Re-export
-/// 1. non-macros from the given `linted`_module/path. And
+/// 1. non-macros from the given "frontend"_module/path. And
 /// 2. anything needed from `backend`.
 ///
 /// NOT a part of public API - internal.
