@@ -12,6 +12,7 @@
 #[allow(unused)]
 pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
 
+#[cfg(not(feature = "internal_use_frontend_linted"))]
 const _VERIFY_MODULE_PATH: () = {
     let path = core::module_path!().as_bytes();
     if matches!(
