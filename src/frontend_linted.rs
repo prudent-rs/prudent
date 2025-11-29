@@ -227,23 +227,24 @@ macro_rules! internal_prudent_unsafe_method {
     (
         $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
         $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
-        $self:expr =>@ $fn:ident
+        $self:expr =>@ $method:ident
      ) => {
         internal_prudent_unsafe_method!(
             $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
             $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
-            $self =>@ $fn =>
+            $self =>@ $method =>
         )
      };
     (
         $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
         $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
-        $self:expr =>@ $fn:ident => $( $arg:expr ),*
+        $self:expr =>@ $method:ident => $( $arg:expr ),*
      ) => {
         // See unsafe_fn for why here we enclose in (...) and not in {...}.
         (
             if false {
-                ::prudent::allow_unsafe_expect_unsafe_is_correct!{
+                // no  module needed in the following macro path, since allow_unsafe_expect_unsafe_is_correct has #[macro_export]
+                ::prudent::max_one_active_of_allow_unsafe_expect_unsafe!{
                     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
                     $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
                 }
@@ -280,10 +281,13 @@ macro_rules! internal_prudent_unsafe_method {
                     #[allow(unused_mut)]
                     #[allow(invalid_value)] // for &str and other types where zeroed() issues invalid_value warning.
                     let mut owned_receiver = ::core::mem::replace(mref, unsafe{ ::core::mem::zeroed() });
-                    // Detect code where unsafe_fn! or unsafe_method! is not needed at all. That is,
-                    // where a function/method used to be `unsafe`, but it stopped being so.
+                    // Detect code where unsafe_method! is not needed at all. Maybe the method used
+                    // to be `unsafe`, but not anymore.
                     #[deny(unused_unsafe)]
-                    let _ = unsafe { owned_receiver. $fn( $( $arg ),* ) };
+                    let _ = unsafe { owned_receiver. $method( $( $arg ),* ) };
+                    //@TODO here call the method with tuple tree-stored evaluated args.
+                    //
+                    //THEN simplify internal_prudent_unsafe_method_internal_check_args_etc -> internal_prudent_unsafe_method_internal_build_accessors_check_args_call
                 } else {
                     // @TODO eliminate
                     $(
@@ -296,7 +300,7 @@ macro_rules! internal_prudent_unsafe_method {
                 internal_prudent_unsafe_method_internal_check_args_etc!(
                     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
                     $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
-                    $self, $fn $(, $arg )*
+                    $self, $method $(, $arg )*
                 )
             }
         )

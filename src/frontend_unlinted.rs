@@ -239,7 +239,7 @@ macro_rules! internal_prudent_unsafe_method {
         // See unsafe_fn for why here we enclose in (...) and not in {...}.
         (
             if false {
-                ::prudent::allow_unsafe_expect_unsafe_is_correct!{
+                ::prudent::max_one_active_of_allow_unsafe_expect_unsafe!{
                     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
                     $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
                 }

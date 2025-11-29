@@ -295,7 +295,7 @@ macro_rules! expecting_unsafe_fn_path {
 /// passed to [unsafe_method].
 #[doc(hidden)]
 #[macro_export]
-macro_rules! allow_unsafe_expect_unsafe_is_correct {
+macro_rules! max_one_active_of_allow_unsafe_expect_unsafe {
     (
         ~allow_unsafe  $( { $_allow_unsafe_empty_indicator:tt  } )?
         ~expect_unsafe $( { $_expect_unsafe_empty_indicator:tt } )?
