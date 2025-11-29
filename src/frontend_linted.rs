@@ -5,7 +5,7 @@
 // https://github.com/prudent-rs/prudent/, https://crates.io/crates/prudent and
 // https://docs.rs/prudent/latest/prudent.
 
-// For docs see frontend_with_tests.rs
+// For docs see frontend_with_compile_fail_tests.rs
 #![allow(missing_docs)]
 
 #[doc(hidden)]

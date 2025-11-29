@@ -20,7 +20,7 @@ const _VERIFY_MODULE_PATH: () = {
     let path = core::module_path!().as_bytes();
     if !matches!(path, b"prudent::frontend") {
         panic!(
-            "Do NOT load frontend_with_tests.rs in other crates. It's internal in prudent only."
+            "Do NOT load frontend_with_compile_fail_tests.rs in other crates. It's internal in prudent only."
         );
     }
 };
@@ -63,7 +63,7 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// ```
 /// Use the result of `unsafe_fn!` immediately as an array/slice:
 /// ```test_harness
-/// //TODO failing
+/// //TODO? failing??
 /// //# ::prudent::load!("frontend_linted.rs");
 /// //::prudent::load!(any: "frontend_linted.rs");
 /// ::prudent::load!(any: "frontend_linted.rs");
@@ -75,6 +75,7 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// ```
 /// Use the result of `unsafe_fn!` immediately as a mutable array/slice (assign/modify its slot(s)):
 /// ```
+/// // @TODO MOVE OUT TO coverage_positive/
 /// ::prudent::load!(any: "frontend_linted.rs");
 /// use self::prudent::*;
 /// fn _test_unsafe_fn_returning_mut_ref() {
@@ -92,6 +93,7 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// ```
 /// The same, but the function takes an argument (and no leak):
 /// ```
+/// // @TODO MOVE OUT TO coverage_positive/
 /// ::prudent::load!(any: "frontend_linted.rs");
 /// use crate::prudent::*;
 /// unsafe fn return_same_mut_ref<T>(mref: &mut T) -> &mut T {
@@ -219,6 +221,7 @@ pub use crate::frontend_untested::internal_prudent_unsafe_method_internal_build_
 #[allow(clippy::useless_attribute)]
 #[allow(clippy::needless_doctest_main)]
 /// ```
+/// // @TODO MOVE OUT TO coverage_positive/
 /// ::prudent::load!(any: "frontend_linted.rs");
 /// //use self::prudent::*;
 /// fn main() {
