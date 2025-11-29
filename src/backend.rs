@@ -1,4 +1,4 @@
-//! "Unlinted" functionality (anything else than linted macros)
+//! "backend" functionality (anything else than linted macros)
 //! - macros that don't need `warn/deny/forbid/allow/expect` lint rules
 //! - non-macro functionality.
 
@@ -281,7 +281,7 @@ pub mod expecting_unsafe_fn {
 #[doc(hidden)]
 macro_rules! expecting_unsafe_fn_path {
     ( $( $arg:expr ),+ ) => {
-        $crate::expecting_unsafe_fn_path!( ~ { $( $arg ),+ }, $crate::unlinted::expecting_unsafe_fn )
+        $crate::expecting_unsafe_fn_path!( ~ { $( $arg ),+ }, $crate::backend::expecting_unsafe_fn )
     };
     ( ~ { $arg_first:expr, $( $arg_rest:expr ),+ }, $( $path_part:tt )+ ) => {
         $crate::expecting_unsafe_fn_path!( ~ { $( $arg_rest ),+ }, $( $path_part )+ ::arg )

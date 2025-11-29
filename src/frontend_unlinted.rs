@@ -3,7 +3,7 @@
 // https://github.com/prudent-rs/prudent/, https://crates.io/crates/prudent and
 // https://docs.rs/prudent/latest/prudent.
 
-// For docs see linted_with_tests.rs
+// For docs see frontend_with_tests.rs
 #![allow(missing_docs)]
 
 #[doc(hidden)]
@@ -17,7 +17,7 @@ const _VERIFY_MODULE_PATH: () = {
         [b'p', b'r', b'u', b'd', b'e', b'n', b't', b':', b':', ..]
     ) {
         panic!(
-            "Use ONLY linted.rs in your crate(s). Do not use linted_internal.rs, as that is internal."
+            "Use ONLY linted.rs in your crate(s). Do not use frontend_unlinted.rs, as that is internal."
         );
     }
 };
@@ -59,7 +59,7 @@ macro_rules! internal_prudent_unsafe_fn {
                 // block(s).
                 //
                 // The rest of this comment block/lines exists the same in both linted.rs and
-                // linted_internal.rs, but it applies to linted.rs ONLY.
+                // frontend_unlinted.rs, but it applies to linted.rs ONLY.
                 //
                 // (That minimizes the number of differences between those two files.)
                 //
@@ -113,7 +113,7 @@ macro_rules! internal_prudent_unsafe_fn {
                 // Ensure that $fn is not safe, but `unsafe`. Using
                 // https://doc.rust-lang.org/reference/types/function-item.html#r-type.fn-item.coercion
                 let _ = if false {
-                    ::prudent::unlinted::expecting_unsafe_fn::fun
+                    ::prudent::backend::expecting_unsafe_fn::fun
                 } else {
                     fun
                 };
@@ -271,7 +271,7 @@ macro_rules! internal_prudent_unsafe_method {
                             #[expect(unsafe_code)]
                         )?
                         let rref = &( $self );
-                        ::prudent::unlinted::shared_to_mut( rref )
+                        ::prudent::backend::shared_to_mut( rref )
                     };
                     #[allow(unused_mut)]
                     #[allow(invalid_value)]
@@ -510,13 +510,13 @@ pub use internal_prudent_unsafe_mut;
 macro_rules! internal_prudent_unsafe_val {
     ($ptr:expr) => {{
         let ptr: *const _ = $ptr;
-        ::prudent::unlinted::expect_copy_ptr(ptr);
+        ::prudent::backend::expect_copy_ptr(ptr);
         unsafe { *ptr }
     }};
     ($ptr:expr, $ptr_type:ty) => {{
         let ptr = $ptr;
         let ptr = ptr as *const $ptr_type;
-        ::prudent::unlinted::expect_copy_ptr(ptr);
+        ::prudent::backend::expect_copy_ptr(ptr);
         unsafe { *ptr }
     }};
 }

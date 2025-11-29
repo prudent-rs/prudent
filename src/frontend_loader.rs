@@ -1,6 +1,6 @@
-// - Linted ("frontend"_ macros can (and do) invoke unlinted ("backend") macros, but not the other
-//   way. That's because unlinted macros don't know the crate name where linted macros were loaded.
-// - linted macros can be recursive (between themselves, but not through unlinted ("backend")
+// - Linted ("frontend"_ macros can (and do) invoke backend ("backend") macros, but not the other
+//   way. That's because backend macros don't know the crate name where linted macros were loaded.
+// - linted macros can be recursive (between themselves, but not through backend ("backend")
 //   macros")
 /// "Load" prudent macros. Invoke this from the top level of your crate, and only once (once per
 /// crate).
@@ -8,13 +8,13 @@
 macro_rules! load {
     // No lints.
     //
-    // re-export all (both `linted` and `unlinted`) from `prudent` crate under module `prudent`.
+    // re-export all (both `linted` and `backend`) from `prudent` crate under module `prudent`.
     () => {
         $crate::load!( prudent );
     };
     // No lints.
     //
-    // re-export all (both `linted` and `unlinted`) from `prudent` crate, under given module name.
+    // re-export all (both `linted` and `backend`) from `prudent` crate, under given module name.
     ( $module_name:ident ) => {
         /// prudent exported in a module
         mod $module_name {
@@ -23,7 +23,7 @@ macro_rules! load {
         }
     };// -----------
 
-    // load `linted` from the given file; re-export `unlinted` from `prudent` crate; blend them
+    // load `linted` from the given file; re-export `backend` from `prudent` crate; blend them
     // under a module with the given name. If `$module_name` is not given, it's `prudent`.
     //
     // Since `any` is **not** specified, this applies to `$[cfg(test)` only.
@@ -122,7 +122,7 @@ macro_rules! load {
             $crate::reexport_non_macros!( super::internal_prudent_linted_loaded_or_aliased );
         }
         const _VERIFY_VERSION: () = {
-            ::prudent::unlinted::verify_linted_version( $module_name::PRUDENT_INTERNAL_LINTED_VERSION );
+            ::prudent::backend::verify_linted_version( $module_name::PRUDENT_INTERNAL_LINTED_VERSION );
         };
     }
 }
@@ -158,7 +158,7 @@ macro_rules! reexport_macros {
 
 /// Re-export
 /// 1. non-macros from the given `linted`_module/path. And
-/// 2. anything needed from `unlinted`.
+/// 2. anything needed from `backend`.
 ///
 /// NOT a part of public API - internal.
 #[doc(hidden)]
@@ -172,6 +172,6 @@ macro_rules! reexport_non_macros {
         pub use $linted_path::{PRUDENT_INTERNAL_LINTED_VERSION};
 
         #[allow(unused)]
-        pub use ::prudent::unlinted::*;
+        pub use ::prudent::backend::*;
     };
 }

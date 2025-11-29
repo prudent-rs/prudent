@@ -20,13 +20,15 @@ error: circular modules: src/internal_front_end.rs -> src/internal_front_end.rs
 const _VERIFY_MODULE_PATH: () = {
     let path = core::module_path!().as_bytes();
     if !matches!(path, b"prudent::linted") {
-        panic!("Do NOT load linted_with_tests.rs in other crates. It's internal in prudent only.");
+        panic!(
+            "Do NOT load frontend_with_tests.rs in other crates. It's internal in prudent only."
+        );
     }
 };
 
 #[doc(hidden)]
 #[allow(unused)]
-pub use crate::linted_untested::PRUDENT_INTERNAL_LINTED_VERSION;
+pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 
 /// ```compile_fail
 /// // @TODO Docs: at your crate's top level, use either self::prudent, or crate:;prudent (but NOT
@@ -103,7 +105,7 @@ pub use crate::linted_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// }
 /// ```
 #[doc(inline)]
-pub use crate::linted_untested::internal_prudent_unsafe_fn;
+pub use crate::frontend_untested::internal_prudent_unsafe_fn;
 
 // Same `compile_fail` tests as listed above for `unsafe_fn`, but here we validate the error
 // numbers.
@@ -149,13 +151,13 @@ pub const _: () = {};
 //----------------------
 
 #[doc(hidden)]
-pub use crate::linted_untested::internal_prudent_unsafe_fn_internal_build_tuple_tree;
+pub use crate::frontend_untested::internal_prudent_unsafe_fn_internal_build_tuple_tree;
 
 #[doc(hidden)]
-pub use crate::linted_untested::internal_prudent_unsafe_fn_internal_build_accessors_and_call;
+pub use crate::frontend_untested::internal_prudent_unsafe_fn_internal_build_accessors_and_call;
 
 #[doc(hidden)]
-pub use crate::linted_untested::internal_prudent_unsafe_fn_internal_access_tuple_tree_field;
+pub use crate::frontend_untested::internal_prudent_unsafe_fn_internal_access_tuple_tree_field;
 //----------------------
 
 /// ```compile_fail
@@ -187,7 +189,7 @@ pub use crate::linted_untested::internal_prudent_unsafe_fn_internal_access_tuple
 #[doc = include_str!("../violations_coverage/unsafe_method/unused_expect_unsafe/some_args.rs")]
 /// ```
 #[doc(inline)]
-pub use crate::linted_untested::internal_prudent_unsafe_method;
+pub use crate::frontend_untested::internal_prudent_unsafe_method;
 
 /// ```compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
@@ -209,10 +211,10 @@ pub const _: () = {};
 //----------------------
 
 #[doc(hidden)]
-pub use crate::linted_untested::internal_prudent_unsafe_method_internal_check_args_etc;
+pub use crate::frontend_untested::internal_prudent_unsafe_method_internal_check_args_etc;
 
 #[doc(hidden)]
-pub use crate::linted_untested::internal_prudent_unsafe_method_internal_build_accessors_check_args_call;
+pub use crate::frontend_untested::internal_prudent_unsafe_method_internal_build_accessors_check_args_call;
 //----------------------
 
 #[allow(clippy::useless_attribute)]
@@ -259,21 +261,21 @@ pub use crate::linted_untested::internal_prudent_unsafe_method_internal_build_ac
 /// }
 /// ```
 #[doc(inline)]
-pub use crate::linted_untested::internal_prudent_unsafe_static_set;
+pub use crate::frontend_untested::internal_prudent_unsafe_static_set;
 //----------------------
 
 #[doc(inline)]
-pub use crate::linted_untested::internal_prudent_unsafe_ref;
+pub use crate::frontend_untested::internal_prudent_unsafe_ref;
 //----------------------
 
 #[doc(inline)]
-pub use crate::linted_untested::internal_prudent_unsafe_mut;
+pub use crate::frontend_untested::internal_prudent_unsafe_mut;
 //----------------------
 
 #[doc(inline)]
-pub use crate::linted_untested::internal_prudent_unsafe_val;
+pub use crate::frontend_untested::internal_prudent_unsafe_val;
 //----------------------
 
 #[doc(inline)]
-pub use crate::linted_untested::internal_prudent_unsafe_set;
+pub use crate::frontend_untested::internal_prudent_unsafe_set;
 //----------------------
