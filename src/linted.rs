@@ -247,8 +247,8 @@ macro_rules! internal_prudent_unsafe_method {
                     $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
                 }
                 if false {
-                    // This block "makes" owned_receiver, an instance/owned value of the same type
-                    // as $self. (Of course, the instance is invalid - this is for compile-time
+                    // This block "makes" an owned_receiver, an instance/owned value of the same
+                    // type as $self. (Of course, the instance is invalid - this is for compile-time
                     // checks only, hence `if false {...}`.)
                     //
                     // Then we simulate invocation of the given method inside `unsafe {...}``, BUT
@@ -277,7 +277,7 @@ macro_rules! internal_prudent_unsafe_method {
                         ::prudent::unlinted::shared_to_mut( rref )
                     };
                     #[allow(unused_mut)]
-                    #[allow(invalid_value)]
+                    #[allow(invalid_value)] // for &str and other types where zeroed() issues invalid_value warning.
                     let mut owned_receiver = ::core::mem::replace(mref, unsafe{ ::core::mem::zeroed() });
                     // Detect code where unsafe_fn! or unsafe_method! is not needed at all. That is,
                     // where a function/method used to be `unsafe`, but it stopped being so.
@@ -394,9 +394,10 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
         )?
         let result = unsafe {
             // Unlike arguments, we can NOT store result of $self expression in a variable, because
-            // it would be moved, but a method with receiver by reference `&self` or `&mut self`
-            // does NOT move the instance it's called on. And if Self were `Copy`, then the
-            // reference would not point to the original instance!
+            // - it would be moved, but a method with receiver by reference `&self` or `&mut self`
+            // does NOT move the instance it's called on. Also,
+            // - if Self were `Copy`, then `&self` or `&mut self` reference would not point to the
+            //   original instance! (Plus extra stack used, plus lifetimes issues.)
             $self. $fn( $(
                     internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*

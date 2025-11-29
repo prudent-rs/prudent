@@ -104,46 +104,6 @@ Following are all the positive examples. They are also run by the above [GitHub 
 For negative examples, which catch unintended `unsafe` functions/expressions/access, see
 documentation of each `prudent` macro.
 
-# unsafe_fn
-```rust
-// @TODO both any: and default:
-::prudent::load!(any: "linted.rs");
-//::prudent::load!();
-
-//use crate::prudent::*;
-use crate::prudent::unsafe_fn;
-
-const unsafe fn unsafe_fn_no_args() {}
-const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
-const unsafe fn unsafe_fn_two_args(_: bool, u: u8) -> u8 { u }
-
-const _: () = unsafe_fn!(unsafe_fn_no_args);
-const _: bool = unsafe_fn!(unsafe_fn_one_arg=> true);
-const _: u8 = unsafe_fn!(unsafe_fn_two_args=> true, 0);
-fn main() {}
-```
-
-# unsafe_method
-## unsafe_method > self: shared reference
-```rust
-//::prudent::load!(any: "linted.rs");
-::prudent::load!();
-mod module {
-  use crate::prudent::unsafe_method;
-  // Works for Copy types
-  const _: u8 = unsafe_method!(                        1u8                    =>@ unchecked_add => 0);
-  const _: u8 = unsafe_method!(~allow_unsafe           1u8                    =>@ unchecked_add => 0);
-  const _: u8 = unsafe_method!(~allow_unsafe  unsafe { 1u8.unchecked_add(2) } =>@ unchecked_add => 0);
-  const _: u8 = unsafe_method!(~expect_unsafe unsafe { 1u8.unchecked_add(2) } =>@ unchecked_add => 0);
-  // @TODO compile_fail:
-  //
-  // const _: u8 = unsafe_method!( unsafe { 1u8.unchecked_add(2) } =>@ unchecked_add => 0);
-  //
-  //const _: u8 = unsafe_method!(~expect_unsafe 1u8, unchecked_add, 0);
-}
-fn main() {}
-```
-
 ```rust
 let _todo = ();
 //# use prudent::unsafe_method;
@@ -168,7 +128,7 @@ impl SNonCopy {
 
 fn main() {
     let s = SNonCopy {};
-    // Works for non-Copy types
+    // Works ALSO for non-Copy types
     unsafe_method!(s =>@ unsafe_method_no_args);
     unsafe_method!(s =>@ unsafe_method_one_arg => true);
     unsafe_method!(s =>@ unsafe_method_two_args => true, false);
