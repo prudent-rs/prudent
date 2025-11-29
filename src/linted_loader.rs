@@ -29,27 +29,27 @@ macro_rules! load {
     // Since `any` is **not** specified, this applies to `$[cfg(test)` only.
     ( $prudent_linted_first:literal
       $( $prudent_linted_second:literal )?
-      $( -> $module_name:ident )?
+      $( => $module_name:ident )?
     ) => {
         $crate::load!( ~
             (test) :
             $prudent_linted_first
             $( $prudent_linted_second )?
-            $( -> $module_name )?
+            $( => $module_name )?
         );
     };
     // `any`` means any build/`$cfg`/profile/target...
     ( any :
       $prudent_linted_first:literal
       $( $prudent_linted_second:literal )?
-      $( -> $module_name:ident )?
+      $( => $module_name:ident )?
      ) => {
         // @TODO test:
         $crate::load!( ~
             (test,not(test)) :
              $prudent_linted_first
              $( $prudent_linted_second )?
-             $( -> $module_name )?
+             $( => $module_name )?
         );
     };
     ( ~
@@ -61,45 +61,45 @@ macro_rules! load {
             ( $( $cfg_filter )* ) :
             $prudent_linted_first
             $( $prudent_linted_second )?
-            -> prudent
+            => prudent
         );
       };
     ( ~
       ( $( $cfg_filter:tt )* ) :
       $prudent_linted_same:literal
-      -> $module_name:ident
+      => $module_name:ident
     ) => {
         $crate::load!( ~
             ( $( $cfg_filter )* ) :
             $prudent_linted_same
             $prudent_linted_same
-            -> $module_name
+            => $module_name
         );
     };
     ( ~
       ( $( $cfg_filter:tt )* ) :
       $prudent_linted_first:literal
       $prudent_linted_second:literal
-      -> $module_name:ident
+      => $module_name:ident
     ) => {
         #[cfg(not(windows))]
         $crate::load!( ~~
             ( $( $cfg_filter )* ) :
             $prudent_linted_first
-            -> $module_name
+            => $module_name
         );
 
         #[cfg(windows)]
         $crate::load!( ~~
             ( $( $cfg_filter )* ) :
             $prudent_linted_second
-            -> $module_name
+            => $module_name
         );
     };
     ( ~~
       ( $( $cfg_filter:tt )* ) :
       $prudent_linted:literal
-      -> $module_name:ident
+      => $module_name:ident
     ) => {
         #[cfg(any( $( $cfg_filter )* ))]
         #[allow(unused)]

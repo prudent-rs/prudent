@@ -124,6 +124,7 @@ macro_rules! internal_prudent_unsafe_fn {
             // `#[deny(unused_unsafe)]` does NOT work here. Why? Because when we assigned `let fun =
             // $fn` above, that then happily coerces/infers to an unsafe function, even though it's
             // safe. That's why we have `expecting_unsafe_fn` module.
+            #[deny(unused_unsafe)]
             #[allow(unsafe_code)]
             let result = unsafe {
                 fun()
@@ -331,8 +332,6 @@ macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
      ) => {({
                 #[allow(unsafe_code)]
                 // Notify if $self includes `unsafe {...}`, but no ~allow_unsafe or ~expect_unsafe:
-                //
-                //#[deny(unused_unsafe)]
                 #[deny(unused_unsafe)]
                 $(
                     $( { $allow_unsafe_empty_indicator } )?
@@ -342,7 +341,7 @@ macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
                     $( { $expect_unsafe_empty_indicator } )?
                     #[expect(unused_unsafe)]
                 )?
-                #[deny(unused_unsafe)]
+                //#[deny(unused_unsafe)]
                 let result = unsafe { $self. $fn () };
                 result
     })};

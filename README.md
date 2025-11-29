@@ -21,7 +21,7 @@ _not_ at runtime/dynamic, but it's done at compile time.) You do it only once pe
 - If you want to apply lints to the macro-generated code (which is highly recommended), your crate
 needs to contain/have access to (a copy of) `prudent`'s file [src/linted.rs](src/linted.rs), which
 you "load" with `::prudent::load!(...)`.
-- If you don't need lints, just `::prudent::load()`.
+- If you don't need lints, just `::prudent::load!()`.
 
 Both ways of `::prudent::load!(...)` create a module, called `prudent` by default. If your crate
 already uses `prudent` identifier, you can choose a different identifier for `prudent`'s top-level
@@ -131,13 +131,14 @@ fn main() {}
 mod module {
   use crate::prudent::unsafe_method;
   // Works for Copy types
-  const _: u8 = unsafe_method!(1u8 =>@ unchecked_add => 0);
-  //const _: u8 = unsafe_method!(({#[forbid(unused)] let v = 1u8; v}), unchecked_add, 0);
-  //const _: u8 = unsafe_method!(#[allow_unsafe] 1u8, unchecked_add, 0);
-  //const _: u8 = unsafe_method!(#[expect_unsafex] 1u8, unchecked_add, 0);
-
-  //const _: u8 = unsafe_method!(({#forbid(unused) let v = 1u8; v}), unchecked_add, 0);
-  const _: u8 = unsafe_method!(~allow_unsafe 1u8 =>@ unchecked_add => 0);
+  const _: u8 = unsafe_method!(                        1u8                    =>@ unchecked_add => 0);
+  const _: u8 = unsafe_method!(~allow_unsafe           1u8                    =>@ unchecked_add => 0);
+  const _: u8 = unsafe_method!(~allow_unsafe  unsafe { 1u8.unchecked_add(2) } =>@ unchecked_add => 0);
+  const _: u8 = unsafe_method!(~expect_unsafe unsafe { 1u8.unchecked_add(2) } =>@ unchecked_add => 0);
+  // @TODO compile_fail:
+  //
+  // const _: u8 = unsafe_method!( unsafe { 1u8.unchecked_add(2) } =>@ unchecked_add => 0);
+  //
   //const _: u8 = unsafe_method!(~expect_unsafe 1u8, unchecked_add, 0);
 }
 fn main() {}
@@ -619,12 +620,20 @@ That IS OK with macros by example (defined with `macro_rules!`), and OK with any
 procedural macros. However, if you pass in an expression that invokes a procedural macro that has
 side effects or state, it's your problem. Such a macro contradicts Rust guidelines.
 
+## unsafe_fn limit max 12 arguments
+
+`unsafe_fn` validates that the function to be called is indeed `unsafe`. It does _not_ use lints to
+validate it, but it uses its own compile time checks instead. Those checks only work with functions
+up to a certain number of arguments. Increasing the limit makes implementation longer (see
+`prudent::unlinted::expecting_unsafe_fn`). For now, the limit is 12. To keep the overall API simple
+enough, those checks can't be turned off.
+
 # Updates
 
 Please subscribe for low frequency updates at
 [peter-lyons-kehl/prudent#1](https://github.com/peter-lyons-kehl/prudent/issues/1).
 
-# Side fruit and related issues
+# Side fruit, related issues, credits
 Please contribute, or at least subscribe, and give thumbs up, to:
 
 ## Related issues
@@ -663,6 +672,11 @@ Sorted by importance (for `prudent`):
   tuples
 - [dtolnay/trybuild#321](https://github.com/dtolnay/trybuild/pull/321) README: Avoid directory
   traversal
+
+## Credits
+
+Thanks to [Kevin Reid `kpreid`](https://github.com/kpreid) for a tip on [Preamble for doc
+tests...](https://users.rust-lang.org/t/preamble-for-doc-tests-doc-test-attr-or-another-way/136594/2).
 
 <!-- 1. Link URLs to be used on GitHub.
      2. Relative links also work auto-magically on https://crates.io/crates/prudent.
