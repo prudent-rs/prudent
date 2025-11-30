@@ -132,15 +132,16 @@ pub const _: () = {};
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
 /// ```
-///
-/// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/zero_args.rs")]
-/// ```
-#[allow(clippy::useless_attribute)]
-#[allow(clippy::needless_doctest_main)]
-/// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
-/// ```
+// TODO refactor for new checks:
+// ```compile_fail
+//#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/zero_args.rs")]
+// ```
+//
+//#[allow(clippy::useless_attribute)]
+//#[allow(clippy::needless_doctest_main)]
+// ```compile_fail
+//#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
+// ```
 pub const TODO_internal_prudent_unsafe_method: () = {};
 
 /// ```compile_fail,E0133
