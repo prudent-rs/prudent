@@ -598,6 +598,8 @@ Please contribute, or at least subscribe, and give thumbs up, to:
 
 ## Related issues
 Sorted by importance (for `prudent`):
+- [rust-lang/rust#88531](https://github.com/rust-lang/rust/issues/88531) No way to get compile-time info from the type of local
+- [rust-lang/rust#63063](https://github.com/rust-lang/rust/issues/63063) Tracking issue for RFC 2515, "Permit impl Trait in type aliases"
 - [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) Forbidding lints doesn't
   really work in macros
 - [rust-lang/rust#148942](https://github.com/rust-lang/rust/issues/148942) cfg(test) is not set

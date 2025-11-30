@@ -181,14 +181,6 @@ pub use crate::frontend_untested::internal_prudent_unsafe_fn_internal_access_tup
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
 /// ```
-///
-/// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_method/unused_expect_unsafe/zero_args.rs")]
-/// ```
-///
-/// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_method/unused_expect_unsafe/some_args.rs")]
-/// ```
 #[doc(inline)]
 pub use crate::frontend_untested::internal_prudent_unsafe_method;
 

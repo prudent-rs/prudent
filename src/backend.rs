@@ -291,28 +291,6 @@ macro_rules! expecting_unsafe_fn_path {
     };
 }
 
-/// NOT a part of public API. Ensure that maximum one of `~allow_unsafe` or `~expect_unsafe` is
-/// passed to [unsafe_method].
-#[doc(hidden)]
-#[macro_export]
-macro_rules! max_one_active_of_allow_unsafe_expect_unsafe {
-    (
-        ~allow_unsafe  $( { $_allow_unsafe_empty_indicator:tt  } )?
-        ~expect_unsafe $( { $_expect_unsafe_empty_indicator:tt } )?
-    ) => {
-        compile_error!(
-            "Do not use *both* ~allow_unsafe and ~expect_unsafe with unsafe_method macro."
-        );
-    };
-    (
-        ~allow_unsafe  $( { $_allow_unsafe_empty_indicator:tt  } )?
-    ) => {};
-    (
-        ~expect_unsafe  $( { $_expect_unsafe_empty_indicator:tt  } )?
-    ) => {};
-    () => {};
-}
-
 /// NOT a part of public API. Pretend to get a mutable reference from a shared reference. For
 /// internal/generated **compile-time** checks only.
 #[doc(hidden)]

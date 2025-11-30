@@ -239,10 +239,6 @@ macro_rules! internal_prudent_unsafe_method {
         // See unsafe_fn for why here we enclose in (...) and not in {...}.
         (
             if false {
-                ::prudent::max_one_active_of_allow_unsafe_expect_unsafe!{
-                    $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
-                    $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
-                }
                 if false {
                     // This block "makes" owned_receiver, an instance/owned value of the same type
                     // as $self. (Of course, the instance is invalid - this is for compile-time

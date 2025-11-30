@@ -53,9 +53,14 @@ macro_rules! internal_prudent_unsafe_fn {
             // 1. the result can be used as a value in an outer expression, and
             // 2. local variables don't conflict with the outer scope
             {
-                // Ensure that $fn (the expression itself, one that yields a function to call) and
-                // any arguments (expressions that yield values passed to the function to call)
+                // Ensure that
+                // - $fn (the expression itself, one that yields the function to call) and
+                // - any arguments (expressions that yield values passed to the function to call)
+                //
                 // don't include any unnecessary `unsafe{...}` block(s):
+                //
+                // @TODO remove this #[deny(unused_unsafe)] ??? $fn or any of $arg could be a rexult
+                // of unsafe_method!(...) that itself MAY have "unused_unsafe" in $self!!!
                 #[deny(unused_unsafe)]
                 // Ensure that $fn (the expression itself) and any arguments (expressions) don't
                 // include any unsafe code/calls/casts on their  own without their own `unsafe{...}`
@@ -108,6 +113,8 @@ macro_rules! internal_prudent_unsafe_fn {
         ({
             // Ensure that $fn (the expression itself, one that yields a function to call) doesn't
             // include an unnecessary `unsafe{...}` block:
+            //
+            // @TODO remove this #[deny(unused_unsafe)]
             #[deny(unused_unsafe)]
             // Ensure that $fn (the expression itself) doesn't include any unsafe code/calls/casts
             // on its own without its own `unsafe{...}` block(s):
@@ -122,11 +129,6 @@ macro_rules! internal_prudent_unsafe_fn {
                 };
                 ::core::unreachable!()
             }
-            // `#[deny(unused_unsafe)]` does NOT work here. Why? Because when we assigned `let fun =
-            // $fn` above, that then happily coerces/infers to an unsafe function, even though it's
-            // safe. That's why we have `expecting_unsafe_fn` module.
-            #[deny(unused_unsafe)]
-            #[allow(unsafe_code)]
             let result = unsafe {
                 fun()
             };
@@ -182,6 +184,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
       ),*
     ) => {
         #[allow(unsafe_code)]
+        // @TODO remove this #[deny(unused_unsafe)]
         #[deny(unused_unsafe)]
         unsafe {
             $fn( $(
@@ -215,91 +218,52 @@ pub use internal_prudent_unsafe_fn_internal_access_tuple_tree_field;
 /// - This treats `self` as if it were evaluated **outside** the `unsafe {...}` block.
 /// - $fn can **NOT** be an expression or a qualified path (which doesn't work in standard methods
 ///   calls anyways), but only an identifier.
-///
-/// Do NOT use parameters/input parts matched by
-/// - `$expect_unsafe_empty_indicator` or
-/// - `$allow_unsafe_empty_indicator`
-///
-/// as they are internal.
 #[macro_export]
 #[doc(hidden)]
 macro_rules! internal_prudent_unsafe_method {
     (
-        $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
-        $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
         $self:expr =>@ $method:ident
      ) => {
         internal_prudent_unsafe_method!(
-            $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
-            $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
             $self =>@ $method =>
         )
      };
     (
-        $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
-        $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
         $self:expr =>@ $method:ident => $( $arg:expr ),*
      ) => {
         // See unsafe_fn for why here we enclose in (...) and not in {...}.
         (
             if false {
-                // no  module needed in the following macro path, since allow_unsafe_expect_unsafe_is_correct has #[macro_export]
-                ::prudent::max_one_active_of_allow_unsafe_expect_unsafe!{
-                    $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
-                    $( ~expect_unsafe $( { $expect_unsafe_empty_indicator } )? )?
-                }
-                if false {
-                    // This block "makes" an owned_receiver, an instance/owned value of the same
-                    // type as $self. (Of course, the instance is invalid - this is for compile-time
-                    // checks only, hence `if false {...}`.)
-                    //
-                    // Then we simulate invocation of the given method inside `unsafe {...}``, BUT
-                    // without evaluating the given $self expression inside that same `unsafe
-                    // {...}`` block, so that we isolate/catch any `unsafe`` code in $self.
-                    //
-                    // We **cannot** just move/take/assign $self by value, in case it's a non-Copy
-                    // **static** variable. See also comments in
-                    // unsafe_method_internal_build_accessors_check_args_call.
-                    let mref = {
-                        #[rustfmt::skip]
-                        #[deny(unused_unsafe)]
-                        // @TODO simplify once https://github.com/rust-lang/rust/issues/15701
-                        // (attributes on expressions)
-                        #[deny(unsafe_code)]
-                        #[deny(unfulfilled_lint_expectations)]
-                        $(
-                            $( { $allow_unsafe_empty_indicator } )?
-                            #[allow(unsafe_code)]
-                        )?
-                        $(
-                            $( { $expect_unsafe_empty_indicator } )?
-                            #[expect(unsafe_code)]
-                        )?
-                        let rref = &( $self );
-                        ::prudent::backend::shared_to_mut( rref )
-                    };
-                    #[allow(unused_mut)]
-                    #[allow(invalid_value)] // for &str and other types where zeroed() issues invalid_value warning.
-                    let mut owned_receiver = ::core::mem::replace(mref, unsafe{ ::core::mem::zeroed() });
-                    // Detect code where unsafe_method! is not needed at all. Maybe the method used
-                    // to be `unsafe`, but not anymore.
-                    #[deny(unused_unsafe)]
-                    let _ = unsafe { owned_receiver. $method( $( $arg ),* ) };
-                    //@TODO here call the method with tuple tree-stored evaluated args.
-                    //
-                    //THEN simplify internal_prudent_unsafe_method_internal_check_args_etc -> internal_prudent_unsafe_method_internal_build_accessors_check_args_call
-                } else {
-                    // @TODO eliminate
-                    $(
-                        #[deny(unused_unsafe)]
-                        let _ = $arg;
-                    )*
-                }
+                // "Make" an owned_receiver, an instance/owned value of the same
+                // type as $self. (Of course, the instance is invalid - this is for compile-time
+                // checks only, hence `if false {...}`.)
+                //
+                // Then we simulate invocation of the given method inside `unsafe {...}``, BUT
+                // without evaluating the given $self expression inside that same `unsafe
+                // {...}`` block, so that we isolate/catch any `unsafe`` code in $self.
+                //
+                // We **cannot** just move/take/assign $self by value, in case it's a non-Copy
+                // **static** variable. See also comments in
+                // unsafe_method_internal_build_accessors_check_args_call.
+                let mref = {
+                    let rref = &( $self );
+                    ::prudent::backend::shared_to_mut( rref )
+                };
+                #[allow(unused_mut)]
+                #[allow(invalid_value)] // for &str and other types where zeroed() issues invalid_value warning.
+                let mut owned_receiver = ::core::mem::replace(mref, unsafe{ ::core::mem::zeroed() });
+                // Detect code where `unsafe_method!` is not needed at all. Maybe the method used
+                // to be `unsafe`, but not anymore.
+                //
+                // @TODO This is the only place where we "need" #[deny(unused_unsafe)]
+                #[deny(unused_unsafe)]
+                let _ = unsafe { owned_receiver. $method( $( $arg ),* ) };
+                //@TODO here call the method with tuple tree-stored evaluated args.
+                //
+                //THEN simplify internal_prudent_unsafe_method_internal_check_args_etc -> internal_prudent_unsafe_method_internal_build_accessors_check_args_call
                 ::core::unreachable!()
             } else {
                 internal_prudent_unsafe_method_internal_check_args_etc!(
-                    $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
-                    $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
                     $self, $method $(, $arg )*
                 )
             }
@@ -312,17 +276,12 @@ pub use internal_prudent_unsafe_method;
 #[macro_export]
 macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
     (
-        $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
-        $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
         $self:expr, $fn:ident $(, $arg:expr )+
      ) => {({
-                #[deny(unused_unsafe)]
                 let tuple_tree =
                     internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ };
 
                 internal_prudent_unsafe_method_internal_build_accessors_check_args_call! {
-                    $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
-                    $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
                     $self,
                     $fn,
                     tuple_tree,
@@ -331,22 +290,9 @@ macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
                 }
     })};
     (
-        $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
-        $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
         $self:expr, $fn:ident
      ) => {({
                 #[allow(unsafe_code)]
-                // Notify if $self includes `unsafe {...}`, but no ~allow_unsafe or ~expect_unsafe:
-                #[deny(unused_unsafe)]
-                $(
-                    $( { $allow_unsafe_empty_indicator } )?
-                    #[allow(unused_unsafe)]
-                )?
-                $(
-                    $( { $expect_unsafe_empty_indicator } )?
-                    #[expect(unused_unsafe)]
-                )?
-                //#[deny(unused_unsafe)]
                 let result = unsafe { $self. $fn () };
                 result
     })};
@@ -358,8 +304,6 @@ pub use internal_prudent_unsafe_method_internal_check_args_etc;
 macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_call {
     // Access tuple_tree parts and get ready to call the method:
     (
-     $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
-     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
      $self:expr, $fn:ident, $tuple_tree:ident,
      ( $_first_arg:expr, $($other_arg:expr),+ ),
      $( ( $($accessor_part:tt),+
@@ -367,8 +311,6 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
      ),*
     ) => {
         internal_prudent_unsafe_method_internal_build_accessors_check_args_call!{
-            $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator  } )? )?
-            $( ~expect_unsafe  $( { $expect_unsafe_empty_indicator  } )? )?
             $self, $fn, $tuple_tree, ( $($other_arg),+ ),
             // Insert a new accessor to the front (left): 0.
             (0),
@@ -379,8 +321,6 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
     };
     // All accessors are ready. Call the function:
     (
-     $( ~expect_unsafe $( { $expect_unsafe_empty_indicator:tt } )? )?
-     $( ~allow_unsafe  $( { $allow_unsafe_empty_indicator:tt  } )? )?
      $self:expr, $fn:ident, $tuple_tree:ident,
       ( $_last_or_only_arg:expr ),
       $( ( $($accessor_part:tt),+
@@ -388,21 +328,13 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
       ),*
     ) => {({
         #[allow(unsafe_code)]
-        #[deny(unused_unsafe)]
-        $(
-            $( { $allow_unsafe_empty_indicator } )?
-            #[allow(unused_unsafe)]
-        )?
-        $(
-            $( { $expect_unsafe_empty_indicator } )?
-            #[expect(unused_unsafe)]
-        )?
         let result = unsafe {
             // Unlike arguments, we can NOT store result of $self expression in a variable, because
             // - it would be moved, but a method with receiver by reference `&self` or `&mut self`
             // does NOT move the instance it's called on. Also,
             // - if Self were `Copy`, then `&self` or `&mut self` reference would not point to the
             //   original instance! (Plus extra stack used, plus lifetimes issues.)
+            // - it could be a non-Copy **static** variable, which cannot be moved.
             $self. $fn( $(
                     internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*
