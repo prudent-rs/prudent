@@ -1,29 +1,5 @@
-// A copy of prudent's frontend_linted.rs. Under Apache 2.0, MIT and BSD license.
-//
-// For the version of this file see PRUDENT_INTERNAL_LINTED_VERSION below. This may, or may not, be
-// compatible with newer versions of prudent. For the most recent version available see
-// https://github.com/prudent-rs/prudent/, https://crates.io/crates/prudent and
-// https://docs.rs/prudent/latest/prudent.
-
 // For docs see frontend_with_compile_fail_tests.rs
 #![allow(missing_docs)]
-
-#[doc(hidden)]
-#[allow(unused)]
-pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
-
-#[cfg(not(feature = "internal_use_frontend_linted"))]
-const _VERIFY_MODULE_PATH: () = {
-    let path = core::module_path!().as_bytes();
-    if matches!(
-        path,
-        [b'p', b'r', b'u', b'd', b'e', b'n', b't', b':', b':', ..]
-    ) {
-        panic!(
-            "Use ONLY frontend_linted.rs in your crate(s). Do not use frontend_unlinted.rs, as that is internal."
-        );
-    }
-};
 
 /// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
 /// - If `$fn` (the function itself) is NOT given as an identifier/qualified path, but it's given as
@@ -43,7 +19,7 @@ const _VERIFY_MODULE_PATH: () = {
 ///   `unsafe.`
 #[doc(hidden)]
 #[macro_export]
-macro_rules! internal_prudent_unsafe_fn {
+macro_rules! unsafe_fn {
     ( $fn:expr => $( $arg:expr ),+ ) => {
 
         // Enclosed in (...) and NOT in {...}. Why? Because the later does NOT work if the result is
@@ -65,42 +41,19 @@ macro_rules! internal_prudent_unsafe_fn {
                 // Ensure that $fn (the expression itself) and any arguments (expressions) don't
                 // include any unsafe code/calls/casts on their  own without their own `unsafe{...}`
                 // block(s).
-                //
-                // The rest of this comment block/lines exists the same in both frontend_linted.rs
-                // and frontend_unlinted.rs, but it applies to frontend_linted.rs ONLY.
-                //
-                // (That minimizes the number of differences between those two files.)
-                //
-                // If this file is frontend_linted.rs (which then is passed to
-                // ::prudent::load!(...)), then here we can *not* refer to
-                // - $crate::unsafe_method, nor
-                // - crate::unsafe_method
-                //
-                // because of error "macro-expanded `macro_export` macros from the current crate
-                // cannot be referred to by absolute paths"
-                // https://github.com/rust-lang/rust/issues/52234
-                // "macro_expanded_macro_exports_accessed_by_absolute_paths", which can't be fully
-                // suppressed! (See also
-                // https://stackoverflow.com/questions/26731243/how-do-i-use-a-macro-across-module-files).
-                //
-                // Also, we want to avoid name conflicts due to short names (for example
-                // `unsafe_method`). So we add prefix `internal_prudent_`, and we refer to
-                // `internal_prudent_unsafe_method` instead.
-                //
-                // This applies to all other linted-to-linted macros calls in frontend_linted.rs.
-                let (tuple_tree, fun) = (internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
+                let (tuple_tree, fun) = ($crate::unsafe_fn_internal_build_tuple_tree!{ $($arg),+ }, $fn);
 
                 if false {
                     // Ensure that $fn is not safe, but `unsafe`. Using
                     // https://doc.rust-lang.org/reference/types/function-item.html#r-type.fn-item.coercion
                     let _ = if false {
-                        ::prudent::expecting_unsafe_fn_path!( $( $arg ),+ )
+                        $crate::expecting_unsafe_fn_path!( $( $arg ),+ )
                     } else {
                         fun
                     };
                     ::core::unreachable!()
                 }
-                internal_prudent_unsafe_fn_internal_build_accessors_and_call! {
+                $crate::unsafe_fn_internal_build_accessors_and_call! {
                     fun,
                     tuple_tree,
                     ( $( $arg ),* ),
@@ -123,7 +76,7 @@ macro_rules! internal_prudent_unsafe_fn {
                 // Ensure that $fn is not safe, but `unsafe`. Using
                 // https://doc.rust-lang.org/reference/types/function-item.html#r-type.fn-item.coercion
                 let _ = if false {
-                    ::prudent::backend::expecting_unsafe_fn::fun
+                    $crate::backend::expecting_unsafe_fn::fun
                 } else {
                     fun
                 };
@@ -137,29 +90,25 @@ macro_rules! internal_prudent_unsafe_fn {
     };
 }
 
-// These reexports are needed: https://github.com/rust-lang/rust/pull/52234#issuecomment-976702997
-pub use internal_prudent_unsafe_fn;
-
 /// INTERNAL. Do NOT use directly - subject to change.
 #[doc(hidden)]
 #[macro_export]
-macro_rules! internal_prudent_unsafe_fn_internal_build_tuple_tree {
+macro_rules! unsafe_fn_internal_build_tuple_tree {
     // Construct the tuple_tree. Recursive:
     ( $first:expr, $($rest:expr),+ ) => {
         (
-            $first, internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($rest),+ }
+            $first, $crate::unsafe_fn_internal_build_tuple_tree!{ $($rest),+ }
         )
     };
     ( $last:expr) => {
         ($last,)
     };
 }
-pub use internal_prudent_unsafe_fn_internal_build_tuple_tree;
 
 /// INTERNAL. Do NOT use directly - subject to change.
 #[doc(hidden)]
 #[macro_export]
-macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
+macro_rules! unsafe_fn_internal_build_accessors_and_call {
     // Access tuple_tree parts and get ready to call the function:
     ( $fn:expr, $tuple_tree:ident,
      ( $_first_arg:expr, $($other_arg:expr),+ ),
@@ -167,7 +116,7 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
         )
      ),*
     ) => {
-        internal_prudent_unsafe_fn_internal_build_accessors_and_call!{
+        $crate::unsafe_fn_internal_build_accessors_and_call!{
             $fn, $tuple_tree, ( $($other_arg),+ ),
             // Insert a new accessor to the front (left): 0.
             (0),
@@ -188,43 +137,41 @@ macro_rules! internal_prudent_unsafe_fn_internal_build_accessors_and_call {
         #[deny(unused_unsafe)]
         unsafe {
             $fn( $(
-                    internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
+                    $crate::unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*
             )
         }
     };
 }
-pub use internal_prudent_unsafe_fn_internal_build_accessors_and_call;
 
 #[doc(hidden)]
 #[macro_export]
 /// INTERNAL. Do NOT use directly - subject to change.
 ///
 /// Expand an accessor group/list to access a field in the tuple_tree.
-macro_rules! internal_prudent_unsafe_fn_internal_access_tuple_tree_field {
+macro_rules! unsafe_fn_internal_access_tuple_tree_field {
     ( $tuple_tree:ident, $($accessor_part:tt),* ) => {
         $tuple_tree $(. $accessor_part )*
     };
 }
-pub use internal_prudent_unsafe_fn_internal_access_tuple_tree_field;
 //-------------
 
 /// Invoke an `unsafe` method. For methods that have a receiver parameter (`&self`, `&mut self`,
 /// `self`). For associated functions (implemented for a type but with no receiver) use `unsafe_fn`,
 /// and pass the qualified name of the associated function to it.
 ///
-/// Like [internal_prudent_unsafe_fn], but
+/// Like [unsafe_fn], but
 /// - This accepts a receiver `&self`, `&mut self` and `self`. TODO Box/Rc/Arc, dyn?
 /// - This treats `self` as if it were evaluated **outside** the `unsafe {...}` block.
 /// - $fn can **NOT** be an expression or a qualified path (which doesn't work in standard methods
 ///   calls anyways), but only an identifier.
 #[macro_export]
 #[doc(hidden)]
-macro_rules! internal_prudent_unsafe_method {
+macro_rules! unsafe_method {
     (
         $self:expr =>@ $method:ident
      ) => {
-        internal_prudent_unsafe_method!(
+        $crate::unsafe_method!(
             $self =>@ $method =>
         )
      };
@@ -247,7 +194,7 @@ macro_rules! internal_prudent_unsafe_method {
                 // unsafe_method_internal_build_accessors_check_args_call.
                 let mref = {
                     let rref = &( $self );
-                    ::prudent::backend::shared_to_mut( rref )
+                    $crate::backend::shared_to_mut( rref )
                 };
                 #[allow(unused_mut)]
                 #[allow(invalid_value)] // for &str and other types where zeroed() issues invalid_value warning.
@@ -258,30 +205,26 @@ macro_rules! internal_prudent_unsafe_method {
                 // @TODO This is the only place where we "need" #[deny(unused_unsafe)]
                 #[deny(unused_unsafe)]
                 let _ = unsafe { owned_receiver. $method( $( $arg ),* ) };
-                //@TODO here call the method with tuple tree-stored evaluated args.
-                //
-                //THEN simplify internal_prudent_unsafe_method_internal_check_args_etc -> internal_prudent_unsafe_method_internal_build_accessors_check_args_call
                 ::core::unreachable!()
             } else {
-                internal_prudent_unsafe_method_internal_check_args_etc!(
+                $crate::unsafe_method_internal_check_args_etc!(
                     $self, $method $(, $arg )*
                 )
             }
         )
     }
 }
-pub use internal_prudent_unsafe_method;
 
 #[doc(hidden)]
 #[macro_export]
-macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
+macro_rules! unsafe_method_internal_check_args_etc {
     (
         $self:expr, $fn:ident $(, $arg:expr )+
      ) => {({
                 let tuple_tree =
-                    internal_prudent_unsafe_fn_internal_build_tuple_tree!{ $($arg),+ };
+                    $crate::unsafe_fn_internal_build_tuple_tree!{ $($arg),+ };
 
-                internal_prudent_unsafe_method_internal_build_accessors_check_args_call! {
+                $crate::unsafe_method_internal_build_accessors_check_args_call! {
                     $self,
                     $fn,
                     tuple_tree,
@@ -297,11 +240,10 @@ macro_rules! internal_prudent_unsafe_method_internal_check_args_etc {
                 result
     })};
 }
-pub use internal_prudent_unsafe_method_internal_check_args_etc;
 
 #[doc(hidden)]
 #[macro_export]
-macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_call {
+macro_rules! unsafe_method_internal_build_accessors_check_args_call {
     // Access tuple_tree parts and get ready to call the method:
     (
      $self:expr, $fn:ident, $tuple_tree:ident,
@@ -310,7 +252,7 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
         )
      ),*
     ) => {
-        internal_prudent_unsafe_method_internal_build_accessors_check_args_call!{
+        $crate::unsafe_method_internal_build_accessors_check_args_call!{
             $self, $fn, $tuple_tree, ( $($other_arg),+ ),
             // Insert a new accessor to the front (left): 0.
             (0),
@@ -336,14 +278,13 @@ macro_rules! internal_prudent_unsafe_method_internal_build_accessors_check_args_
             //   original instance! (Plus extra stack used, plus lifetimes issues.)
             // - it could be a non-Copy **static** variable, which cannot be moved.
             $self. $fn( $(
-                    internal_prudent_unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
+                    $crate::unsafe_fn_internal_access_tuple_tree_field!{ $tuple_tree, $($accessor_part),+ }
                 ),*
             )
         };
         result
     })};
 }
-pub use internal_prudent_unsafe_method_internal_build_accessors_check_args_call;
 //-------------
 
 /// Set a value of a `static mut` variable or its (sub...-)field, but isolate `unsafe {...}` only to
@@ -358,7 +299,7 @@ pub use internal_prudent_unsafe_method_internal_build_accessors_check_args_call;
 /// NOT for `static` variables (or their fields/components) of `union` types.
 #[macro_export]
 #[doc(hidden)]
-macro_rules! internal_prudent_unsafe_static_set {
+macro_rules! unsafe_static_set {
     ($static:path, $val:expr) => {{
         if false {
             let _ = $val;
@@ -383,7 +324,6 @@ macro_rules! internal_prudent_unsafe_static_set {
         }
     }};
 }
-pub use internal_prudent_unsafe_static_set;
 
 /// Deref a pointer (either `const` or `mut`) and yield a read-only reference.
 ///
@@ -392,7 +332,7 @@ pub use internal_prudent_unsafe_static_set;
 /// may start with `dyn`. `$type` may be a slice `[...]`.
 #[macro_export]
 #[doc(hidden)]
-macro_rules! internal_prudent_unsafe_ref {
+macro_rules! unsafe_ref {
     ($ptr:expr) => {{
         let ptr: *const _ = $ptr;
         unsafe { &*ptr }
@@ -412,16 +352,15 @@ macro_rules! internal_prudent_unsafe_ref {
         unsafe { &*ptr as &$lifetime _ }
     }};
 }
-pub use internal_prudent_unsafe_ref;
 
 /// Deref a `mut` pointer and yield a `mut` reference.
 ///
-/// Like for [internal_prudent_unsafe_ref]: If `$type` is given, it's expected to be the referenced
+/// Like in [unsafe_ref]: If `$type` is given, it's expected to be the referenced
 /// type (NOT the given pointer, NOT the target reference type) and the given pointer is cast to `*
 /// const $type`. `$type` may start with `dyn`. `$type` may be a slice `[...]`.
 #[macro_export]
 #[doc(hidden)]
-macro_rules! internal_prudent_unsafe_mut {
+macro_rules! unsafe_mut {
     ($ptr:expr) => {{
         let ptr: *mut _ = $ptr;
         unsafe { &mut *ptr }
@@ -441,25 +380,23 @@ macro_rules! internal_prudent_unsafe_mut {
         unsafe { &mut *ptr as &$lifetime mut _}
     }};
 }
-pub use internal_prudent_unsafe_mut;
 
 /// Get a (copy of) value from where the pointer points. For [core::marker::Copy] types only.
 #[macro_export]
 #[doc(hidden)]
-macro_rules! internal_prudent_unsafe_val {
+macro_rules! unsafe_val {
     ($ptr:expr) => {{
         let ptr: *const _ = $ptr;
-        ::prudent::backend::expect_copy_ptr(ptr);
+        $crate::backend::expect_copy_ptr(ptr);
         unsafe { *ptr }
     }};
     ($ptr:expr, $ptr_type:ty) => {{
         let ptr = $ptr;
         let ptr = ptr as *const $ptr_type;
-        ::prudent::backend::expect_copy_ptr(ptr);
+        $crate::backend::expect_copy_ptr(ptr);
         unsafe { *ptr }
     }};
 }
-pub use internal_prudent_unsafe_val;
 
 /*
 -nightly version only
@@ -491,7 +428,7 @@ macro_rules! unsafe_use {
 /// `unsafe_set!( pt ) = false;`
 #[macro_export]
 #[doc(hidden)]
-macro_rules! internal_prudent_unsafe_set {
+macro_rules! unsafe_set {
     ($ptr:expr, $value:expr) => {{
         if false {
             let _: *mut _ = $ptr;
@@ -505,4 +442,3 @@ macro_rules! internal_prudent_unsafe_set {
         }
     }};
 }
-pub use internal_prudent_unsafe_set;

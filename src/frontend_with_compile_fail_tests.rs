@@ -6,29 +6,6 @@
 //!   - macros inject code, so they are not as sandboxed/isolated as non-macro code.
 //! - Otherwise it's a pain to edit them/render them in VS Code. Yes, that matters.
 
-// This separate module exists to workaround the issue of no lint control in cross-crate macro_rules
-// https://github.com/rust-lang/rust/issues/110613). Without this separate file we got (in the past):
-/*
----- src/internal_front_end.rs - internal_front_end::internal_prudent_unsafe_fn (line 117) stdout ----
-error: circular modules: src/internal_front_end.rs -> src/internal_front_end.rs
-   --> src/internal_front_end.rs:121:1
-    |
-121 | ::prudent::load!(any: "internal_front_end.rs");
-*/
-
-const _VERIFY_MODULE_PATH: () = {
-    let path = core::module_path!().as_bytes();
-    if !matches!(path, b"prudent::frontend") {
-        panic!(
-            "Do NOT load frontend_with_compile_fail_tests.rs in other crates. It's internal in prudent only."
-        );
-    }
-};
-
-#[doc(hidden)]
-#[allow(unused)]
-pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
-
 /// ```compile_fail
 /// // @TODO Docs: at your crate's top level, use either self::prudent, or crate:;prudent (but NOT
 /// // just prudent, which will fail, fortunately).
@@ -64,11 +41,7 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// Use the result of `unsafe_fn!` immediately as an array/slice:
 /// ```test_harness
 /// //TODO? failing??
-/// //# ::prudent::load!("frontend_linted.rs");
-/// //::prudent::load!(any: "frontend_linted.rs");
-/// ::prudent::load!(any: "frontend_linted.rs");
-/// // ::prudent::load!( "frontend_linted.rs");
-/// # use self::prudent::*;
+/// use prudent::*;
 /// const unsafe fn return_array() -> [bool; 1] { [true] }
 ///
 /// const _: bool = unsafe_fn!( return_array)[0];
@@ -76,8 +49,7 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// Use the result of `unsafe_fn!` immediately as a mutable array/slice (assign/modify its slot(s)):
 /// ```
 /// // @TODO MOVE OUT TO coverage_positive/
-/// ::prudent::load!(any: "frontend_linted.rs");
-/// use self::prudent::*;
+/// use prudent::*;
 /// fn _test_unsafe_fn_returning_mut_ref() {
 ///     // NOT running under MIRI, because of an intentional leak.
 ///     if !cfg!(miri) {
@@ -94,8 +66,7 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 /// The same, but the function takes an argument (and no leak):
 /// ```
 /// // @TODO MOVE OUT TO coverage_positive/
-/// ::prudent::load!(any: "frontend_linted.rs");
-/// use crate::prudent::*;
+/// use prudent::*;
 /// unsafe fn return_same_mut_ref<T>(mref: &mut T) -> &mut T {
 ///    mref
 /// }
@@ -105,8 +76,7 @@ pub use crate::frontend_untested::PRUDENT_INTERNAL_LINTED_VERSION;
 ///     unsafe_fn!( return_same_mut_ref => &mut marray )[0] = true;
 /// }
 /// ```
-#[doc(inline)]
-pub use crate::frontend_untested::internal_prudent_unsafe_fn;
+pub const TODOinternal_prudent_unsafe_fn: () = {};
 
 // Same `compile_fail` tests as listed above for `unsafe_fn`, but here we validate the error
 // numbers.
@@ -151,16 +121,6 @@ pub const _: () = {};
 pub const _: () = {};
 //----------------------
 
-#[doc(hidden)]
-pub use crate::frontend_untested::internal_prudent_unsafe_fn_internal_build_tuple_tree;
-
-#[doc(hidden)]
-pub use crate::frontend_untested::internal_prudent_unsafe_fn_internal_build_accessors_and_call;
-
-#[doc(hidden)]
-pub use crate::frontend_untested::internal_prudent_unsafe_fn_internal_access_tuple_tree_field;
-//----------------------
-
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
 /// ```
@@ -181,8 +141,7 @@ pub use crate::frontend_untested::internal_prudent_unsafe_fn_internal_access_tup
 /// ```compile_fail
 #[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
 /// ```
-#[doc(inline)]
-pub use crate::frontend_untested::internal_prudent_unsafe_method;
+pub const TODO_internal_prudent_unsafe_method: () = {};
 
 /// ```compile_fail,E0133
 #[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
@@ -203,19 +162,12 @@ pub const _: () = {};
 pub const _: () = {};
 //----------------------
 
-#[doc(hidden)]
-pub use crate::frontend_untested::internal_prudent_unsafe_method_internal_check_args_etc;
+//#[allow(clippy::useless_attribute)]
+//#[allow(clippy::needless_doctest_main)]
 
-#[doc(hidden)]
-pub use crate::frontend_untested::internal_prudent_unsafe_method_internal_build_accessors_check_args_call;
-//----------------------
-
-#[allow(clippy::useless_attribute)]
-#[allow(clippy::needless_doctest_main)]
 /// ```
 /// // @TODO MOVE OUT TO coverage_positive/
-/// ::prudent::load!(any: "frontend_linted.rs");
-/// //use self::prudent::*;
+/// //use prudent::*;
 /// fn main() {
 /// {
 ///     static mut S: (bool,) = (true,);
@@ -254,22 +206,5 @@ pub use crate::frontend_untested::internal_prudent_unsafe_method_internal_build_
 /// }
 /// }
 /// ```
-#[doc(inline)]
-pub use crate::frontend_untested::internal_prudent_unsafe_static_set;
-//----------------------
-
-#[doc(inline)]
-pub use crate::frontend_untested::internal_prudent_unsafe_ref;
-//----------------------
-
-#[doc(inline)]
-pub use crate::frontend_untested::internal_prudent_unsafe_mut;
-//----------------------
-
-#[doc(inline)]
-pub use crate::frontend_untested::internal_prudent_unsafe_val;
-//----------------------
-
-#[doc(inline)]
-pub use crate::frontend_untested::internal_prudent_unsafe_set;
+pub const TODO_internal_prudent_unsafe_static_set: () = {};
 //----------------------

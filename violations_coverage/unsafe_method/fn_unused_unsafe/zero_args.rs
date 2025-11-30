@@ -1,5 +1,4 @@
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::*;
+use prudent::unsafe_method;
 
 fn main() {
     let _ = unsafe_method!("hi" =>@ len);

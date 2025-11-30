@@ -13,58 +13,7 @@ results](https://github.com/peter-lyons-kehl/prudent/actions/workflows/main.yml/
 Results of `prudent`'s macro invocations are `const` (if the original invocation/expression would
 also be `const`).
 
-# Lints, loading and import
-## Lints and loading
-Because of some Rust annoyances (more below), a part of this crate needs to be "loaded". (That is
-_not_ at runtime/dynamic, but it's done at compile time.) You do it only once per your crate
-(usually in `src/lib.rs`):
-- If you want to apply lints to the macro-generated code (which is highly recommended), your crate
-needs to contain/have access to (a copy of) `prudent`'s file [src/linted.rs](src/linted.rs), which
-you "load" with `::prudent::load!(...)`.
-- If you don't need lints, just `::prudent::load!()`.
-
-Both ways of `::prudent::load!(...)` create a module, called `prudent` by default. If your crate
-already uses `prudent` identifier, you can choose a different identifier for `prudent`'s top-level
-module (by passing an optional "parameter" to `::prudent::load!(...)`).
-
-## Import
-TODO UPDATE:
-
-Have a wildcard import `use crate::prudent::*`. Do not import just a specific "top level" (client
-code-facing) macro(s) that you invoke. That is regardless of whether you apply the lints (where you
-include [src/linted.rs](src/linted.rs)), or not.
-
-(At the top level of your crate you _could_ `use self::prudent::*` instead, but that will not work
-in modules. However, `use crate::prudent::*` works everywhere).
-
-# Annoyances
-## Rust annoyances
-`prudent` is badly affected by lack of lint control in macros:
-[rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) - please give it thumbs up.
-The pains (that pend [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613)):
-- [`prudent`'s documentation on docs.rs](https://docs.rs/prudent/latest/prudent/) shows code
-  examples first, and only then documentation text (prose).
-- You need a wildcard import `use crate::prudent::*` - not just import a specific "top level"
-  (client code-facing) macro(s) that you invoke.
-  
-  It's not enough to import just specific macros that you invoke (because the internal "linted"
-  macros are loaded in your crate's namespace, and hence they can't use `$crate` metavariable to
-  refer to the rest of the macros and non-macro functionality).
-- In doctests
-  - load with `any:` like `::prudent::load!(any: "frontend_linted.rs");`
-  - import with `use crate::prudent::*;` which you put outside of your `fn main()`
-  - have `fn main()`
-    - do **not** have the test logic at the top level, otherwise rustdoc/doctest mechanism
-      automatically puts the whole doctest code inside `fn main()`, which will include
-      `::prudent::load!(...)` and `use crate::prudent::*`, which will fail with very strange errors.
-      Even if all you are testing is `const`, have an empty `fn main() {}`. (If you run `cargo
-      clippy` and it complains, see `prudent`'s source code on how to allow
-      `clippy::needless_doctest_main`.)
-
-## Limitation of lint control for unsafe_method
-Macro `unsafe_method` (normally accessed as `crate::prudent::unsafe_method`)
-
-TODO TODO TODO!
+# Lint-like check for unsafe_method
 
 # Quality assurance
 
@@ -117,8 +66,7 @@ let _todo = ();
 ```
 
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_method;
+use prudent::unsafe_method;
 struct SNonCopy {}
 impl SNonCopy {
     unsafe fn unsafe_method_no_args(&self) {}
@@ -137,8 +85,7 @@ fn main() {
 
 ## unsafe_method > self: mutable reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_method;
+use prudent::unsafe_method;
 struct SNonCopy {}
 impl SNonCopy {
     unsafe fn unsafe_method_no_args(&mut self) {}
@@ -156,8 +103,7 @@ fn main() {
 
 ## unsafe_method > self: by value
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_method;
+use prudent::unsafe_method;
 fn main() {
     {
         struct SNonCopy {}
@@ -190,8 +136,7 @@ fn main() {
 # unsafe_ref
 ## unsafe_ref - one arg, basic reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_ref;
+use prudent::unsafe_ref;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -203,8 +148,7 @@ fn main() {
 
 ## unsafe_ref - one arg, slice
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_ref;
+use prudent::unsafe_ref;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
@@ -216,8 +160,7 @@ fn main() {
 
 ## unsafe_ref - one arg, dyn reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_ref;
+use prudent::unsafe_ref;
 # use core::fmt::Display;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
@@ -228,8 +171,7 @@ fn main() {}
 
 ## unsafe_ref - two args, lifetimed reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_ref;
+use prudent::unsafe_ref;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -241,8 +183,7 @@ fn main() {
 
 ## unsafe_ref - two args, lifetimed dyn reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_ref;
+use prudent::unsafe_ref;
 use core::fmt::Display;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
@@ -253,8 +194,7 @@ fn main() {}
 
 ## unsafe_ref - two args, lifetimed slice
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_ref;
+use prudent::unsafe_ref;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
@@ -266,8 +206,7 @@ fn main() {
 
 ## unsafe_ref - two args, typed basic reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_ref;
+use prudent::unsafe_ref;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -279,8 +218,7 @@ fn main() {
 
 ## unsafe_ref - two args, typed slice
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_ref;
+use prudent::unsafe_ref;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
@@ -292,8 +230,7 @@ fn main() {
 
 ## unsafe_ref - two args, typed dyn reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_ref;
+use prudent::unsafe_ref;
 # use core::fmt::Display;
 const B: bool = true;
 const PT: *const dyn Display = &B as *const dyn Display;
@@ -308,8 +245,7 @@ fn main() {
 # unsafe_mut
 ## unsafe_mut - one arg, basic reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_mut;
+use prudent::unsafe_mut;
 fn main() {
     let mut b: bool = true;
     let pt: *mut bool = &mut b as *mut bool;
@@ -321,8 +257,7 @@ fn main() {
 
 ## unsafe_mut - one arg, slice
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_mut;
+use prudent::unsafe_mut;
 fn main() {
     let mut bs: [bool; 2] = [true, false];
     let pt: *mut [bool] = &mut bs as *mut [bool];
@@ -334,8 +269,7 @@ fn main() {
 
 ## unsafe_mut - one arg, dyn reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_mut;
+use prudent::unsafe_mut;
 # use core::fmt::Display;
 fn main() {
     let mut b: bool = true;
@@ -348,8 +282,7 @@ fn main() {
 
 ## unsafe_mut - two args, lifetimed reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_mut;
+use prudent::unsafe_mut;
 fn main() {
     let b: &'static mut bool = Box::leak( Box::new(true) );
     let pt: *mut bool = b as *mut bool;
@@ -362,8 +295,7 @@ fn main() {
 
 ## unsafe_mut - two args, lifetimed dyn reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_mut;
+use prudent::unsafe_mut;
 # use core::fmt::Display;
 fn main() {
     let b: &'static mut bool = Box::leak( Box::new(true) );
@@ -377,8 +309,7 @@ fn main() {
 
 ## unsafe_mut - two args, lifetimed slice
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_mut;
+use prudent::unsafe_mut;
 fn main() {
     let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
     let pt: *mut [bool] = bs as *mut [bool];
@@ -391,8 +322,7 @@ fn main() {
 
 ## unsafe_mut - two args, typed basic reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_mut;
+use prudent::unsafe_mut;
 fn main() {
     let mut b: bool = true;
     let pt: *mut bool = &mut b as *mut bool;
@@ -404,8 +334,7 @@ fn main() {
 
 ## unsafe_mut - two args, typed slice
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_mut;
+use prudent::unsafe_mut;
 fn main() {
     let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
     let pt: *mut [bool] = bs as *mut [bool];
@@ -418,8 +347,7 @@ fn main() {
 
 ## unsafe_mut - two args, typed dyn reference
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_mut;
+use prudent::unsafe_mut;
 # use core::fmt::Display;
 fn main() {
     let mut b: bool = true;
@@ -439,8 +367,7 @@ Only for types that implement/derive [core::marker::Copy].
 
 ## unsafe_val - one arg, basic
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_val;
+use prudent::unsafe_val;
 fn main() {
     const B: bool = true;
     const PT: *const bool = &B as *const bool;
@@ -452,8 +379,7 @@ fn main() {
 
 ## unsafe_val - two args, typed
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_val;
+use prudent::unsafe_val;
 fn main() {
     const B: bool = true;
     const PT: *const bool = &B as *const bool;
@@ -465,8 +391,7 @@ fn main() {
 
 # unsafe_set
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_set;
+use prudent::unsafe_set;
 fn main() {
     let mut b: bool = true;
     let pt: *mut bool = &mut b as *mut bool;
@@ -477,8 +402,7 @@ fn main() {
 ```
 
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_set;
+use prudent::unsafe_set;
 struct SNonCopy {}
 fn main() {
     let mut s: SNonCopy = SNonCopy {};
@@ -493,8 +417,7 @@ fn main() {
 
 # unsafe_static_set
 ```rust
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::unsafe_static_set;
+use prudent::unsafe_static_set;
 static mut B: bool = true;
 
 fn main() {
@@ -598,8 +521,10 @@ Please contribute, or at least subscribe, and give thumbs up, to:
 
 ## Related issues
 Sorted by importance (for `prudent`):
-- [rust-lang/rust#88531](https://github.com/rust-lang/rust/issues/88531) No way to get compile-time info from the type of local
-- [rust-lang/rust#63063](https://github.com/rust-lang/rust/issues/63063) Tracking issue for RFC 2515, "Permit impl Trait in type aliases"
+- [rust-lang/rust#88531](https://github.com/rust-lang/rust/issues/88531) No way to get compile-time
+  info from the type of local
+- [rust-lang/rust#63063](https://github.com/rust-lang/rust/issues/63063) Tracking issue for RFC
+  2515, "Permit impl Trait in type aliases"
 - [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) Forbidding lints doesn't
   really work in macros
 - [rust-lang/rust#148942](https://github.com/rust-lang/rust/issues/148942) cfg(test) is not set

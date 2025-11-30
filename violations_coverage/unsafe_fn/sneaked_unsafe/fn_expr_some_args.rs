@@ -1,5 +1,4 @@
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::*;
+use prudent::unsafe_fn;
 
 unsafe fn fn_itself(b: bool) -> bool {
     b

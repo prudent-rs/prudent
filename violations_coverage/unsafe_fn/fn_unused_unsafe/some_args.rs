@@ -1,5 +1,4 @@
-::prudent::load!(any: "frontend_linted.rs");
-use crate::prudent::*;
+use prudent::unsafe_fn;
 
 fn safe_fn_one_arg(_: bool) {}
 

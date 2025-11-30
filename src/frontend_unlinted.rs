@@ -6,22 +6,6 @@
 // For docs see frontend_with_compile_fail_tests.rs
 #![allow(missing_docs)]
 
-#[doc(hidden)]
-#[allow(unused)]
-pub const PRUDENT_INTERNAL_LINTED_VERSION: &str = "0.0.3-beta";
-
-const _VERIFY_MODULE_PATH: () = {
-    let path = core::module_path!().as_bytes();
-    if !matches!(
-        path,
-        [b'p', b'r', b'u', b'd', b'e', b'n', b't', b':', b':', ..]
-    ) {
-        panic!(
-            "Use ONLY frontend_linted.rs in your crate(s). Do not use frontend_unlinted.rs, as that is internal."
-        );
-    }
-};
-
 /// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
 /// - If `$fn` (the function itself) is NOT given as an identifier/qualified path, but it's given as
 ///   an expression, then this expression is treated as if evaluated **outside** `unsafe {...}`.

@@ -1,4 +1,4 @@
-use crate::prudent::unsafe_fn;
+use prudent::unsafe_fn;
 
 const unsafe fn unsafe_fn_no_args() {}
 const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
