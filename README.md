@@ -521,10 +521,16 @@ Please contribute, or at least subscribe, and give thumbs up, to:
 
 ## Related issues
 Sorted by importance (for `prudent`):
+- [rust-lang/rust#43031](https://github.com/rust-lang/rust/issues/43031) rustdoc: allow full set of
+  compiler options to be specified
+- [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) `unboxed_closures` and
+  `fn_traits` feature.
 - [rust-lang/rust#88531](https://github.com/rust-lang/rust/issues/88531) No way to get compile-time
   info from the type of local
 - [rust-lang/rust#63063](https://github.com/rust-lang/rust/issues/63063) Tracking issue for RFC
   2515, "Permit impl Trait in type aliases"
+- [rust-lang/rust#54726](https://github.com/rust-lang/rust/issues/54726) Tracking issue for custom
+  inner attributes
 - [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) Forbidding lints doesn't
   really work in macros
 - [rust-lang/rust#148942](https://github.com/rust-lang/rust/issues/148942) cfg(test) is not set
@@ -547,8 +553,6 @@ Sorted by importance (for `prudent`):
   `#![feature(const_trait_impl)]`
 - [rust-lang/rust#83527](https://github.com/rust-lang/rust/issues/83527) `${ignore(..._}`
   metavariable/metafunction in `macro_rules!`
-- [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) `unboxed_closures` and
-  `fn_traits` feature.
 
 ## Side fruit
 - [rust-lang/rust#148599](https://github.com/rust-lang/rust/issues/148599) forward compatibility of
