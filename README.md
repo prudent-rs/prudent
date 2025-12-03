@@ -562,6 +562,8 @@ Sorted by importance (for `prudent`):
 ## Side fruit
 - [rust-lang/rust#148599](https://github.com/rust-lang/rust/issues/148599) forward compatibility of
   `#![doc(test(attr(forbid(...))))]` for lint groups
+- [rust-lang/rust#149583](https://github.com/rust-lang/rust/issues/149583) Doctests should not
+  inherit features
 - [rust-lang/nomicon#506](https://github.com/rust-lang/nomicon/issues/506) note that a macro in a
   `#![forbid(unsafe_code)]` library can emit `unsafe`
 - [Veykril/tlborm#114](https://github.com/Veykril/tlborm/issues/114) storing & (re)using variadic
