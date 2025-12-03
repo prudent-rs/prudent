@@ -2,61 +2,38 @@
 results](https://github.com/peter-lyons-kehl/prudent/actions/workflows/main.yml/badge.svg)](https://github.com/peter-lyons-kehl/prudent/actions)
 
 # Summary
-`prudent` helps you minimize the amount of Rust code that is marked as `unsafe`.
+`prudent` helps you minimize/isolate parts of Rust `unsafe` expressions/statements.
 
 - ergonomic (as much as possible)
-- obvious
-- lightweight (no dependencies, no procedural macros - fast build)
+- lightweight (no dependencies, no procedural macros - fast build, `rust-analyzer`-friendly)
 - zero-cost (for binary size, speed and memory), verified in compile time
-
-# const-friendly
-Results of `prudent`'s macro invocations are `const` (if the original invocation/expression would
-also be `const`).
-
-# Lint-like check for unsafe_method
-
-# Quality assurance
-
-Checks and tests are run by [GitHub Actions]. See
-[results](https://github.com/peter-lyons-kehl/prudent/actions). All tests <!--scripts--> run on
-Alpine Linux (without `libc`, in a `rust:1.87-alpine` container)<!-- and are POSIX-compliant-->:
-
-- `rustup component add clippy rustfmt`
-- `cargo clippy`
-- `cargo fmt --check`
-- `cargo doc --no-deps --quiet`
-- `cargo test`
-- `cargo test --release`
-- with [`MIRI`]
-  - `rustup install nightly --profile minimal`
-  - `rustup +nightly component add miri`
-  - `cargo +nightly miri test`
-
-## Verification of expected errors
-- Error code validation: Where possible, expected error numbers are validated  with `cargo +nightly
-  test`, ([The Rustdoc book > Unstable features > Error numbers for compile-fail
-  doctests](https://doc.rust-lang.org/rustdoc/unstable-features.html#error-numbers-for-compile-fail-doctests)).
-  The error codes are validated by [GitHub Actions](.github/workflows/main.yml), see
-  [results](https://github.com/prudent-rs/prudent/actions). Error code validation requires `nightly`
-  Rust toolchain. See also [`src/linted_with_tests.rs`](src/linted_with_tests.rs) for expected
-  compilation error codes.
-- Error output validation: Some lint violations don't have a special error code. So we validate the
-  error message in
-  [violations_coverage/verify_error_messages/](violations_coverage/verify_error_messages/) with
-  [dtolnay/trybuild](https://github.com/dtolnay/trybuild/)
-  [crates.io/crates/trybuild](https://crates.io/crates/trybuild).
 
 # API and examples
 Following are all the positive examples. They are also run by the above [GitHub Actions] as
 [doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html).
 
-For negative examples, which catch unintended `unsafe` functions/expressions/access, see
-documentation of each `prudent` macro.
+For negative examples, see documentation of each `prudent` macro.
 
+## unsafe_fn
 ```rust
-let _todo = ();
-//# use prudent::unsafe_method;
-//const _: u8 = unsafe_method!(~expect_unsafe ~allow_unsafe 1u8, unchecked_add, 0);
+use prudent::unsafe_fn;
+
+const unsafe fn unsafe_fn_no_args() {}
+const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
+const unsafe fn unsafe_fn_two_args(_: bool, u: u8) -> u8 { u }
+
+const _: () = unsafe_fn!(unsafe_fn_no_args);
+const _: bool = unsafe_fn!(unsafe_fn_one_arg=> true);
+const _: u8 = unsafe_fn!(unsafe_fn_two_args=> true, 0);
+fn main() {}
+```
+
+## unsafe_method
+
+### self by value
+```rust
+use prudent::unsafe_method;
+const _: u8 = unsafe_method!( 1u8 =>@ unchecked_add => 0 );
 ```
 
 ```rust
@@ -425,6 +402,36 @@ fn main() {
 }
 ```
 
+# const-friendly
+Results of `prudent`'s macro invocations are `const` (if the original invocation/expression would
+also be `const`).
+
+# Quality assurance
+## Continuous integration
+[GitHub Actions] runs on Alpine Linux (without `libc`). See [the
+reports](https://github.com/peter-lyons-kehl/prudent/actions).
+
+- `cargo test`
+- `cargo clippy` for linting
+- [`MIRI`]
+
+## Verification of expected errors
+- Error code validation: Where possible, expected error numbers are validated  with `cargo +nightly
+  test`, ([The Rustdoc book > Unstable features > Error numbers for compile-fail
+  doctests](https://doc.rust-lang.org/rustdoc/unstable-features.html#error-numbers-for-compile-fail-doctests)).
+  The error codes are validated by [GitHub Actions](.github/workflows/main.yml), see
+  [results](https://github.com/prudent-rs/prudent/actions). Error code validation requires `nightly`
+  Rust toolchain. See also [`src/linted_with_tests.rs`](src/linted_with_tests.rs) for expected
+  compilation error codes.
+- Error output validation: Some lint violations don't have a special error code. So we validate the
+  error message in
+  [violations_coverage/verify_error_messages/](violations_coverage/verify_error_messages/) with
+  [dtolnay/trybuild](https://github.com/dtolnay/trybuild/)
+  [crates.io/crates/trybuild](https://crates.io/crates/trybuild).
+
+## unsafe_method
+TODO
+
 # Details
 
 `prudent` helps both authors, reviewers and all of us:
@@ -467,16 +474,21 @@ However,
 
 `prudent` is `no-std`-compatible. It doesn't need allocation either.
 
+All of `prudent`'s "positive" functionality works on `stable` Rust (minimum version 1.39). However,
+if you use `assert_unsafe_methods` feature to verify that `unsafe_method` is applied only to methods
+that are indeed `unsafe`, that requires
+- `nightly`, and
+- access to set `RUSTFLAGS="-Znext-solver=globally"`. That is unfortunately not possible for
+  doctests. See, and give thumbs up to, [Related issues](#Related-issues).
+
 ## Always forward compatible
 
-`prudent` is planned to be always below version `1.0`. So <!--stable (**even**-numbered) versions-->
-it will be forward compatible. (If a need ever arises for big incompatibility, that can go to a new
-crate.)
+`prudent` is planned to be forward compatible. (If a need ever arises for big incompatibility, that
+can go to a new crate.)
 
-That allows you to specify `prudent` as a dependency with version `0.*`, which will match ANY
-**major** versions (below `1.0`, of course). That will match the newest <!-- (**even**-numbered
-major)-->
-<!-- stable--> version (available for your Rust) automatically.
+That allows `prudent` to be always below version `1.0`. Then you can specify `prudent` as a
+dependency with version `0.*`, which will match ANY **major** versions (below `1.0`, of course).
+That will match the newest version (available for your Rust) automatically.
 
 This is special only to `0.*` - it is **not** possible to have a wildcard matching various **major**
 versions `1.0` or higher.

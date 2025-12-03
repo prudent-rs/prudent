@@ -1,37 +1,8 @@
 //! "backend" functionality (anything else than linted macros)
-//! - macros that don't need `warn/deny/forbid/allow/expect` lint rules
-//! - non-macro functionality.
+//! - a few macros macros; and
+//! - any non-macro functionality.
 
-/// Implementation may change to support a range of versions etc.
-///
-/// NOT a part of public API - internal.
-#[doc(hidden)]
-pub const fn verify_linted_version(linted_version: &'static str) {
-    // https://github.com/rust-lang/rust/issues/143874 we can't (yet) use == on &str constants, not
-    // even matches! macro.
-    //
-    //assert!( linted_version==env!("CARGO_PKG_VERSION") );
-    //
-    //assert!( matches!(linted_version, env!("CARGO_PKG_VERSION")) );
-    let linted_version = linted_version.as_bytes();
-    //
-    //assert!( matches!(linted_version, env!("CARGO_PKG_VERSION").as_bytes()) );
-    //
-    //Can't yet:
-    //
-    //assert!( linted_version == env!("CARGO_PKG_VERSION").as_bytes() );
-    //
-    // Can't yet:
-    //
-    // assert!( matches!(&linted_version[0..5], b"0.0.3") );
-    //
-    // Can now:
-    //
-    //assert!( matches!(linted_version, b"0.0.3-beta") );
-    assert!(matches!(linted_version, [b'0', b'.', b'0', b'.', b'3', ..]));
-}
-
-/// For casting/ensuring that a user-provided function is unsafe. Used by `unsafe_fn`.
+/// For casting/ensuring that a user-provided function is unsafe. Used by [crate::unsafe_fn].
 ///
 /// Internal - NOT a part of public API.
 #[doc(hidden)]
