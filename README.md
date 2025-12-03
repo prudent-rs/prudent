@@ -471,6 +471,8 @@ All of `prudent`'s "positive" functionality works on `stable` Rust (minimum vers
 if you use `assert_unsafe_methods` feature to verify that `unsafe_method` is applied only to methods
 that are indeed `unsafe`, that requires
 - `nightly`, and
+- access to have `#![feature(type_alias_impl_trait)]` at the crate's top level (that is,
+  `src/lib.rs`, `src/main.rs` or a binary crate's top level source file), and
 - access to set `RUSTFLAGS="-Znext-solver=globally"`. That is unfortunately not possible for
   doctests. See, and give thumbs up to, [Related issues](#Related-issues).
 
