@@ -11,5 +11,5 @@ unsafe fn new_receiver() -> S {
 }
 
 fn main() {
-    let _ = unsafe_method!(new_receiver() =>@ method);
+    let _ = unsafe_method!(new_receiver() =>. method);
 }

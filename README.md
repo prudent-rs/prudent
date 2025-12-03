@@ -32,7 +32,7 @@ const _: u8 = unsafe_fn!(unsafe_fn_two_args => true, 0);
 ### self is Copy, by value
 ```rust
 use prudent::unsafe_method;
-const _: u8 = unsafe_method!( 1u8 =>@ unchecked_add => 0 );
+const _: u8 = unsafe_method!( 1u8 =>. unchecked_add => 0 );
 ```
 
 ### self is not Copy, by shared reference
@@ -47,9 +47,9 @@ impl SNonCopy {
 
 fn main() {
     let s = SNonCopy {};
-    unsafe_method!(s =>@ unsafe_method_no_args);
-    unsafe_method!(s =>@ unsafe_method_one_arg => true);
-    unsafe_method!(s =>@ unsafe_method_two_args => true, false);
+    unsafe_method!(s =>. unsafe_method_no_args);
+    unsafe_method!(s =>. unsafe_method_one_arg => true);
+    unsafe_method!(s =>. unsafe_method_two_args => true, false);
 }
 ```
 
@@ -65,9 +65,9 @@ impl SNonCopy {
 
 fn main() {
     let mut s = SNonCopy {};
-    unsafe_method!(s =>@ unsafe_method_no_args);
-    unsafe_method!(s =>@ unsafe_method_one_arg => true);
-    unsafe_method!(s =>@ unsafe_method_two_args => true, false);
+    unsafe_method!(s =>. unsafe_method_no_args);
+    unsafe_method!(s =>. unsafe_method_one_arg => true);
+    unsafe_method!(s =>. unsafe_method_two_args => true, false);
 }
 ```
 
@@ -83,9 +83,9 @@ fn main() {
             unsafe fn unsafe_method_two_args(self, _: bool, _: bool) {}
         }
 
-        unsafe_method!(SNonCopy {} =>@ unsafe_method_no_args);
-        unsafe_method!(SNonCopy {} =>@ unsafe_method_one_arg => true);
-        unsafe_method!(SNonCopy {} =>@ unsafe_method_two_args => true, false);
+        unsafe_method!(SNonCopy {} =>. unsafe_method_no_args);
+        unsafe_method!(SNonCopy {} =>. unsafe_method_one_arg => true);
+        unsafe_method!(SNonCopy {} =>. unsafe_method_two_args => true, false);
     }
     {
         #[derive(Clone, Copy)]
@@ -95,8 +95,8 @@ fn main() {
         }
 
         let sCopy = SCopy {};
-        unsafe_method!(sCopy =>@ unsafe_method_no_args);
-        unsafe_method!(sCopy =>@ unsafe_method_no_args);
+        unsafe_method!(sCopy =>. unsafe_method_no_args);
+        unsafe_method!(sCopy =>. unsafe_method_no_args);
         let _ = sCopy;
     }
 }
