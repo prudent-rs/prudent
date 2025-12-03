@@ -23,25 +23,19 @@ const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
 const unsafe fn unsafe_fn_two_args(_: bool, u: u8) -> u8 { u }
 
 const _: () = unsafe_fn!(unsafe_fn_no_args);
-const _: bool = unsafe_fn!(unsafe_fn_one_arg=> true);
-const _: u8 = unsafe_fn!(unsafe_fn_two_args=> true, 0);
-fn main() {}
+const _: bool = unsafe_fn!(unsafe_fn_one_arg => true);
+const _: u8 = unsafe_fn!(unsafe_fn_two_args => true, 0);
 ```
 
 ## unsafe_method
 
-### self by value
+### self is Copy, by value
 ```rust
 use prudent::unsafe_method;
 const _: u8 = unsafe_method!( 1u8 =>@ unchecked_add => 0 );
 ```
 
-```rust
-let _todo = ();
-//# use prudent::unsafe_method;
-//const _: u8 = unsafe_method!(~allow_unsafe ~expect_unsafe 1u8, unchecked_add, 0);
-```
-
+### self is not Copy, by shared reference
 ```rust
 use prudent::unsafe_method;
 struct SNonCopy {}
@@ -53,7 +47,6 @@ impl SNonCopy {
 
 fn main() {
     let s = SNonCopy {};
-    // Works ALSO for non-Copy types
     unsafe_method!(s =>@ unsafe_method_no_args);
     unsafe_method!(s =>@ unsafe_method_one_arg => true);
     unsafe_method!(s =>@ unsafe_method_two_args => true, false);

@@ -1,5 +1,5 @@
 //! "backend" functionality (anything else than linted macros)
-//! - a few macros macros; and
+//! - helper macro(s); and
 //! - any non-macro functionality.
 
 /// For casting/ensuring that a user-provided function is unsafe. Used by [crate::unsafe_fn].
@@ -269,8 +269,8 @@ pub const fn shared_to_mut<T>(_: &T) -> &'static mut T {
     unreachable!()
 }
 
-/// This is an "early" type check for [unsafe_val], so that the user knows to use [unsafe_val] with
-/// [core::marker::Copy] types only.
+/// This is an "early" type check for [crate::unsafe_val], so that the user knows to use
+/// [crate::unsafe_val] with [core::marker::Copy] types only.
 ///
 /// NOT a part of public API!
 #[doc(hidden)]
