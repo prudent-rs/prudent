@@ -528,14 +528,18 @@ Please contribute, or at least subscribe, and give thumbs up, to:
 
 ## Related issues
 Sorted by importance (for `prudent`):
+- [prudent-rs/prudent#2](https://github.com/prudent-rs/prudent/issues/2) Slint-like VS-Code extension and/or LSP
 - [rust-lang/rust#43031](https://github.com/rust-lang/rust/issues/43031) rustdoc: allow full set of
   compiler options to be specified
 - [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) `unboxed_closures` and
   `fn_traits` feature.
 - [rust-lang/rust#88531](https://github.com/rust-lang/rust/issues/88531) No way to get compile-time
   info from the type of local
+- [rust-lang/rust-analyzer#11323](https://github.com/rust-lang/rust-analyzer/issues/11323) Inlay
+  hints not working in macro call
 - [rust-lang/rust#63063](https://github.com/rust-lang/rust/issues/63063) Tracking issue for RFC
   2515, "Permit impl Trait in type aliases"
+- [rust-lang/rfcs#3444](https://github.com/rust-lang/rfcs/pull/3444) Inferred types
 - [rust-lang/rust#54726](https://github.com/rust-lang/rust/issues/54726) Tracking issue for custom
   inner attributes
 - [rust-lang/rust#110613](https://github.com/rust-lang/rust/issues/110613) Forbidding lints doesn't
