@@ -14,7 +14,9 @@ pub mod expecting_unsafe_fn {
     }
     /// Function with one argument.
     pub mod arg {
-        /// Used by `unsafe_fn`.
+        /// Used by [crate::unsafe_fn].
+        ///
+        /// @TODO check link generated for the above in docs.rs
         pub unsafe fn fun<A1, R>(_: A1) -> R {
             unreachable!()
         }

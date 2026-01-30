@@ -5,3 +5,5 @@
 /violations_coverage/verify_error_messages/Cargo.lock
 /coverage_*/target
 /coverage_*/Cargo.lock
+/.idea
+
