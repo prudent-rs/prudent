@@ -21,6 +21,7 @@ jobs:
     # reporting constants in doctests as unused, even though they were used. That's why we need at
     # least 1.89.
     container: rust:1.89.0-alpine
+    # TODO rust:1.93-alpine
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

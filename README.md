@@ -354,8 +354,8 @@ fn main() {
     const B: bool = true;
     const PT: *const bool = &B as *const bool;
 
-    const _: bool = unsafe_val!(PT, bool);
-    let _ = unsafe_val!(PT, bool);
+    const _: bool = unsafe_val!(PT => bool);
+    let _ = unsafe_val!(PT => bool);
 }
 ```
 
