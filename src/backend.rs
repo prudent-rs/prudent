@@ -1,8 +1,12 @@
 //! "backend" functionality (anything else than macros).
 
-unsafe fn _unsafe_fun<R>() -> R {
+unsafe fn _unsafe_generic_fun<R>() -> R {
     unreachable!()
 }
+unsafe fn _unsafe_fun_bool() -> bool {
+    true
+}
+
 fn _safe_zero_args() {}
 fn _assure_unsafe_fn_zero_args() {
     #[cfg(false)]
@@ -10,6 +14,58 @@ fn _assure_unsafe_fn_zero_args() {
         let _: fn() -> _ = if false { _unsafe_fun } else { _safe_zero_args };
     }
 }
+
+/// Internal
+pub trait UnsafeFnZeroArgs {
+    /// Internal
+    type Output: Sized;
+}
+impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF {
+    type Output = O;
+}
+
+impl<O> UnsafeFnZeroArgs for unsafe fn() -> O {
+    type Output = O;
+}
+
+fn _take_unsafe_fn_zero_args<O>(_: impl UnsafeFnZeroArgs<Output = O>) {}
+
+fn _try_unsafe_fn_zero_args() {
+    //_take_unsafe_fn_zero_args(_unsafe_fun as unsafe fn() -> _);
+
+    //_take_unsafe_fn_zero_args(_unsafe_fun_bool);
+    _take_unsafe_fn_zero_args(_unsafe_fun_bool as unsafe fn() -> _);
+
+    // passes - BUT only when `impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF`
+    _take_unsafe_fn_zero_args(_safe_zero_args);
+    //
+    // passes:
+    _take_unsafe_fn_zero_args(_safe_zero_args as unsafe fn() -> _);
+
+    // GOOD: This fails, as it should:
+    //
+    // -> "non-primitive cast"
+    //
+    /*_take_unsafe_fn_zero_args(
+        if true {
+            _safe_zero_args
+        } else {
+            _unsafe_fun_bool as unsafe fn() -> _
+        }
+    );*/
+    // GOOD: This passes, as it should:
+    _take_unsafe_fn_zero_args(
+        if true {
+            _unsafe_fun_bool
+        } else {
+            _unsafe_fun_bool as unsafe fn() -> _
+        }
+    );
+}
+
+// NOT possible:
+//
+// pub fn expect_unsafe_fn<F: unsafe Fn<()>>(_: F) {}
 
 /// For casting/ensuring that a user-provided function is unsafe. Used by [crate::unsafe_fn]
 /// (and, when applicable, by [crate::unsafe_method]).
