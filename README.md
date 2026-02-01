@@ -37,6 +37,7 @@ const _: u8 = unsafe_method!( 1u8 =>. unchecked_add => 0 );
 
 ### self is not Copy, by shared reference
 ```rust
+//  TODO
 use prudent::unsafe_method;
 struct SNonCopy {}
 impl SNonCopy {

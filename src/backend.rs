@@ -246,24 +246,6 @@ pub mod expecting_unsafe_fn {
     }
 }
 
-/// Generate path to `fun` under [expecting_unsafe_fn::arg], or [expecting_unsafe_fn::arg::arg], or
-/// [expecting_unsafe_fn::arg::arg::arg] etc, as appropriate for given number of argument(s).
-///
-/// Internal - NOT a part of public API.
-#[macro_export]
-#[doc(hidden)]
-macro_rules! expecting_unsafe_fn_path {
-    ( $( $arg:expr ),+ ) => {
-        $crate::expecting_unsafe_fn_path!( ~ { $( $arg ),+ }, $crate::backend::expecting_unsafe_fn )
-    };
-    ( ~ { $arg_first:expr, $( $arg_rest:expr ),+ }, $( $path_part:tt )+ ) => {
-        $crate::expecting_unsafe_fn_path!( ~ { $( $arg_rest ),+ }, $( $path_part )+ ::arg )
-    };
-    ( ~ { $arg_last:expr }, $( $path_part:tt )+ ) => {
-        $( $path_part )+ ::arg::fun
-    };
-}
-
 /// NOT a part of public API. Pretend to get a mutable reference from a shared reference. For
 /// internal/generated **compile-time** checks only.
 #[doc(hidden)]
