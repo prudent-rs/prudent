@@ -1,8 +1,18 @@
-//! "backend" functionality (anything else than linted macros)
-//! - helper macro(s); and
-//! - any non-macro functionality.
+//! "backend" functionality (anything else than macros).
 
-/// For casting/ensuring that a user-provided function is unsafe. Used by [crate::unsafe_fn].
+unsafe fn _unsafe_fun<R>() -> R {
+    unreachable!()
+}
+fn _safe_zero_args() {}
+fn _assure_unsafe_fn_zero_args() {
+    #[cfg(false)]
+    {
+        let _: fn() -> _ = if false { _unsafe_fun } else { _safe_zero_args };
+    }
+}
+
+/// For casting/ensuring that a user-provided function is unsafe. Used by [crate::unsafe_fn]
+/// (and, when applicable, by [crate::unsafe_method]).
 ///
 /// Internal - NOT a part of public API.
 #[doc(hidden)]
@@ -17,6 +27,10 @@ pub mod expecting_unsafe_fn {
         /// Used by [crate::unsafe_fn].
         ///
         /// @TODO check link generated for the above in docs.rs
+        ///
+        /// @TODO here and above: Try replace generics
+        /// - <A1, A2...> and _:A1 with _: impl Sized,
+        /// - <R> with -> impl Sized
         pub unsafe fn fun<A1, R>(_: A1) -> R {
             unreachable!()
         }
