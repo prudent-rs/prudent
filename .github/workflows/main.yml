@@ -1,3 +1,7 @@
+# - KEEP this in sync with ../../test.sh
+# - BUT, ../../test.sh needs to undo any effects of directory change (`cd`), while here each GitHub action step starts
+#   in the repository directory
+
 name: Tests, doc tests, MIRI, violations coverage
 
 on:
@@ -36,32 +40,6 @@ jobs:
           # macro), which needs to be run as a dynamic library, so it needs musl-dev
           apk add --no-cache musl-dev
 
-      - name: Clippy, fmt
+      - name: test.sh
         shell: sh
-        run: |
-          cargo clippy
-          cargo fmt --check
-          cd violations_coverage/in_crate
-          cargo fmt --check
-
-      - name: Doc (stable, nightly)
-        shell: sh
-        run: |
-          cargo doc --no-deps --quiet
-          RUSTDOCFLAGS="--forbid rustdoc::invalid_codeblock_attributes \
-            --forbid rustdoc::missing_doc_code_examples \
-            -Zcrate-attr=feature(rustdoc_missing_doc_code_examples)" \
-            cargo +nightly doc --no-deps --quiet
-
-      - name: Tests (debug, release, MIRI, verify_error_messages=trybuild)
-        shell: sh
-        run: |
-          cargo test
-          # We need "cargo +nightly test" to validate error numbers. To locate them, search for
-          # "compile_fail,E" in src/lib.rs.
-          cargo +nightly test
-          cargo test --release
-          cargo +nightly miri test
-          cd violations_coverage/verify_error_messages
-          cargo test
-          cargo fmt --check
+        run: ./test.sh
