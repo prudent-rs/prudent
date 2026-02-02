@@ -56,11 +56,9 @@ fn _try_unsafe_fn_zero_args() {
         _unsafe_fun_bool
     } else {
         // OK:
-        //
         //_unsafe_fun_bool as unsafe fn() -> _
 
         // OK:
-        //
         _unsafe_generic_fun
     });
 
