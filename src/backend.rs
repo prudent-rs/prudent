@@ -43,24 +43,36 @@ fn _try_unsafe_fn_zero_args() {
     _take_unsafe_fn_zero_args(_safe_zero_args as unsafe fn() -> _);
 
     // GOOD: This fails, as it should:
-    //
-    // -> "non-primitive cast"
-    //
-    /*_take_unsafe_fn_zero_args(
+    #[cfg(false)]
+    _take_unsafe_fn_zero_args(
         if true {
             _safe_zero_args
         } else {
             _unsafe_fun_bool as unsafe fn() -> _
         }
-    );*/
-    // GOOD: This passes, as it should:
-    _take_unsafe_fn_zero_args(
-        if true {
-            _unsafe_fun_bool
-        } else {
-            _unsafe_fun_bool as unsafe fn() -> _
-        }
     );
+    // GOOD: This passes, as it should:
+    _take_unsafe_fn_zero_args(if true {
+        _unsafe_fun_bool
+    } else {
+        // OK:
+        //
+        //_unsafe_fun_bool as unsafe fn() -> _
+
+        // OK:
+        //
+        _unsafe_generic_fun
+    });
+
+    // BEST: even for generic functions
+    let unsafe_generic_fun_cast_as_non_generic = _unsafe_generic_fun;
+    _take_unsafe_fn_zero_args(if true {
+        self::expecting_unsafe_fn::fun
+    } else {
+        unsafe_generic_fun_cast_as_non_generic
+    });
+    // The following is needed to narrow down from generic to non-generic function:
+    let _: bool = unsafe { unsafe_generic_fun_cast_as_non_generic() };
 }
 
 // NOT possible:
