@@ -3,6 +3,10 @@
 unsafe fn _unsafe_generic_fun<R>() -> R {
     unreachable!()
 }
+fn _safe_generic_fun<R>() -> R {
+    unreachable!()
+}
+
 unsafe fn _unsafe_fun_bool() -> bool {
     true
 }
@@ -13,22 +17,24 @@ fn _safe_fun_bool() -> bool {
 fn _safe_zero_args() {}
 
 /// Internal
-pub trait UnsafeFnZeroArgs {
-    /// Internal
-    type Output: Sized;
-
+pub trait ConflictForSafeFunction1 {
     /// Internal.
-    fn does_not_conflict(&self) {}
+    fn conflict_for_safe_function(&self) {}
 }
-impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF {
-    type Output = O;
+impl<_O, SF: Fn() -> _O> ConflictForSafeFunction1 for SF {}
+
+/// Internal.
+pub trait ConflictForSafeFunction2 {
+    /// Internal.
+    fn conflict_for_safe_function(&self) {}
 }
+impl<T> ConflictForSafeFunction2 for T {}
 
 /*impl<O> UnsafeFnZeroArgs for unsafe fn() -> O {
     type Output = O;
 }*/
 
-fn _take_unsafe_fn_zero_args<O>(_: impl UnsafeFnZeroArgs<Output = O>) {}
+//fn _take_unsafe_fn_zero_args<O>(_: impl UnsafeFnZeroArgs<Output = O>) {}
 
 fn _try_unsafe_fn_zero_args() {
     //_take_unsafe_fn_zero_args(_unsafe_fun as unsafe fn() -> _);
@@ -51,21 +57,16 @@ fn _try_unsafe_fn_zero_args() {
     });*/
 
     //use crate::backend::UnsafeFnZeroArgs;
-    (_safe_fun_bool as unsafe fn() -> bool).does_not_conflict();
+    //(_safe_fun_bool as unsafe fn() -> bool).conflict_for_safe_function();
 
     // OK: Fails; with: AnyType; and with: impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF
-    //_safe_fun_bool.does_not_conflict();
+    #[cfg(false)]
+    _safe_fun_bool.conflict_for_safe_function();
 
-    _unsafe_fun_bool.does_not_conflict();
-
-    pub trait AnyType {
-        /// Internal.
-        fn does_not_conflict(&self) {}
-    }
-    impl<T> AnyType for T {}
+    _unsafe_fun_bool.conflict_for_safe_function();
 
     //_unsafe_fun_bool.does_not_conflict();
-    (_unsafe_fun_bool as unsafe fn() -> bool).does_not_conflict();
+    (_unsafe_fun_bool as unsafe fn() -> bool).conflict_for_safe_function();
 
     #[cfg(false)]
     _take_unsafe_fn_zero_args(if true {
@@ -86,17 +87,23 @@ fn _try_unsafe_fn_zero_args() {
         _unsafe_fun_bool as unsafe fn() -> _
     });*/
 
-    /*{
+    {
         // BEST: even for generic functions
         let unsafe_generic_fun_cast_as_non_generic = _unsafe_generic_fun;
-        _take_unsafe_fn_zero_args(if true {
-            self::expecting_unsafe_fn::fun
-        } else {
-            unsafe_generic_fun_cast_as_non_generic
-        });
+        unsafe_generic_fun_cast_as_non_generic.conflict_for_safe_function();
+
         // BUT: The following is needed to narrow down from generic to non-generic function:
         let _: bool = unsafe { unsafe_generic_fun_cast_as_non_generic() };
-    }*/
+    }
+    #[cfg(false)]
+    {
+        // BEST: even for generic functions
+        let safe_generic_fun_cast_as_non_generic = _safe_generic_fun;
+        safe_generic_fun_cast_as_non_generic.conflict_for_safe_function();
+
+        // BUT: The following is needed to narrow down from generic to non-generic function:
+        let _: bool = unsafe { safe_generic_fun_cast_as_non_generic() };
+    }
 }
 
 // NOT possible:
