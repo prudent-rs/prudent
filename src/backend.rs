@@ -6,27 +6,27 @@ unsafe fn _unsafe_generic_fun<R>() -> R {
 unsafe fn _unsafe_fun_bool() -> bool {
     true
 }
+fn _safe_fun_bool() -> bool {
+    true
+}
 
 fn _safe_zero_args() {}
-fn _assure_unsafe_fn_zero_args() {
-    #[cfg(false)]
-    {
-        let _: fn() -> _ = if false { _unsafe_fun } else { _safe_zero_args };
-    }
-}
 
 /// Internal
 pub trait UnsafeFnZeroArgs {
     /// Internal
     type Output: Sized;
+
+    /// Internal.
+    fn does_not_conflict(&self) {}
 }
 impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF {
     type Output = O;
 }
 
-impl<O> UnsafeFnZeroArgs for unsafe fn() -> O {
+/*impl<O> UnsafeFnZeroArgs for unsafe fn() -> O {
     type Output = O;
-}
+}*/
 
 fn _take_unsafe_fn_zero_args<O>(_: impl UnsafeFnZeroArgs<Output = O>) {}
 
@@ -34,43 +34,69 @@ fn _try_unsafe_fn_zero_args() {
     //_take_unsafe_fn_zero_args(_unsafe_fun as unsafe fn() -> _);
 
     //_take_unsafe_fn_zero_args(_unsafe_fun_bool);
-    _take_unsafe_fn_zero_args(_unsafe_fun_bool as unsafe fn() -> _);
+    //_take_unsafe_fn_zero_args(_unsafe_fun_bool as unsafe fn() -> _);
 
     // passes - BUT only when `impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF`
-    _take_unsafe_fn_zero_args(_safe_zero_args);
-    //
-    // passes:
-    _take_unsafe_fn_zero_args(_safe_zero_args as unsafe fn() -> _);
+    // Otherwise it fails.
+    //_take_unsafe_fn_zero_args(_safe_zero_args);
 
-    // GOOD: This fails, as it should:
+    // passes:
+    //_take_unsafe_fn_zero_args(_safe_zero_args as unsafe fn() -> _);
+
+    //#[cfg(false)]
+    /*_take_unsafe_fn_zero_args(if true {
+        _safe_fun_bool
+    } else {
+        _unsafe_fun_bool as unsafe fn() -> _
+    });*/
+
+    //use crate::backend::UnsafeFnZeroArgs;
+    (_safe_fun_bool as unsafe fn() -> bool).does_not_conflict();
+
+    // OK: Fails; with: AnyType; and with: impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF
+    //_safe_fun_bool.does_not_conflict();
+
+    _unsafe_fun_bool.does_not_conflict();
+
+    pub trait AnyType {
+        /// Internal.
+        fn does_not_conflict(&self) {}
+    }
+    impl<T> AnyType for T {}
+
+    //_unsafe_fun_bool.does_not_conflict();
+    (_unsafe_fun_bool as unsafe fn() -> bool).does_not_conflict();
+
     #[cfg(false)]
-    _take_unsafe_fn_zero_args(
-        if true {
-            _safe_zero_args
-        } else {
-            _unsafe_fun_bool as unsafe fn() -> _
-        }
-    );
+    _take_unsafe_fn_zero_args(if true {
+        _safe_zero_args
+    } else {
+        _unsafe_fun_bool as unsafe fn() -> _
+    });
+
     // GOOD: This passes, as it should:
+    /*_take_unsafe_fn_zero_args(if true {
+        _unsafe_fun_bool
+    } else {
+        _unsafe_generic_fun
+    });
     _take_unsafe_fn_zero_args(if true {
         _unsafe_fun_bool
     } else {
-        // OK:
-        //_unsafe_fun_bool as unsafe fn() -> _
+        _unsafe_fun_bool as unsafe fn() -> _
+    });*/
 
-        // OK:
-        _unsafe_generic_fun
-    });
-
-    // BEST: even for generic functions
-    let unsafe_generic_fun_cast_as_non_generic = _unsafe_generic_fun;
-    _take_unsafe_fn_zero_args(if true {
-        self::expecting_unsafe_fn::fun
-    } else {
-        unsafe_generic_fun_cast_as_non_generic
-    });
-    // The following is needed to narrow down from generic to non-generic function:
-    let _: bool = unsafe { unsafe_generic_fun_cast_as_non_generic() };
+    /*{
+        // BEST: even for generic functions
+        let unsafe_generic_fun_cast_as_non_generic = _unsafe_generic_fun;
+        _take_unsafe_fn_zero_args(if true {
+            self::expecting_unsafe_fn::fun
+        } else {
+            unsafe_generic_fun_cast_as_non_generic
+        });
+        // BUT: The following is needed to narrow down from generic to non-generic function:
+        let _: bool = unsafe { unsafe_generic_fun_cast_as_non_generic() };
+    }*/
 }
 
 // NOT possible:
