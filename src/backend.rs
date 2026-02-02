@@ -17,18 +17,18 @@ fn _safe_fun_bool() -> bool {
 fn _safe_zero_args() {}
 
 /// Internal
-pub trait ConflictForSafeFunction1 {
+pub trait ExpectedUnsafeFunctionButReceivedSafe {
     /// Internal.
     fn conflict_for_safe_function(&self) {}
 }
-impl<_O, SF: Fn() -> _O> ConflictForSafeFunction1 for SF {}
+impl<_O, F: Fn() -> _O> ExpectedUnsafeFunctionButReceivedSafe for F {}
 
 /// Internal.
-pub trait ConflictForSafeFunction2 {
+pub trait FailsWithConflictForSafeFunction {
     /// Internal.
     fn conflict_for_safe_function(&self) {}
 }
-impl<T> ConflictForSafeFunction2 for T {}
+impl<T> FailsWithConflictForSafeFunction for T {}
 
 /*impl<O> UnsafeFnZeroArgs for unsafe fn() -> O {
     type Output = O;
