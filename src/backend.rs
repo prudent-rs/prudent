@@ -30,62 +30,20 @@ pub trait FailsWithConflictForSafeFunction {
 }
 impl<T> FailsWithConflictForSafeFunction for T {}
 
-/*impl<O> UnsafeFnZeroArgs for unsafe fn() -> O {
-    type Output = O;
-}*/
-
-//fn _take_unsafe_fn_zero_args<O>(_: impl UnsafeFnZeroArgs<Output = O>) {}
-
 fn _try_unsafe_fn_zero_args() {
-    //_take_unsafe_fn_zero_args(_unsafe_fun as unsafe fn() -> _);
-
-    //_take_unsafe_fn_zero_args(_unsafe_fun_bool);
-    //_take_unsafe_fn_zero_args(_unsafe_fun_bool as unsafe fn() -> _);
-
-    // passes - BUT only when `impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF`
-    // Otherwise it fails.
-    //_take_unsafe_fn_zero_args(_safe_zero_args);
-
-    // passes:
-    //_take_unsafe_fn_zero_args(_safe_zero_args as unsafe fn() -> _);
-
-    //#[cfg(false)]
-    /*_take_unsafe_fn_zero_args(if true {
-        _safe_fun_bool
-    } else {
-        _unsafe_fun_bool as unsafe fn() -> _
-    });*/
-
-    //use crate::backend::UnsafeFnZeroArgs;
-    //(_safe_fun_bool as unsafe fn() -> bool).conflict_for_safe_function();
+    (_safe_fun_bool as unsafe fn() -> bool).conflict_for_safe_function();
 
     // OK: Fails; with: AnyType; and with: impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF
     #[cfg(false)]
     _safe_fun_bool.conflict_for_safe_function();
 
+    #[cfg(false)]
+    _safe_zero_args.conflict_for_safe_function();
+
     _unsafe_fun_bool.conflict_for_safe_function();
 
     //_unsafe_fun_bool.does_not_conflict();
     (_unsafe_fun_bool as unsafe fn() -> bool).conflict_for_safe_function();
-
-    #[cfg(false)]
-    _take_unsafe_fn_zero_args(if true {
-        _safe_zero_args
-    } else {
-        _unsafe_fun_bool as unsafe fn() -> _
-    });
-
-    // GOOD: This passes, as it should:
-    /*_take_unsafe_fn_zero_args(if true {
-        _unsafe_fun_bool
-    } else {
-        _unsafe_generic_fun
-    });
-    _take_unsafe_fn_zero_args(if true {
-        _unsafe_fun_bool
-    } else {
-        _unsafe_fun_bool as unsafe fn() -> _
-    });*/
 
     {
         // BEST: even for generic functions
