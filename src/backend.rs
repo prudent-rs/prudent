@@ -95,7 +95,7 @@ fn _try_unsafe_fn_zero_args() {
         // BUT: The following is needed to narrow down from generic to non-generic function:
         let _: bool = unsafe { unsafe_generic_fun_cast_as_non_generic() };
     }
-    #[cfg(false)]
+    #[cfg(false)] // BEST: Fails, as it should:
     {
         // BEST: even for generic functions
         let safe_generic_fun_cast_as_non_generic = _safe_generic_fun;
