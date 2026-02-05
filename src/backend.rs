@@ -16,37 +16,45 @@ fn _safe_fun_bool() -> bool {
 
 fn _safe_zero_args() {}
 
-/// Internal
+/// See [ExpectedUnsafeFunctionButReceivedSafe::prudent_conflict_for_safe_function].
+///
+/// Internal - NOT a part of public API!
 pub trait ExpectedUnsafeFunctionButReceivedSafe {
-    /// Internal.
-    fn conflict_for_safe_function(&self) {}
+    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::unsafe_fn] and [crate::unsafe_method].
+    ///
+    /// Internal - NOT a part of public API!
+    fn prudent_conflict_for_safe_function(&self) {}
 }
 impl<_O, F: Fn() -> _O> ExpectedUnsafeFunctionButReceivedSafe for F {}
 
-/// Internal.
+/// See [FailsWithConflictForSafeFunction::prudent_conflict_for_safe_function].
+///
+/// Internal - NOT a part of public API!
 pub trait FailsWithConflictForSafeFunction {
-    /// Internal.
-    fn conflict_for_safe_function(&self) {}
+    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::unsafe_fn] and [crate::unsafe_method].
+    ///
+    /// Internal - NOT a part of public API!
+    fn prudent_conflict_for_safe_function(&self) {}
 }
 impl<T> FailsWithConflictForSafeFunction for T {}
 
 fn _try_unsafe_fn_zero_args() {
-    (_safe_fun_bool as unsafe fn() -> bool).conflict_for_safe_function();
+    (_safe_fun_bool as unsafe fn() -> bool).prudent_conflict_for_safe_function();
 
     // OK: Fails
     #[cfg(false)]
-    _safe_fun_bool.conflict_for_safe_function();
+    _safe_fun_bool.prudent_conflict_for_safe_function();
 
     #[cfg(false)]
-    _safe_zero_args.conflict_for_safe_function();
+    _safe_zero_args.prudent_conflict_for_safe_function();
 
-    _unsafe_fun_bool.conflict_for_safe_function();
-    (_unsafe_fun_bool as unsafe fn() -> bool).conflict_for_safe_function();
+    _unsafe_fun_bool.prudent_conflict_for_safe_function();
+    (_unsafe_fun_bool as unsafe fn() -> bool).prudent_conflict_for_safe_function();
 
     {
         // BEST: even for generic functions
         let unsafe_generic_fun_cast_as_non_generic = _unsafe_generic_fun;
-        unsafe_generic_fun_cast_as_non_generic.conflict_for_safe_function();
+        unsafe_generic_fun_cast_as_non_generic.prudent_conflict_for_safe_function();
 
         // BUT: The following is needed to narrow down from generic to non-generic function:
         let _: bool = unsafe { unsafe_generic_fun_cast_as_non_generic() };
@@ -55,7 +63,7 @@ fn _try_unsafe_fn_zero_args() {
     {
         // BEST: even for generic functions
         let safe_generic_fun_cast_as_non_generic = _safe_generic_fun;
-        safe_generic_fun_cast_as_non_generic.conflict_for_safe_function();
+        safe_generic_fun_cast_as_non_generic.prudent_conflict_for_safe_function();
 
         // BUT: The following is needed to narrow down from generic to non-generic function:
         let _: bool = unsafe { safe_generic_fun_cast_as_non_generic() };
