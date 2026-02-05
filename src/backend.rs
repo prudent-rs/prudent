@@ -33,7 +33,7 @@ impl<T> FailsWithConflictForSafeFunction for T {}
 fn _try_unsafe_fn_zero_args() {
     (_safe_fun_bool as unsafe fn() -> bool).conflict_for_safe_function();
 
-    // OK: Fails; with: AnyType; and with: impl<O, SF: Fn() -> O> UnsafeFnZeroArgs for SF
+    // OK: Fails
     #[cfg(false)]
     _safe_fun_bool.conflict_for_safe_function();
 
@@ -41,8 +41,6 @@ fn _try_unsafe_fn_zero_args() {
     _safe_zero_args.conflict_for_safe_function();
 
     _unsafe_fun_bool.conflict_for_safe_function();
-
-    //_unsafe_fun_bool.does_not_conflict();
     (_unsafe_fun_bool as unsafe fn() -> bool).conflict_for_safe_function();
 
     {
@@ -71,7 +69,7 @@ fn _try_unsafe_fn_zero_args() {
 /// For casting/ensuring that a user-provided function is unsafe. Used by [crate::unsafe_fn]
 /// (and, when applicable, by [crate::unsafe_method]).
 ///
-/// Internal - NOT a part of public API.
+/// Internal - NOT a part of public API!
 #[doc(hidden)]
 #[allow(clippy::module_inception)]
 pub mod expecting_unsafe_fn {
@@ -317,8 +315,10 @@ pub mod expecting_unsafe_fn {
     }
 }
 
-/// NOT a part of public API. Pretend to get a mutable reference from a shared reference. For
+/// Pretend to get a mutable reference from a shared reference. For
 /// internal/generated **compile-time** checks only.
+///
+/// Internal - NOT a part of public API!
 #[doc(hidden)]
 pub const fn shared_to_mut<T>(_: &T) -> &'static mut T {
     unreachable!()
@@ -327,6 +327,6 @@ pub const fn shared_to_mut<T>(_: &T) -> &'static mut T {
 /// This is an "early" type check for [crate::unsafe_val], so that the user knows to use
 /// [crate::unsafe_val] with [core::marker::Copy] types only.
 ///
-/// NOT a part of public API!
+/// Internal - NOT a part of public API!
 #[doc(hidden)]
 pub const fn expect_copy_ptr<T: Copy>(_: *const T) {}
