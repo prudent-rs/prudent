@@ -19,6 +19,7 @@ fn _safe_zero_args() {}
 /// See [ExpectedUnsafeFunctionButReceivedSafe::prudent_conflict_for_safe_function].
 ///
 /// Internal - NOT a part of public API!
+#[doc(hidden)]
 pub trait ExpectedUnsafeFunctionButReceivedSafe {
     /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::unsafe_fn] and [crate::unsafe_method].
     ///
@@ -30,6 +31,7 @@ impl<_O, F: Fn() -> _O> ExpectedUnsafeFunctionButReceivedSafe for F {}
 /// See [FailsWithConflictForSafeFunction::prudent_conflict_for_safe_function].
 ///
 /// Internal - NOT a part of public API!
+#[doc(hidden)]
 pub trait FailsWithConflictForSafeFunction {
     /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::unsafe_fn] and [crate::unsafe_method].
     ///
@@ -92,8 +94,8 @@ pub mod expecting_unsafe_fn {
         /// @TODO check link generated for the above in docs.rs
         ///
         /// @TODO here and above: Try replace generics
-        /// - <A1, A2...> and _:A1 with _: impl Sized,
-        /// - <R> with -> impl Sized
+        /// - `<A1, A2...>`` and `_:A1`` with `_: impl Sized``,
+        /// - `<R>` with `impl Sized`
         pub unsafe fn fun<A1, R>(_: A1) -> R {
             unreachable!()
         }
