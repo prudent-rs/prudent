@@ -2,5 +2,12 @@
 # It is not intended for manual editing.
 [[package]]
 name = "prudent"
-version = "0.0.3-beta"
+version = "0.0.3-gamma"
+dependencies = [
+ "prudent-macros 0.0.3-gamma",
+]
+
+[[package]]
+name = "prudent-macros"
+version = "0.0.3-gamma"
 

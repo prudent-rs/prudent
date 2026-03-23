@@ -21,7 +21,7 @@ fn _safe_zero_args() {}
 /// Internal - NOT a part of public API!
 #[doc(hidden)]
 pub trait ExpectedUnsafeFunctionButReceivedSafe {
-    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::unsafe_fn] and [crate::unsafe_method].
+    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::prelude::unsafe_fn] and [crate::prelude::unsafe_method].
     ///
     /// Internal - NOT a part of public API!
     fn prudent_conflict_for_safe_function(&self) {}
@@ -33,7 +33,7 @@ impl<_O, F: Fn() -> _O> ExpectedUnsafeFunctionButReceivedSafe for F {}
 /// Internal - NOT a part of public API!
 #[doc(hidden)]
 pub trait FailsWithConflictForSafeFunction {
-    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::unsafe_fn] and [crate::unsafe_method].
+    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::prelude::unsafe_fn] and [crate::prelude::unsafe_method].
     ///
     /// Internal - NOT a part of public API!
     fn prudent_conflict_for_safe_function(&self) {}
@@ -76,8 +76,8 @@ fn _try_unsafe_fn_zero_args() {
 //
 // pub fn expect_unsafe_fn<F: unsafe Fn<()>>(_: F) {}
 
-/// For casting/ensuring that a user-provided function is unsafe. Used by [crate::unsafe_fn]
-/// (and, when applicable, by [crate::unsafe_method]).
+/// For casting/ensuring that a user-provided function is unsafe. Used by [crate::prelude::unsafe_fn]
+/// (and, when applicable, by [crate::prelude::unsafe_method]).
 ///
 /// Internal - NOT a part of public API!
 #[doc(hidden)]
@@ -89,7 +89,7 @@ pub mod expecting_unsafe_fn {
     }
     /// Function with one argument.
     pub mod arg {
-        /// Used by [crate::unsafe_fn].
+        /// Used by [crate::prelude::unsafe_fn].
         ///
         /// @TODO check link generated for the above in docs.rs
         ///
@@ -334,8 +334,8 @@ pub const fn shared_to_mut<T>(_: &T) -> &'static mut T {
     unreachable!()
 }
 
-/// This is an "early" type check for [crate::unsafe_val], so that the user knows to use
-/// [crate::unsafe_val] with [core::marker::Copy] types only.
+/// This is an "early" type check for [crate::prelude::unsafe_val], so that the user knows to use
+/// [crate::prelude::unsafe_val] with [core::marker::Copy] types only.
 ///
 /// Internal - NOT a part of public API!
 #[doc(hidden)]

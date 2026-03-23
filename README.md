@@ -16,7 +16,7 @@ For negative examples, see documentation of each `prudent` macro.
 
 ## unsafe_fn
 ```rust
-use prudent::unsafe_fn;
+use prudent::prelude::unsafe_fn;
 
 const unsafe fn unsafe_fn_no_args() {}
 const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
@@ -31,14 +31,14 @@ const _: u8 = unsafe_fn!(unsafe_fn_two_args => true, 0);
 
 ### self is Copy, by value
 ```rust
-use prudent::unsafe_method;
+use prudent::prelude::unsafe_method;
 const _: u8 = unsafe_method!( 1u8 =>. unchecked_add => 0 );
 ```
 
 ### self is not Copy, by shared reference
 ```rust
 //  TODO
-use prudent::unsafe_method;
+use prudent::prelude::unsafe_method;
 struct SNonCopy {}
 impl SNonCopy {
     unsafe fn unsafe_method_no_args(&self) {}
@@ -56,7 +56,7 @@ fn main() {
 
 ## unsafe_method > self: mutable reference
 ```rust
-use prudent::unsafe_method;
+use prudent::prelude::unsafe_method;
 struct SNonCopy {}
 impl SNonCopy {
     unsafe fn unsafe_method_no_args(&mut self) {}
@@ -74,7 +74,7 @@ fn main() {
 
 ## unsafe_method > self: by value
 ```rust
-use prudent::unsafe_method;
+use prudent::prelude::unsafe_method;
 fn main() {
     {
         struct SNonCopy {}
@@ -107,7 +107,7 @@ fn main() {
 # unsafe_ref
 ## unsafe_ref - one arg, basic reference
 ```rust
-use prudent::unsafe_ref;
+use prudent::prelude::unsafe_ref;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -119,7 +119,7 @@ fn main() {
 
 ## unsafe_ref - one arg, slice
 ```rust
-use prudent::unsafe_ref;
+use prudent::prelude::unsafe_ref;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
@@ -131,7 +131,7 @@ fn main() {
 
 ## unsafe_ref - one arg, dyn reference
 ```rust
-use prudent::unsafe_ref;
+use prudent::prelude::unsafe_ref;
 # use core::fmt::Display;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
@@ -142,7 +142,7 @@ fn main() {}
 
 ## unsafe_ref - two args, lifetimed reference
 ```rust
-use prudent::unsafe_ref;
+use prudent::prelude::unsafe_ref;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -154,7 +154,7 @@ fn main() {
 
 ## unsafe_ref - two args, lifetimed dyn reference
 ```rust
-use prudent::unsafe_ref;
+use prudent::prelude::unsafe_ref;
 use core::fmt::Display;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
@@ -165,7 +165,7 @@ fn main() {}
 
 ## unsafe_ref - two args, lifetimed slice
 ```rust
-use prudent::unsafe_ref;
+use prudent::prelude::unsafe_ref;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
@@ -177,7 +177,7 @@ fn main() {
 
 ## unsafe_ref - two args, typed basic reference
 ```rust
-use prudent::unsafe_ref;
+use prudent::prelude::unsafe_ref;
 const B: bool = true;
 const PT: *const bool = &B as *const bool;
 
@@ -189,7 +189,7 @@ fn main() {
 
 ## unsafe_ref - two args, typed slice
 ```rust
-use prudent::unsafe_ref;
+use prudent::prelude::unsafe_ref;
 const BS: [bool; 2] = [true, false];
 const PT: *const [bool] = &BS as *const [bool];
 
@@ -201,7 +201,7 @@ fn main() {
 
 ## unsafe_ref - two args, typed dyn reference
 ```rust
-use prudent::unsafe_ref;
+use prudent::prelude::unsafe_ref;
 # use core::fmt::Display;
 const B: bool = true;
 const PT: *const dyn Display = &B as *const dyn Display;
@@ -216,7 +216,7 @@ fn main() {
 # unsafe_mut
 ## unsafe_mut - one arg, basic reference
 ```rust
-use prudent::unsafe_mut;
+use prudent::prelude::unsafe_mut;
 fn main() {
     let mut b: bool = true;
     let pt: *mut bool = &mut b as *mut bool;
@@ -228,7 +228,7 @@ fn main() {
 
 ## unsafe_mut - one arg, slice
 ```rust
-use prudent::unsafe_mut;
+use prudent::prelude::unsafe_mut;
 fn main() {
     let mut bs: [bool; 2] = [true, false];
     let pt: *mut [bool] = &mut bs as *mut [bool];
@@ -240,7 +240,7 @@ fn main() {
 
 ## unsafe_mut - one arg, dyn reference
 ```rust
-use prudent::unsafe_mut;
+use prudent::prelude::unsafe_mut;
 # use core::fmt::Display;
 fn main() {
     let mut b: bool = true;
@@ -253,7 +253,7 @@ fn main() {
 
 ## unsafe_mut - two args, lifetimed reference
 ```rust
-use prudent::unsafe_mut;
+use prudent::prelude::unsafe_mut;
 fn main() {
     let b: &'static mut bool = Box::leak( Box::new(true) );
     let pt: *mut bool = b as *mut bool;
@@ -266,7 +266,7 @@ fn main() {
 
 ## unsafe_mut - two args, lifetimed dyn reference
 ```rust
-use prudent::unsafe_mut;
+use prudent::prelude::unsafe_mut;
 # use core::fmt::Display;
 fn main() {
     let b: &'static mut bool = Box::leak( Box::new(true) );
@@ -280,7 +280,7 @@ fn main() {
 
 ## unsafe_mut - two args, lifetimed slice
 ```rust
-use prudent::unsafe_mut;
+use prudent::prelude::unsafe_mut;
 fn main() {
     let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
     let pt: *mut [bool] = bs as *mut [bool];
@@ -293,7 +293,7 @@ fn main() {
 
 ## unsafe_mut - two args, typed basic reference
 ```rust
-use prudent::unsafe_mut;
+use prudent::prelude::unsafe_mut;
 fn main() {
     let mut b: bool = true;
     let pt: *mut bool = &mut b as *mut bool;
@@ -305,7 +305,7 @@ fn main() {
 
 ## unsafe_mut - two args, typed slice
 ```rust
-use prudent::unsafe_mut;
+use prudent::prelude::unsafe_mut;
 fn main() {
     let bs: &'static mut [bool] = Box::leak( Box::new([true, false]) );
     let pt: *mut [bool] = bs as *mut [bool];
@@ -318,7 +318,7 @@ fn main() {
 
 ## unsafe_mut - two args, typed dyn reference
 ```rust
-use prudent::unsafe_mut;
+use prudent::prelude::unsafe_mut;
 # use core::fmt::Display;
 fn main() {
     let mut b: bool = true;
@@ -338,7 +338,7 @@ Only for types that implement/derive [core::marker::Copy].
 
 ## unsafe_val - one arg, basic
 ```rust
-use prudent::unsafe_val;
+use prudent::prelude::unsafe_val;
 fn main() {
     const B: bool = true;
     const PT: *const bool = &B as *const bool;
@@ -350,7 +350,7 @@ fn main() {
 
 ## unsafe_val - two args, typed
 ```rust
-use prudent::unsafe_val;
+use prudent::prelude::unsafe_val;
 fn main() {
     const B: bool = true;
     const PT: *const bool = &B as *const bool;
@@ -362,7 +362,7 @@ fn main() {
 
 # unsafe_set
 ```rust
-use prudent::unsafe_set;
+use prudent::prelude::unsafe_set;
 fn main() {
     let mut b: bool = true;
     let pt: *mut bool = &mut b as *mut bool;
@@ -373,7 +373,7 @@ fn main() {
 ```
 
 ```rust
-use prudent::unsafe_set;
+use prudent::prelude::unsafe_set;
 struct SNonCopy {}
 fn main() {
     let mut s: SNonCopy = SNonCopy {};
@@ -388,7 +388,7 @@ fn main() {
 
 # unsafe_static_set
 ```rust
-use prudent::unsafe_static_set;
+use prudent::prelude::unsafe_static_set;
 static mut B: bool = true;
 
 fn main() {

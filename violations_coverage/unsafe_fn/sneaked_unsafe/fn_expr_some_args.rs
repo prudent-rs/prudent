@@ -1,4 +1,4 @@
-use prudent::unsafe_fn;
+use prudent::prelude::unsafe_fn;
 
 unsafe fn fn_itself(b: bool) -> bool {
     b

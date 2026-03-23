@@ -1,6 +1,6 @@
 // TODO simpligy:
 //
-//! We can NOT wilcard `t.compile_fail("../in_crate/src/bin/*");`` because each file calls
+//! We can NOT wildcard `t.compile_fail("../in_crate/src/bin/*");`` because each file calls
 //! `::prudent::load!(...)` and then there would be conflicts of multiple definitions of the same
 //! macros.
 

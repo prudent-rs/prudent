@@ -1,4 +1,4 @@
-use prudent::unsafe_method;
+use prudent::prelude::unsafe_method;
 
 struct S;
 impl S {

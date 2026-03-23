@@ -1,4 +1,4 @@
-use prudent::unsafe_method;
+use prudent::prelude::unsafe_method;
 
 fn main() {
     let _ = unsafe_method!("hi" =>. len);

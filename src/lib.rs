@@ -63,7 +63,4 @@ extern crate alloc;
 
 pub mod backend;
 
-/// "Frontend" = macros only.
-mod frontend;
-
 pub mod prelude;

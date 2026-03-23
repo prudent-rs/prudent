@@ -2,7 +2,7 @@
 
 #![cfg_attr(feature = "assert_unsafe_methods", feature(type_alias_impl_trait))]
 
-use prudent::unsafe_method;
+use prudent::prelude::unsafe_method;
 struct SNonCopy {}
 impl SNonCopy {
     unsafe fn unsafe_method_no_args(&self) {}

@@ -1,6 +1,6 @@
 [package]
 name = "prudent"
-version = "0.0.3-beta"
+version = "0.0.3-gamma"
 edition = "2018"
 
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
@@ -44,3 +44,6 @@ unexpected_cfgs = { level = "forbid"}
 #       ```
 assert_unsafe_methods = []
 # default = ["assert_unsafe_methods"]
+
+[dependencies]
+prudent-macros = {path="../prudent-macros", version="0.0.3-gamma"}
