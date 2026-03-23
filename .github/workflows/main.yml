@@ -14,15 +14,14 @@ jobs:
     # Cargo.toml has "rust-version" (MSRV) 1.31. But, 1.37 is the oldest Alpine docker image. See
     # https://hub.docker.com/_/rust/tags?name=alpine&ordering=-last_updated.
     #
-    # rust:1.37-alpine was failing some GitHub's extra checks: (@TODO choose the right one:)
+    # rust:1.37-alpine was failing some GitHub's extra checks:
     # https://github.com/prudent-rs/prudent/actions/runs/18773758118/job/53563574851
-    # OR https://github.com/prudent-rs/prudent-macros/actions/runs/18773758118/job/53563574851
     #
     # Other Rust Alpine images that I've tried and they failed: rust:1.54.0-alpine.
     #
     # Also, our tests use usize::unchecked_add, which was stabilized in Rust 1.79.
     #
-    # However, with Rust 1.88.0 or older, we were getting false positive errors from `cargo test`,
+    # More: With Rust 1.88.0 or older, we were getting false positive errors from `cargo test`,
     # reporting constants in doctests as unused, even though they were used. That's why we need at
     # least 1.89.
     container: rust:1.89.0-alpine
