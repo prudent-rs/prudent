@@ -1,8 +1,3 @@
-#![cfg_attr(
-    feature = "assert_unsafe_methods",
-    doc(test(attr(feature(type_alias_impl_trait))))
-)]
-#![cfg_attr(feature = "assert_unsafe_methods", feature(type_alias_impl_trait))]
 #![doc(test(attr(forbid(unexpected_cfgs))))]
 #![doc(test(attr(deny(unused, dead_code))))]
 // @TODO check if still needed:
@@ -64,3 +59,8 @@ extern crate alloc;
 pub mod backend;
 
 pub mod prelude;
+
+/// Even though this module is public, it will **not** be a part of the public API, neither a part
+/// of the documentation - it's used for doctests only.
+#[cfg(doctest)]
+pub mod doctests;

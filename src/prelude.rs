@@ -93,49 +93,6 @@
 /// ```
 pub use prudent_macros::unsafe_fn;
 
-// Same `compile_fail` tests as listed above for `unsafe_fn`, but here we validate the error
-// numbers.
-//
-// Error numbers are validated with `cargo +nightly test`, ([The Rustdoc book > Unstable features >
-// Error numbers for compile-fail
-// doctests](https://doc.rust-lang.org/rustdoc/unstable-features.html#error-numbers-for-compile-fail-doctests))
-// but NOT with
-// - `cargo +stable test` nor
-// - RUSTDOCFLAGS="..." cargo +nightly doc ...
-//
-// Even though the following constant is "pub", it will **not** be a part of the public API, neither
-// a part of the documentation - it's used for doctest only.
-/// ```compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// ```compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// ```compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// ```compile_fail,E0308
-#[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/zero_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-/// ```compile_fail,E0308
-#[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-//----------------------
-
 /// Invoke an `unsafe` method. For methods that have a receiver parameter (`&self`, `&mut self`,
 /// `self`). For associated functions (implemented for a type but with no receiver) use `unsafe_fn`,
 /// and pass the qualified name of the associated function to it.
@@ -171,28 +128,6 @@ pub const _: () = {};
 //#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
 // ```
 pub use prudent_macros::unsafe_method;
-
-// OK with stable
-/// ```compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-// OK with stable
-/// ```compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-
-// OK with stable
-/// ```compile_fail,E0133
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
-/// ```
-#[cfg(doctest)]
-pub const _: () = {};
-//----------------------
 
 /// Set a value of a `static mut` variable or its (sub...-)field, but isolate `unsafe {...}` only to
 /// that assignment.
