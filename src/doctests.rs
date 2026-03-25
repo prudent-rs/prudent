@@ -7,18 +7,17 @@
 //!
 //! Submodule names (and their filenames) are similar to respective file names under
 //! [`../violations_coverage/in_crate/src/bin/`](../violations_coverage/in_crate/src/bin/).
-//! 
+//!
 //! Some of these doctests also validate the error numbers.
 //!
 //! @TODO check if Markdown alias applies here; otherwise add Rustdoc book URL:
-//! 
+//!
 //! Error numbers are validated with `cargo +nightly test`, ([The Rustdoc book > Unstable features >
 //! Error numbers for compile-fail
 // doctests](https://doc.rust-lang.org/rustdoc/unstable-features.html#error-numbers-for-compile-fail-doctests))
 //! but NOT with
 //! - `cargo +stable test` nor
 //! - RUSTDOCFLAGS="..." cargo +nightly doc ...
-
 
 pub mod unsafe_fn_fn_unused_unsafe_some_args;
 pub mod unsafe_fn_fn_unused_unsafe_zero_args;
