@@ -1,5 +1,24 @@
 //! "backend" functionality (anything else than macros).
 
+#[doc(hidden)]
+#[inline]
+pub const fn assert_version(expected_version: &'static str) {
+    match expected_version.as_bytes() {
+        b"0.0.3-gamma" => {
+            return;
+        }
+        _ => {
+            panic!("prudent-rs/prudent is of different version than expected.");
+        }
+    }
+    //assert_eq!(expected_version, env!("CARGO_PKG_VERSION"));
+}
+
+#[doc(hidden)]
+const _ASSERT_VERSION_VERIFY: () = {
+    assert_version(env!("CARGO_PKG_VERSION"));
+};
+
 unsafe fn _unsafe_generic_fun<R>() -> R {
     unreachable!()
 }

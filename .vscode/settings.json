@@ -4,10 +4,6 @@
         "blanks-around-headings": false,
         "blanks-around-lists": false
     },
-    "workbench.colorCustomizations": {
-        "editor.background": "#000000",
-        "terminal.background": "#000000",
-        "tree.indentGuidesStroke": "#999999",
-        "editorUnnecessaryCode.border": "#444444"
-    }
+    "line-length-checker.lineLength": 100
 }
+
