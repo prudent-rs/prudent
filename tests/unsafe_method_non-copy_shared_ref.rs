@@ -1,4 +1,5 @@
-// RUSTFLAGS="-Znext-solver" cargo +nightly test --features assert_unsafe_methods --test unsafe_method_non-copy_shared_ref
+// RUSTFLAGS="-Znext-solver" cargo +nightly test --features assert_unsafe_methods --test \
+// unsafe_method_non-copy_shared_ref
 
 #![cfg_attr(feature = "assert_unsafe_methods", feature(type_alias_impl_trait))]
 

@@ -40,7 +40,8 @@ fn _safe_zero_args() {}
 /// Internal - NOT a part of public API!
 #[doc(hidden)]
 pub trait ExpectedUnsafeFunctionButReceivedSafe {
-    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::prelude::unsafe_fn] and [crate::prelude::unsafe_method].
+    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer
+    /// that **is** safe. Used by [crate::prelude::unsafe_fn] and [crate::prelude::unsafe_method].
     ///
     /// Internal - NOT a part of public API!
     fn prudent_conflict_for_safe_function(&self) {}
@@ -52,7 +53,8 @@ impl<_O, F: Fn() -> _O> ExpectedUnsafeFunctionButReceivedSafe for F {}
 /// Internal - NOT a part of public API!
 #[doc(hidden)]
 pub trait FailsWithConflictForSafeFunction {
-    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer that **is** safe. Used by [crate::prelude::unsafe_fn] and [crate::prelude::unsafe_method].
+    /// Triggers `multiple applicable items in scope` error if you invoke it on a function pointer
+    /// that **is** safe. Used by [crate::prelude::unsafe_fn] and [crate::prelude::unsafe_method].
     ///
     /// Internal - NOT a part of public API!
     fn prudent_conflict_for_safe_function(&self) {}
@@ -95,8 +97,8 @@ fn _try_unsafe_fn_zero_args() {
 //
 // pub fn expect_unsafe_fn<F: unsafe Fn<()>>(_: F) {}
 
-/// For casting/ensuring that a user-provided function is unsafe. Used by [crate::prelude::unsafe_fn]
-/// (and, when applicable, by [crate::prelude::unsafe_method]).
+/// For casting/ensuring that a user-provided function is unsafe. Used by
+/// [crate::prelude::unsafe_fn] (and, when applicable, by [crate::prelude::unsafe_method]).
 ///
 /// Internal - NOT a part of public API!
 #[doc(hidden)]
