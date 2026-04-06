@@ -4,14 +4,13 @@
 #[inline]
 pub const fn assert_version(expected_version: &'static str) {
     match expected_version.as_bytes() {
-        b"0.0.3-gamma" => {
+        b"0.0.3-delta" => {
             return;
         }
         _ => {
             panic!("prudent-rs/prudent is of different version than expected.");
         }
     }
-    //assert_eq!(expected_version, env!("CARGO_PKG_VERSION"));
 }
 
 #[doc(hidden)]

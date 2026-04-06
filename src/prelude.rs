@@ -1,5 +1,10 @@
 //! "Frontend" = user-facing macros. Suggested to be blank imported by the user.
 
+#[cfg(not(feature = "lint_unused_unsafe"))]
+use prudent_macros_enforce as prudent_macros;
+#[cfg(feature = "lint_unused_unsafe")]
+use prudent_macros_lint as prudent_macros;
+
 /// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
 /// - If `$fn` (the function itself) is NOT given as an identifier/qualified path, but it's given as
 ///   an expression, then this expression is treated as if evaluated **outside** `unsafe {...}`.
@@ -91,7 +96,7 @@
 ///     unsafe_fn!( return_same_mut_ref => &mut marray )[0] = true;
 /// }
 /// ```
-pub use prudent_internal::unsafe_fn;
+pub use prudent_macros::unsafe_fn;
 
 /// Invoke an `unsafe` method. For methods that have a receiver parameter (`&self`, `&mut self`,
 /// `self`). For associated functions (implemented for a type but with no receiver) use `unsafe_fn`,
@@ -127,7 +132,7 @@ pub use prudent_internal::unsafe_fn;
 // ```compile_fail
 //#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
 // ```
-pub use prudent_internal::unsafe_method;
+pub use prudent_macros::unsafe_method;
 
 /// Set a value of a `static mut` variable or its (sub...-)field, but isolate `unsafe {...}` only to
 /// that assignment.
@@ -181,24 +186,24 @@ pub use prudent_internal::unsafe_method;
 /// }
 /// }
 /// ```
-pub use prudent_internal::unsafe_static_set;
+pub use prudent_macros::unsafe_static_set;
 
 /// Deref a pointer (either `const` or `mut`) and yield a read-only reference.
 ///
 /// If `$type` is given, it's expected to be the referenced type (NOT the given pointer, NOT a
 /// reference based on the given pointer), and the given pointer is cast to `* const $type`. `$type`
 /// may start with `dyn`. `$type` may be a slice `[...]`.
-pub use prudent_internal::unsafe_ref;
+pub use prudent_macros::unsafe_ref;
 
 /// Deref a `mut` pointer and yield a `mut` reference.
 ///
 /// Like in [unsafe_ref]: If `$type` is given, it's expected to be the referenced
 /// type (NOT the given pointer, NOT the target reference type) and the given pointer is cast to `*
 /// const $type`. `$type` may start with `dyn`. `$type` may be a slice `[...]`.
-pub use prudent_internal::unsafe_mut;
+pub use prudent_macros::unsafe_mut;
 
 /// Get a (copy of) value from where the pointer points. For [core::marker::Copy] types only.
-pub use prudent_internal::unsafe_val;
+pub use prudent_macros::unsafe_val;
 
 /// Assign the given value to the location given in the pointer.
 ///
@@ -210,4 +215,4 @@ pub use prudent_internal::unsafe_val;
 /// so nothing like:
 ///
 /// `unsafe_set!( pt ) = false;`
-pub use prudent_internal::unsafe_set;
+pub use prudent_macros::unsafe_set;

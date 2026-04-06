@@ -2,7 +2,7 @@
 name = "prudent"
 
 # On version change, also update src/backend.rs -> assert_version.
-version = "0.0.3-gamma"
+version = "0.0.3-delta"
 edition = "2018"
 
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
@@ -44,8 +44,28 @@ unexpected_cfgs = { level = "forbid"}
 #       ```
 #       #![cfg_attr(feature = "assert_unsafe_methods", doc(test(attr = ::prudent::top_header_assert_unsafe_methods!())))]
 #       ```
-assert_unsafe_methods = ["prudent-internal/assert_unsafe_methods"]
-# default = ["assert_unsafe_methods"]
+#
+# @TODO rename feature to: lint_unused_unsafe
+# assert_unsafe_methods = ["prudent-macros-lint"]
+lint_unused_unsafe = ["prudent-macros-lint"]
 
 [dependencies]
-prudent-internal = {path="../prudent-internal", version="= 0.0.3-gamma", default-features = false }
+# We COULD use default-features, which is just the reverse version compatibility check
+# done/initiated by prudent-macros-enforce itself; but we don't need to, because we request and
+# accept only an exact version of prudent-macros-enforce with "= ..." version specifier.
+#
+# prudent-macros-enforce is NOT used when you enable feature "lint_unused_unsafe". But it is NOT
+# optional - it IS required anyway. Doing it the other way (mutually excluding
+# prudent-macros-enforce and prudent-macros-lint) would be difficult and confusing:
+#
+# There is no way to conditionally "DISABLE" (or "not enable") a feature in Cargo.toml based on
+# `cfg(debug_assertions)`, see
+# https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#platform-specific-dependencies.
+#
+# So, the only way to conditionally **exclude** prudent-macros-enforce somehow in Cargo.toml
+# (without having "build.rs") would be to include it in default-features, and instructing them to
+# disable default-features. But then any 3rd party that uses prudent could re-add it simply by
+# forgetting to opt out of default-features.
+prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3-delta", default-features = false }
+#
+prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3-delta", optional = true }
