@@ -1,8 +1,8 @@
 [package]
 name = "verify_error_messages"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dev-dependencies]
 trybuild = "1.0"
-prudent = {path = "../..", version="0.0.3-alpha"}
+prudent = {path = "../..", version="0.0.3-delta"}

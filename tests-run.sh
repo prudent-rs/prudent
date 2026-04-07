@@ -13,7 +13,7 @@ echo
 echo "fmt: violations_coverage/in_crate"
 cd violations_coverage/in_crate
 cargo fmt --check
-cd -
+cd - >/dev/null
 
 echo
 echo "Doc (stable)"

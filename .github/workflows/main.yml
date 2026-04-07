@@ -1,6 +1,6 @@
-# - KEEP this in sync with ../../test.sh
-# - BUT, ../../test.sh needs to undo any effects of directory change (`cd`), while here each GitHub action step starts
-#   in the repository directory
+# - KEEP this in sync with ../../tests-run.sh
+# - BUT, ../../tests-run.sh needs to undo any effects of directory change (`cd`), while here each
+#   GitHub action step starts in the repository directory
 
 name: Tests, doc tests, MIRI, violations coverage
 
@@ -11,7 +11,7 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    # Cargo.toml has "rust-version" (MSRV) 1.31. But, 1.37 is the oldest Alpine docker image. See
+    # See "rust-version" (MSRV)https://doc.rust-lang.org/std/macro.include_str.html. But, 1.37 is the oldest Alpine docker image. See
     # https://hub.docker.com/_/rust/tags?name=alpine&ordering=-last_updated.
     #
     # rust:1.37-alpine was failing some GitHub's extra checks:
@@ -33,14 +33,9 @@ jobs:
       - name: rustup components
         shell: sh
         run: |
-          rustup component add clippy rustfmt
-          rustup install nightly --profile minimal
-          rustup +nightly component add miri
-          #
-          # violations_coverage/verify_error_messages uses trybuild, which uses Serde (proc
-          # macros), which needs to be run as a dynamic library, so it needs musl-dev
-          apk add --no-cache musl-dev
+          ./tests-setup-rustup.sh
+          ./tests-setup-alpine.sh
 
-      - name: test.sh
+      - name: tests-run.sh
         shell: sh
-        run: ./test.sh
+        run: ./tests-run.sh

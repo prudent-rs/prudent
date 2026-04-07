@@ -4,9 +4,7 @@
 #[inline]
 pub const fn assert_version(expected_version: &'static str) {
     match expected_version.as_bytes() {
-        b"0.0.3-delta" => {
-            return;
-        }
+        b"0.0.3-delta" => (),
         _ => {
             panic!("prudent-rs/prudent is of different version than expected.");
         }
@@ -64,11 +62,14 @@ fn _try_unsafe_fn_zero_args() {
     (_safe_fun_bool as unsafe fn() -> bool).prudent_conflict_for_safe_function();
 
     // OK: Fails
-    #[cfg(false)]
-    _safe_fun_bool.prudent_conflict_for_safe_function();
+    //
+    // @TODO move to a compile-fail doctest
+    //_safe_fun_bool.prudent_conflict_for_safe_function();
 
-    #[cfg(false)]
-    _safe_zero_args.prudent_conflict_for_safe_function();
+    // OK: Fails
+    //
+    // @TODO move to a compile-fail doctest
+    //_safe_zero_args.prudent_conflict_for_safe_function();
 
     _unsafe_fun_bool.prudent_conflict_for_safe_function();
     (_unsafe_fun_bool as unsafe fn() -> bool).prudent_conflict_for_safe_function();
@@ -81,15 +82,17 @@ fn _try_unsafe_fn_zero_args() {
         // BUT: The following is needed to narrow down from generic to non-generic function:
         let _: bool = unsafe { unsafe_generic_fun_cast_as_non_generic() };
     }
-    #[cfg(false)] // BEST: Fails, as it should:
-    {
+    // BEST: Fails, as it should
+    //
+    // @TODO move to a compile-fail doctest
+    /*{
         // BEST: even for generic functions
         let safe_generic_fun_cast_as_non_generic = _safe_generic_fun;
         safe_generic_fun_cast_as_non_generic.prudent_conflict_for_safe_function();
 
         // BUT: The following is needed to narrow down from generic to non-generic function:
         let _: bool = unsafe { safe_generic_fun_cast_as_non_generic() };
-    }
+    }*/
 }
 
 // NOT possible:
@@ -345,12 +348,12 @@ pub mod expecting_unsafe_fn {
     }
 }
 
-/// Pretend to get a mutable reference from a shared reference. For
-/// internal/generated **compile-time** checks only.
+/// Pretend to get an (owned) instance from/based on a shared reference. For internal/generated
+/// **compile-time** checks only.
 ///
 /// Internal - NOT a part of public API!
 #[doc(hidden)]
-pub const fn shared_to_mut<T>(_: &T) -> &'static mut T {
+pub const fn shared_to_owned<T>(_: &T) -> T {
     unreachable!()
 }
 

@@ -1,11 +1,11 @@
 [package]
 name = "in_crate"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [lints.rust]
 unexpected_cfgs = { level = "forbid"}
 unknown_lints = { level = "forbid"}
 
 [dependencies]
-prudent = {path = "../..", version="0.0.3-alpha"}
+prudent = {path = "../..", version="0.0.3-delta"}

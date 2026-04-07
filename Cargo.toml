@@ -3,14 +3,18 @@ name = "prudent"
 
 # On version change, also update src/backend.rs -> assert_version.
 version = "0.0.3-delta"
-edition = "2018"
 
-license = "BSD-2-Clause OR Apache-2.0 OR MIT"
-
-# rust-version is recognized only since Rust 1.56, but that's OK.
+edition = "2021"
+# Requiring Rust Edition 2021 and Rust 1.71.0 (as of April 2026). Why? Because `prudent` depends
+# (even though only optionally) on `prudent-macros-lint`, which requires that.
+#
+# If you increase rust-version, update .github/workflows/main.yml.
 #
 # Tests require Rust 1.89+. See .github/workflows/main.yml.
-rust-version = "1.39"
+rust-version = "1.71.0"
+
+
+license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 
 authors = ["Peter Lyons Kehl<peter.kehl@gmail.com>"]
 description = "Help you make Rust code safer. For both authors and reviewers."
@@ -22,8 +26,11 @@ keywords = ["safe", "safety", "unsafe", "isolation", "review"]
 repository = "https://github.com/prudent-rs/prudent"
 homepage = "https://github.com/prudent-rs/prudent"
 
+# "lints" key is supported only since Rust 1.74.0 (November 2023). But we include this even though
+# our rust-version/MSRV is 1.71.0.
 [lints.rust]
 unexpected_cfgs = { level = "forbid"}
+unknown_lints = { level = "forbid"}
 
 [features]
 # UNSTABLE Check that the method actually is unsafe. This requires nightly Rust version until
@@ -50,9 +57,10 @@ unexpected_cfgs = { level = "forbid"}
 lint_unused_unsafe = ["prudent-macros-lint"]
 
 [dependencies]
-# We COULD use default-features, which is just the reverse version compatibility check
-# done/initiated by prudent-macros-enforce itself; but we don't need to, because we request and
-# accept only an exact version of prudent-macros-enforce with "= ..." version specifier.
+# We COULD use default-features of `prudent-macros-enforce`, which is just the reverse version
+# compatibility check done/initiated by prudent-macros-enforce itself; but we don't need to, because
+# we request and accept only an exact version of prudent-macros-enforce with "= ..." version
+# specifier.
 #
 # prudent-macros-enforce is NOT used when you enable feature "lint_unused_unsafe". But it is NOT
 # optional - it IS required anyway. Doing it the other way (mutually excluding
