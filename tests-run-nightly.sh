@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 # - KEEP this in sync with .github/workflows/main.yml
 # - BUT, this needs to undo any directory change (`cd`) done in any of the GitHub Actions step

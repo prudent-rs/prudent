@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 rustup component add clippy rustfmt
 rustup install nightly --profile minimal
