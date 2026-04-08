@@ -31,6 +31,8 @@ jobs:
           ./tests-setup-rustup.sh
           ./tests-setup-alpine.sh
 
-      - name: tests-run.sh
+      - name: tests-run-*.sh
         shell: sh
-        run: ./tests-run.sh
+        run: |
+          ./tests-run-default.sh
+          ./tests-run-nightly.sh
