@@ -3,52 +3,41 @@
 # - KEEP this in sync with .github/workflows/main.yml
 # - BUT, this needs to undo any directory change (`cd`) done in any of the GitHub Actions step
 
-echo "Clippy"
+echo NIGHTLY
+echo "CLIPPY (nightly)"
 cargo clippy
 echo
-echo fmt
-cargo fmt --check
+echo "FMT (nightly)"
+cargo +nightly fmt --check
 
 echo
-echo "fmt: violations_coverage/in_crate"
+echo "FMT: violations_coverage/in_crate (nightly)"
 cd violations_coverage/in_crate
-cargo fmt --check
+cargo +nightly fmt --check
 cd - >/dev/null
 
 echo
-echo "Doc (stable)"
-cargo doc --no-deps --quiet
-
-echo
-echo "Doc (nightly)"
+echo "DOC (nightly)"
 RUSTDOCFLAGS="--forbid rustdoc::invalid_codeblock_attributes \
   --forbid rustdoc::missing_doc_code_examples \
   -Zcrate-attr=feature(rustdoc_missing_doc_code_examples)" \
   cargo +nightly doc --no-deps --quiet
 
 echo
-echo "Tests (debug, stable)"
-cargo test
-
-echo
-echo "Tests (debug, nightly)"
+echo "CARGO TEST (debug, nightly)"
 # We need "cargo +nightly test" to validate error numbers. To locate them, search for
 # "compile_fail,E" in src/lib.rs.
 cargo +nightly test
 
 echo
-echo "Tests (release, stable)"
-cargo test --release
-
-echo
-echo "Tests (debug, MIRI)"
+echo "CARGO TEST (MIRI, nightly)"
 cargo +nightly miri test
 
 echo
-echo "Tests (verify_error_messages=trybuild)"
+echo "CARGO TEST (verify_error_messages with trybuild, nightly)"
 cd violations_coverage/verify_error_messages
-cargo test
+cargo +nightly test
 
 echo
-echo "fmt (verify_error_messages=trybuild)"
-cargo fmt --check
+echo "CARGO FMT (verify_error_messages with trybuild, nightly)"
+cargo +nightly fmt --check
