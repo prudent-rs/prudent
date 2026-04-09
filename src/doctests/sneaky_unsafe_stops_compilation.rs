@@ -1,5 +1,3 @@
-#![doc = include_str!("doctests_sneaky_unsafe/README.md")]
-
 pub mod functn_sneaky_unsafe_arg;
 pub mod functn_sneaky_unsafe_fn_expr_none_args;
 pub mod functn_sneaky_unsafe_fn_expr_some_args;

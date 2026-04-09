@@ -30,27 +30,27 @@ use prudent_macros_lint as prudent_macros;
 /// The given expression (which evaluates to the function to be called) is `unsafe.`
 // OK with stable
 /// ```compile_fail
-#[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_fn_expr_somee_args.rs")]
+#[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_fn_expr_some_args.rs")]
 /// ```
 ///
 /// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`
 /// // OK with stable
 /// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/arg.rs")]
+#[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_arg.rs")]
 /// ```
 ///
 /// The target function is safe, hence no need for `unsafe_fn`. Zero args.
 ///
 /// @TODO this should fail, but it does NOT
 /// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/zero_args.rs")]
+#[doc = include_str!("../demos/unused_unsafe_fails_lint/functn_none_args.rs")]
 /// ```
 ///
 /// The target function is safe, hence no need for `unsafe_fn`. Some args.
 ///
 /// OK on stable
 /// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_fn/fn_unused_unsafe/some_args.rs")]
+#[doc = include_str!("../demos/unused_unsafe_fails_lint/functn_some_args.rs")]
 /// ```
 /// @TODO consider:
 /// ```test_harness
@@ -109,20 +109,20 @@ pub use prudent_macros::unsafe_fn;
 ///   calls anyways), but only an identifier.
 ///
 /// ```ignore
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
+#[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/method_sneaky_unsafe_arg.rs")]
 /// ```
 ///
 /// ```ignore
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_zero_args.rs")]
+#[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/method_sneaky_unsafe_self_none_args.rs")]
 /// ```
 ///
 /// ```ignore
-#[doc = include_str!("../violations_coverage/unsafe_method/sneaked_unsafe/self_some_args.rs")]
+#[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_fn_expr_some_args.rs")]
 /// ```
 // TODO refactor for new checks - CURRENTLY as a NON-DOC comment!!
 //
 // ```compile_fail
-//#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/zero_args.rs")]
+//#[doc = include_str!("../demos/unused_unsafe_fails_lint/method_none_args.rs")]
 // ```
 //
 //#[allow(clippy::useless_attribute)]
@@ -130,7 +130,7 @@ pub use prudent_macros::unsafe_fn;
 // OK with stable
 //
 // ```compile_fail
-//#[doc = include_str!("../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
+//#[doc = include_str!("../demos/unused_unsafe_fails_lint/method_some_args.rs")]
 // ```
 pub use prudent_macros::unsafe_method;
 

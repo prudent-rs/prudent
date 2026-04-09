@@ -49,9 +49,10 @@ Then on `nightly` we forbid rustdoc::invalid_codeblock_attributes. See
     rustdoc::invalid_html_tags,
     rustdoc::invalid_rust_codeblocks,
     rustdoc::bare_urls,
-    rustdoc::unescaped_backticks,
-    rustdoc::redundant_explicit_links
+    rustdoc::unescaped_backticks
 )]
+// Lint "rustdoc::redundant_explicit_links" doesn't exist in Rust 1.71.0.
+#![cfg_attr(doc, forbid(rustdoc::redundant_explicit_links))]
 
 #[cfg(doc)]
 extern crate alloc;
@@ -66,9 +67,4 @@ pub mod prelude;
 /// Even though this module is public, it will **not** be a part of the public API, neither a part
 /// of the documentation - it's used for doctests only.
 #[cfg(doctest)]
-pub mod doctests_sneaky_unsafe;
-
-/// Even though this module is public, it will **not** be a part of the public API, neither a part
-/// of the documentation - it's used for doctests only.
-#[cfg(all(doctest, feature="lint_unused_unsafe"))]
-pub mod doctests_unused_unsafe;
+pub mod doctests;
