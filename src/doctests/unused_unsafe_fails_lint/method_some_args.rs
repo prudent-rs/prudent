@@ -2,7 +2,7 @@
 //
 // @TODO compilation error code
 //
-// ```compile_fail
-//#[doc = include_str!("../../violations_coverage/unsafe_method/fn_unused_unsafe/some_args.rs")]
-// ```
+/// ```compile_fail
+#[doc = include_str!("../../unused_unsafe_fails_lint/method_some_args.rs")]
+/// ```
 pub const _: () = {};

@@ -1,4 +1,4 @@
 /// ```compile_fail,E0308
-#[doc = include_str!("../../violations_coverage/unsafe_fn/fn_unused_unsafe/zero_args.rs")]
+#[doc = include_str!("../../unused_unsafe_fails_lint/functn_none_args.rs")]
 /// ```
 pub const _: () = {};

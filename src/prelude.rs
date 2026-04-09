@@ -17,20 +17,20 @@ use prudent_macros_lint as prudent_macros;
 /// This does NOT accept closures, since closures cannot be `unsafe`.
 ///
 /// # Possible violations
-/// - Zero arguments. The given expression (which evaluates to the function to be called) is
+/// - No arguments. The given expression (which evaluates to the function to be called) is
 ///   `unsafe.`
 /// - Some arguments. The given expression (which evaluates to the function to be called) is
 ///   `unsafe.`
 /// OK with stable
 /// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_zero_args.rs")]
+#[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_fn_expr_none_args.rs")]
 /// ```
 ///
 /// ## Some arguments
 /// The given expression (which evaluates to the function to be called) is `unsafe.`
 // OK with stable
 /// ```compile_fail
-#[doc = include_str!("../violations_coverage/unsafe_fn/sneaked_unsafe/fn_expr_some_args.rs")]
+#[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_fn_expr_somee_args.rs")]
 /// ```
 ///
 /// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`

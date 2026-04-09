@@ -1,5 +1,5 @@
 // OK with stable
 /// ```compile_fail,E0133
-#[doc = include_str!("../../violations_coverage/unsafe_method/sneaked_unsafe/arg.rs")]
+#[doc = include_str!("../../demos/sneaky_unsafe_stops_compilation/method_sneaky_unsafe_arg.rs")]
 /// ```
 pub const _: () = {};
