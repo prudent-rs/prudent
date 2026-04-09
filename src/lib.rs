@@ -66,4 +66,9 @@ pub mod prelude;
 /// Even though this module is public, it will **not** be a part of the public API, neither a part
 /// of the documentation - it's used for doctests only.
 #[cfg(doctest)]
-pub mod doctests;
+pub mod doctests_sneaky_unsafe;
+
+/// Even though this module is public, it will **not** be a part of the public API, neither a part
+/// of the documentation - it's used for doctests only.
+#[cfg(all(doctest, feature="lint_unused_unsafe"))]
+pub mod doctests_unused_unsafe;
