@@ -1,0 +1,11 @@
+[package]
+name = "sneaky_unsafe_stops_compilation"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+# Not really necessary for sneaky_unsafe_stops_compilation, but good for some extra checks
+lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
+
+[dependencies]
+prudent = {path="../../", version="= 0.0.3-delta"}

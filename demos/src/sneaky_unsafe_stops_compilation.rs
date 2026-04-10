@@ -1,6 +1,0 @@
-mod functn_sneaky_unsafe_arg;
-mod functn_sneaky_unsafe_fn_expr_none_args;
-mod functn_sneaky_unsafe_fn_expr_some_args;
-mod method_sneaky_unsafe_arg;
-mod method_sneaky_unsafe_self_none_args;
-mod method_sneaky_unsafe_self_some_args;

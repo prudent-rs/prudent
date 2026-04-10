@@ -1,5 +1,5 @@
 [package]
-name = "doctests"
+name = "unused_unsafe_fails_lint"
 version = "0.1.0"
 edition = "2024"
 
@@ -7,4 +7,4 @@ edition = "2024"
 lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
 
 [dependencies]
-prudent = {path="../", version="= 0.0.3-delta"}
+prudent = {path="../../", version="= 0.0.3-delta"}
