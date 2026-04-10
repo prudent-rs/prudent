@@ -415,8 +415,7 @@ reports](https://github.com/peter-lyons-kehl/prudent/actions).
   doctests](https://doc.rust-lang.org/rustdoc/unstable-features.html#error-numbers-for-compile-fail-doctests)).
   The error codes are validated by [GitHub Actions](.github/workflows/main.yml), see
   [results](https://github.com/prudent-rs/prudent/actions). Error code validation requires `nightly`
-  Rust toolchain. See also @TODO OBSOLETE [`src/linted_with_tests.rs`](src/linted_with_tests.rs) for expected
-  compilation error codes.
+  Rust toolchain. See also @TODO for expected compilation error codes.
 - Error output validation: Some lint violations don't have a special error code. So we validate the
   error message in
   [violations_coverage/verify_error_messages/](violations_coverage/verify_error_messages/) with

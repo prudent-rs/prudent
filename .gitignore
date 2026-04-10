@@ -1,4 +1,5 @@
 /target
+/demos/target
 /violations_coverage/in_crate/target
 /violations_coverage/in_crate/Cargo.lock
 /violations_coverage/verify_error_messages/target

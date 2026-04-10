@@ -5,8 +5,8 @@ line numbers. That is even more difficult for failure if `compile_fail` tests, s
 tests that fail (that is, ones that actually do compile) don't report any particular source code
 snippet to search for.
 
-Submodule names (and their filenames) are similar to respective file names under
-`../violations_coverage/in_crate/src/bin/`.
+Submodules test files with similar names from under
+`../../../demos/src/sneaky_unsafe_stops_compilation/`.
 
 Some of these doctests also validate the error numbers.
 
