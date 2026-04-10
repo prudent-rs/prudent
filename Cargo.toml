@@ -5,14 +5,10 @@ name = "prudent"
 version = "0.0.3-delta"
 
 edition = "2021"
-# Requiring Rust Edition 2021 and Rust 1.71.0 (as of April 2026). Why? Because `prudent` depends
-# (even though only optionally) on `prudent-macros-lint`, which requires that.
+# Full functionality and tests need Rust 1.89.0+.
 #
-# If you increase rust-version, update .github/workflows/main.yml.
-#
-# Tests require Rust 1.89+. See .github/workflows/main.yml.
+# See also .github/workflows/main.yml.
 rust-version = "1.71.0"
-
 
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 
@@ -67,14 +63,23 @@ lint_unused_unsafe = ["prudent-macros-lint"]
 # optional - it IS required anyway. Doing it the other way (mutually excluding
 # prudent-macros-enforce and prudent-macros-lint) would be difficult and confusing:
 #
-# There is no way to conditionally "DISABLE" (or "not enable") a feature in Cargo.toml based on
-# `cfg(debug_assertions)`, see
-# https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#platform-specific-dependencies.
-#
-# So, the only way to conditionally **exclude** prudent-macros-enforce somehow in Cargo.toml
-# (without having "build.rs") would be to include it in default-features, and instructing them to
-# disable default-features. But then any 3rd party that uses prudent could re-add it simply by
-# forgetting to opt out of default-features.
+# - There is no way to conditionally "disable" (or "not enable") a feature in Cargo.toml based on
+#   `cfg(debug_assertions)`, see
+#   https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#platform-specific-dependencies.
+# - So, the only way to conditionally **exclude** prudent-macros-enforce somehow in Cargo.toml
+#   (without having "build.rs") would be to include it in default-features of prudent, and
+#   instructing them to disable default-features of prudent. But then any 3rd party that uses
+#   prudent could re-add it simply by forgetting to opt out of default-features of prudent.
 prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3-delta", default-features = false }
 #
 prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3-delta", optional = true }
+
+[package.metadata.docs.rs]
+# doc.rs builds projects in debug mode. So we enable `lint_unused_unsafe` feature to include the
+# `compile_fail` tests from demos/unused_unsafe_fails_lint/
+#
+# That does mean that docs.rs does NOT use `prudent-macros-enforce` (even though it's still loaded).
+# But that's OK, since that is tested by GitHub actions, which tests both alternatives.
+features = ["lint_unused_unsafe"]
+# One target is OK. Prudent is platform-independent.
+default-target = "x86_64-unknown-linux-gnu"

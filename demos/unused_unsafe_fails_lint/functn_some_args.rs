@@ -1,3 +1,4 @@
+#![forbid(unused_unsafe)]
 use prudent::prelude::unsafe_fn;
 
 fn safe_fn_one_arg(_: bool) {}

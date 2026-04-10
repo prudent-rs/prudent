@@ -22,34 +22,39 @@ use prudent_macros_lint as prudent_macros;
 /// - Some arguments. The given expression (which evaluates to the function to be called) is
 ///   `unsafe.`
 /// OK with stable
-/// ```compile_fail
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```compile_fail")]
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```ignore")]
 #[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_fn_expr_none_args.rs")]
 /// ```
 ///
 /// ## Some arguments
 /// The given expression (which evaluates to the function to be called) is `unsafe.`
 // OK with stable
-/// ```compile_fail
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```compile_fail")]
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```ignore")]
 #[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_fn_expr_some_args.rs")]
 /// ```
 ///
 /// A passed parameter (expression that evaluates to a value passed to the target `unsafe` function as an argument) itself is `unsafe.`
 /// // OK with stable
-/// ```compile_fail
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```compile_fail")]
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```ignore")]
 #[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_arg.rs")]
 /// ```
 ///
 /// The target function is safe, hence no need for `unsafe_fn`. Zero args.
 ///
 /// @TODO this should fail, but it does NOT
-/// ```compile_fail
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```compile_fail")]
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```ignore")]
 #[doc = include_str!("../demos/unused_unsafe_fails_lint/functn_none_args.rs")]
 /// ```
 ///
 /// The target function is safe, hence no need for `unsafe_fn`. Some args.
 ///
 /// OK on stable
-/// ```compile_fail
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```compile_fail")]
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```ignore")]
 #[doc = include_str!("../demos/unused_unsafe_fails_lint/functn_some_args.rs")]
 /// ```
 /// @TODO consider:
@@ -121,7 +126,8 @@ pub use prudent_macros::unsafe_fn;
 /// ```
 // TODO refactor for new checks - CURRENTLY as a NON-DOC comment!!
 //
-// ```compile_fail
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```compile_fail")]
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```ignore")]
 //#[doc = include_str!("../demos/unused_unsafe_fails_lint/method_none_args.rs")]
 // ```
 //
@@ -129,7 +135,8 @@ pub use prudent_macros::unsafe_fn;
 //#[allow(clippy::needless_doctest_main)]
 // OK with stable
 //
-// ```compile_fail
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```compile_fail")]
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```ignore")]
 //#[doc = include_str!("../demos/unused_unsafe_fails_lint/method_some_args.rs")]
 // ```
 pub use prudent_macros::unsafe_method;

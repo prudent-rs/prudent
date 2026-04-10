@@ -1,5 +1,5 @@
 /// Doctests to verify that violations of prudent stop compilation.
-#[cfg(doctest)]
+#[cfg(all(doctest, not(feature = "lint_unused_unsafe")))]
 pub mod sneaky_unsafe_stops_compilation;
 
 /// Doctests to verify that using prudent unnecessarily fails "unused_unsafe" lint.

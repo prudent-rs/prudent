@@ -11,16 +11,16 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    # See "rust-version" (MSRV) in Cargo.toml.
+    # We need at least Rust 1.89.0 - contrary to "rust-version" (MSRV) in Cargo.toml.
     #
-    # https://hub.docker.com/_/rust/tags?name=alpine&ordering=-last_updated.
+    # Our tests use usize::unchecked_add, which was stabilized in Rust 1.79.
     #
-    # Also, our tests use usize::unchecked_add, which was stabilized in Rust 1.79.
+    # With Rust 1.88.0 or older, we were getting false positive errors from `cargo test`, reporting
+    # constants in doctests (like `const B: bool = true` in README.md) as unused, even though they
+    # were used.
     #
-    # More: With Rust 1.88.0 or older, we were getting false positive errors from `cargo test`,
-    # reporting constants in doctests as unused, even though they were used. That's why we need at
-    # least 1.89.
-    container: rust:1.71.0-alpine
+    # https://hub.docker.com/_/rust/tags?name=alpine&ordering=-last_updated&page=17
+    container: rust:1.89.0-alpine
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

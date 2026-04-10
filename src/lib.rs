@@ -52,7 +52,10 @@ Then on `nightly` we forbid rustdoc::invalid_codeblock_attributes. See
     rustdoc::unescaped_backticks
 )]
 // Lint "rustdoc::redundant_explicit_links" doesn't exist in Rust 1.71.0.
-#![cfg_attr(doc, forbid(rustdoc::redundant_explicit_links))]
+#![cfg_attr(
+    feature = "lint_unused_unsafe",
+    forbid(rustdoc::redundant_explicit_links)
+)]
 
 #[cfg(doc)]
 extern crate alloc;

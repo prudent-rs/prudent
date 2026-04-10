@@ -1,3 +1,4 @@
+#![forbid(unused_unsafe)]
 use prudent::prelude::unsafe_method;
 
 struct S;

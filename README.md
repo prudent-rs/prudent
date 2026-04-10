@@ -415,7 +415,7 @@ reports](https://github.com/peter-lyons-kehl/prudent/actions).
   doctests](https://doc.rust-lang.org/rustdoc/unstable-features.html#error-numbers-for-compile-fail-doctests)).
   The error codes are validated by [GitHub Actions](.github/workflows/main.yml), see
   [results](https://github.com/prudent-rs/prudent/actions). Error code validation requires `nightly`
-  Rust toolchain. See also [`src/linted_with_tests.rs`](src/linted_with_tests.rs) for expected
+  Rust toolchain. See also @TODO OBSOLETE [`src/linted_with_tests.rs`](src/linted_with_tests.rs) for expected
   compilation error codes.
 - Error output validation: Some lint violations don't have a special error code. So we validate the
   error message in
@@ -468,14 +468,13 @@ However,
 
 `prudent` is `no-std`-compatible. It doesn't need allocation either.
 
-All of `prudent`'s "positive" functionality works on `stable` Rust (minimum version 1.39). However,
-if you use `assert_unsafe_methods` feature to verify that `unsafe_method` is applied only to methods
-that are indeed `unsafe`, that requires
-- `nightly`, and
-- access to have `#![feature(type_alias_impl_trait)]` at the crate's top level (that is,
-  `src/lib.rs`, `src/main.rs` or a binary crate's top level source file), and
-- access to set `RUSTFLAGS="-Znext-solver=globally"`. That is unfortunately not possible for
-  doctests. See, and give thumbs up to, [Related issues](#Related-issues).
+Even though `Cargo.toml` sets `rust-version` as 1.71.0, only some of `prudent`'s functionality works on Rust below 1.89.0. And, versions below 1.89.0 are not supported.
+
+To use all functionality, and to run tests/doctests, you need Rust 1.89.0.
+(minimum version 1.39).
+
+To verify error codes from `compile_fail` doctests, you need `nightly` Rust toolchain. However, all
+tests and doctests are run with appropriate toolchains by GitHub actions CI, so you don't need to.
 
 ## Always forward compatible
 
