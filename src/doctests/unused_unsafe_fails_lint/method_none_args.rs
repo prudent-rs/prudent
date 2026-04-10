@@ -1,6 +1,4 @@
-// TODO refactor for new checks - CURRENTLY as a NON-DOC comment!!
-//
-// @TODO compilation error code
+// @TODO compilation error output
 //
 /// ```compile_fail
 #[doc = include_str!("../../../demos/unused_unsafe_fails_lint/src/bin/method_none_args.rs")]
