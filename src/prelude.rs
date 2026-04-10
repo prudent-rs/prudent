@@ -113,15 +113,18 @@ pub use prudent_macros::unsafe_fn;
 /// - $fn can **NOT** be an expression or a qualified path (which doesn't work in standard methods
 ///   calls anyways), but only an identifier.
 ///
-/// ```ignore
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```compile_fail")]
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```ignore")]
 #[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/method_sneaky_unsafe_arg.rs")]
 /// ```
 ///
-/// ```ignore
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```compile_fail")]
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```ignore")]
 #[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/method_sneaky_unsafe_self_none_args.rs")]
 /// ```
 ///
-/// ```ignore
+#[cfg_attr(not(feature = "lint_unused_unsafe"), doc = "```compile_fail")]
+#[cfg_attr(feature = "lint_unused_unsafe", doc = "```ignore")]
 #[doc = include_str!("../demos/sneaky_unsafe_stops_compilation/functn_sneaky_unsafe_fn_expr_some_args.rs")]
 /// ```
 // TODO refactor for new checks - CURRENTLY as a NON-DOC comment!!
