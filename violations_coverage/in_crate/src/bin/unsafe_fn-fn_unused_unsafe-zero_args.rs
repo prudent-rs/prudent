@@ -1,1 +1,0 @@
-../../../unsafe_fn/fn_unused_unsafe/zero_args.rs

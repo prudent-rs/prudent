@@ -1,14 +1,4 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+#[cfg(not(feature = "lint_unused_unsafe"))]
+mod sneaky_unsafe_stops_compilation;
+#[cfg(feature = "lint_unused_unsafe")]
+mod unused_unsafe_fails_lint;
