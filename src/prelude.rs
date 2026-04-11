@@ -132,7 +132,7 @@ pub use prudent_macros::unsafe_fn;
 #[cfg_attr(feature = "lint_unused_unsafe", doc = " ```compile_fail")]
 #[cfg_attr(not(feature = "lint_unused_unsafe"), doc = " ```ignore")]
 #[doc = include_str!("../demos/unused_unsafe_fails_lint/src/bin/method_none_args.rs")]
-// ```
+/// ```
 //@TODO:
 //#[allow(clippy::useless_attribute)]
 //#[allow(clippy::needless_doctest_main)]
