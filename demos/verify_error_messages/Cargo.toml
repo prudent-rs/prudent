@@ -1,0 +1,24 @@
+[package]
+name = "verify_error_messages"
+version = "0.1.0"
+edition = "2024"
+
+# As of trybuild v1.0.116, the following would NOT apply:
+#
+# [features] lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
+#
+# if we only have "prudent" in [dependencies] but not in [dev-dependencies].
+#
+# We could hard-code `features = ["lint_unused_unsafe"]` in [dev-dependencies]. But, instead, we
+# have the feature, AND we add `prudent` as a dependency in both [dependencies] and
+# [dev-dependencies.]
+
+[features]
+lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
+
+[dependencies]
+prudent = {path = "../..", version="0.0.3-delta"}
+
+[dev-dependencies]
+trybuild = "1.0"
+prudent = {path = "../..", version="0.0.3-delta"}

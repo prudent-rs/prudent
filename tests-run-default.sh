@@ -15,3 +15,8 @@ cargo test
 echo
 echo "CARGO TEST (release, default)"
 cargo test --release
+
+echo
+echo "VERIFY ERROR MESSAGES (unused_lint, debug)"
+cd demos/verify_error_messages
+cargo test --features lint_unused_unsafe
