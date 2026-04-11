@@ -7,5 +7,5 @@ error: unnecessary `unsafe` block
 note: the lint level is defined here
  --> $PRUDENT/demos/unused_unsafe_fails_lint/src/bin/method_some_args.rs
   |
-  |     unsafe_method!(s =>. use_it => true);
-  |                          ^^^^^^
+  | #![forbid(unused_unsafe)]
+  |           ^^^^^^^^^^^^^
