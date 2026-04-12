@@ -1,8 +1,7 @@
-/**/
-//
-[![GitHub Actions
-results](https://github.com/prudent-rs/prudent/actions/workflows/main.yml/badge.svg)](https://github.com/prudent-rs/prudent/actions)
-
+// <!--
+// --> [![GitHub_Actions](https://github.com/prudent-rs/prudent/actions/workflows/main.yml/badge.svg)](https://github.com/prudent-rs/prudent/actions) <!--
+// --> \\\\ <!--
+/* -->
 # Summary
 `prudent` helps you minimize/isolate parts of Rust `unsafe` expressions/statements.
 
@@ -14,10 +13,24 @@ results](https://github.com/prudent-rs/prudent/actions/workflows/main.yml/badge.
 Following are all the positive examples. They are also run by the above [GitHub Actions] as
 [doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html).
 
-For negative examples, see documentation of each `prudent` macro.
+For negative examples, see
+- documentation of each `prudent` macro, and
+- [`negative_tests/`](negative_tests/).
+
+Each test starts with
+<!--
+```rust
+*/
+
+use prudent::prelude::*;
+/*
+```
+-->
+(which we will omit for brevity).
 
 ## unsafe_fn
 ```rust
+-->*/
 use prudent::prelude::unsafe_fn;
 
 const unsafe fn unsafe_fn_no_args() {}
