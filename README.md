@@ -1,6 +1,12 @@
 [![GitHub Actions
 results](https://github.com/peter-lyons-kehl/prudent/actions/workflows/main.yml/badge.svg)](https://github.com/peter-lyons-kehl/prudent/actions)
 
+Temporary test
+```rust
+# fn foo() {}
+fn main() {}
+```
+
 # Summary
 `prudent` helps you minimize/isolate parts of Rust `unsafe` expressions/statements.
 
