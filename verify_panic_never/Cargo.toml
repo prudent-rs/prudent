@@ -1,0 +1,14 @@
+[package]
+name = "verify_panic_never"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+panic-never = "0.1.0"
+prudent = {path = "..", version="0.0.3"}
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"

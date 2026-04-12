@@ -7,18 +7,19 @@ edition = "2024"
 #
 # [features] lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
 #
-# if we only have "prudent" in [dependencies] but not in [dev-dependencies].
+# if we have "prudent" in ONLY [dependencies] but NOT in [dev-dependencies]. Prudent WOULD be still
+# available as a dev dependency, but its feature "lint_unused_unsafe" would NOT be set!
 #
-# We could hard-code `features = ["lint_unused_unsafe"]` in [dev-dependencies]. But, instead, we
-# have the feature, AND we add `prudent` as a dependency in both [dependencies] and
+# We could hard-code `features = ["lint_unused_unsafe"]` for `prudent` entry in [dev-dependencies].
+# But, instead, we have the feature, AND we add `prudent` as a dependency in both [dependencies] and
 # [dev-dependencies.]
 
 [features]
 lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
 
 [dependencies]
-prudent = {path = "../..", version="0.0.3-delta"}
+prudent = {path = "../..", version="0.0.3"}
 
 [dev-dependencies]
 trybuild = "1.0"
-prudent = {path = "../..", version="0.0.3-delta"}
+prudent = {path = "../..", version="0.0.3"}

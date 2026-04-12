@@ -7,4 +7,4 @@ edition = "2024"
 lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
 
 [dependencies]
-prudent = {path="../../", version="= 0.0.3-delta"}
+prudent = {path="../../", version="= 0.0.3"}
