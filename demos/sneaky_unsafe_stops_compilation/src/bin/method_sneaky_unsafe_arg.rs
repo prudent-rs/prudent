@@ -1,5 +1,5 @@
 use prudent::prelude::unsafe_method;
 
 fn main() {
-    let _ = unsafe_method!(1u8 =>. unchecked_add => 0u8.unchecked_sub(0));
+    let _ = unsafe_method!(1u8 =>. unchecked_add; 0u8.unchecked_sub(0));
 }

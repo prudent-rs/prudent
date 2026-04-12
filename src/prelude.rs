@@ -98,7 +98,7 @@ use prudent_macros_lint as prudent_macros;
 ///
 /// fn main() {
 ///     let mut marray = [true];
-///     unsafe_fn!( return_same_mut_ref => &mut marray )[0] = true;
+///     unsafe_fn!( return_same_mut_ref; &mut marray )[0] = true;
 /// }
 /// ```
 pub use prudent_macros::unsafe_fn;

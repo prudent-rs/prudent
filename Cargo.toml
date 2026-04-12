@@ -2,7 +2,7 @@
 name = "prudent"
 
 # On version change, also update src/backend.rs -> assert_version.
-version = "0.0.3-delta"
+version = "0.0.3"
 
 edition = "2021"
 # Full functionality and tests need Rust 1.89.0+.
@@ -54,9 +54,9 @@ lint_unused_unsafe = ["prudent-macros-lint"]
 #   (without having "build.rs") would be to include it in default-features of prudent, and
 #   instructing them to disable default-features of prudent. But then any 3rd party that uses
 #   prudent could re-add it simply by forgetting to opt out of default-features of prudent.
-prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3-delta", default-features = false }
+prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3", default-features = false }
 #
-prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3-delta", optional = true }
+prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3", optional = true }
 
 [package.metadata.docs.rs]
 # doc.rs builds projects in debug mode. We **could** enable `lint_unused_unsafe` feature, but

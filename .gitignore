@@ -1,6 +1,4 @@
 /target
 /demos/*/target/
 /demos/*/Cargo.lock
-/violations_coverage/verify_error_messages/target
-/violations_coverage/verify_error_messages/Cargo.lock
 /.idea

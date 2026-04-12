@@ -15,6 +15,6 @@ impl SNonCopy {
 fn run_test() {
     let s = SNonCopy {};
     unsafe_method!(s =>. unsafe_method_no_args);
-    unsafe_method!(s =>. unsafe_method_one_arg => true);
-    unsafe_method!(s =>. unsafe_method_two_args => true, false);
+    unsafe_method!(s =>. unsafe_method_one_arg; true);
+    unsafe_method!(s =>. unsafe_method_two_args; true, false);
 }

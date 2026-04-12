@@ -4,7 +4,7 @@
 #[inline]
 pub const fn assert_version(expected_version: &'static str) {
     match expected_version.as_bytes() {
-        b"0.0.3-delta" => (),
+        b"0.0.3" => (),
         _ => {
             panic!("prudent-rs/prudent is of different version than expected.");
         }
