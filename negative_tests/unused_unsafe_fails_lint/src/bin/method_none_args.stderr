@@ -1,11 +1,11 @@
 error: unnecessary `unsafe` block
- --> $PRUDENT/demos/unused_unsafe_fails_lint/src/bin/method_none_args.rs
+ --> $PRUDENT/negative_tests/unused_unsafe_fails_lint/src/bin/method_none_args.rs
   |
   |     let _ = unsafe_method!("hi" =>. len);
   |                                     ^^^ unnecessary `unsafe` block
   |
 note: the lint level is defined here
- --> $PRUDENT/demos/unused_unsafe_fails_lint/src/bin/method_none_args.rs
+ --> $PRUDENT/negative_tests/unused_unsafe_fails_lint/src/bin/method_none_args.rs
   |
   | #![forbid(unused_unsafe)]
   |           ^^^^^^^^^^^^^

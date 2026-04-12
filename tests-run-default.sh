@@ -13,6 +13,10 @@ echo "CARGO TEST (debug, default)"
 cargo test
 
 echo
+echo "CARGO TEST (debug, default, lint_unused_unsafe)"
+cargo test --features lint_unused_unsafe
+
+echo
 echo "CARGO TEST (release, default)"
 cargo test --release
 

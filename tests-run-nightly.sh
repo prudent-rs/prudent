@@ -6,13 +6,15 @@
 echo NIGHTLY
 echo "CLIPPY (nightly)"
 cargo clippy
+
 echo
 echo "FMT (nightly)"
 cargo +nightly fmt --check
 
+cd demos
+
 echo
-echo "FMT: violations_coverage/in_crate (nightly)"
-cd violations_coverage/in_crate
+echo "FMT: demos (nightly)"
 cargo +nightly fmt --check
 cd - >/dev/null
 
@@ -30,14 +32,24 @@ echo "CARGO TEST (debug, nightly)"
 cargo +nightly test
 
 echo
+echo "CARGO TEST (debug, nightly, lint_unused_unsafe)"
+cargo +nightly test --features lint_unused_unsafe
+
+echo
+echo "CARGO TEST (release, nightly)"
+cargo +nightly test --release
+
+echo
 echo "CARGO TEST (MIRI, nightly)"
 cargo +nightly miri test
 
+cd violations_coverage/verify_error_messages
+
 echo
 echo "CARGO TEST (verify_error_messages with trybuild, nightly)"
-cd violations_coverage/verify_error_messages
 cargo +nightly test
 
 echo
 echo "CARGO FMT (verify_error_messages with trybuild, nightly)"
 cargo +nightly fmt --check
+cd - >/dev/null

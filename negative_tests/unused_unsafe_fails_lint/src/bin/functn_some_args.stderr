@@ -1,11 +1,11 @@
 error: unnecessary `unsafe` block
- --> $PRUDENT/demos/unused_unsafe_fails_lint/src/bin/functn_some_args.rs
+ --> $PRUDENT/negative_tests/unused_unsafe_fails_lint/src/bin/functn_some_args.rs
   |
   |     unsafe_fn!(safe_fn_one_arg; true);
   |                ^^^^^^^^^^^^^^^ unnecessary `unsafe` block
   |
 note: the lint level is defined here
- --> $PRUDENT/demos/unused_unsafe_fails_lint/src/bin/functn_some_args.rs
+ --> $PRUDENT/negative_tests/unused_unsafe_fails_lint/src/bin/functn_some_args.rs
   |
   | #![forbid(unused_unsafe)]
   |           ^^^^^^^^^^^^^

@@ -6,7 +6,7 @@ tests that fail (that is, ones that actually do compile) don't report any partic
 snippet to search for.
 
 Submodules test files with similar names from under
-`../../../demos/src/sneaky_unsafe_stops_compilation/`.
+`../../../negative_tests/src/sneaky_unsafe_stops_compilation/`.
 
 Some of these doctests also validate the error numbers.
 

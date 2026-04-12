@@ -1,4 +1,4 @@
 /target
-/demos/*/target/
-/demos/*/Cargo.lock
+/negative_tests/*/target/
+/negative_tests/*/Cargo.lock
 /.idea

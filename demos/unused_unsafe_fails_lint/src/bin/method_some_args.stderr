@@ -1,7 +1,0 @@
-error: proc macro panicked
- --> $PRUDENT/demos/unused_unsafe_fails_lint/src/bin/method_some_args.rs
-  |
-  |     unsafe_method!(s =>. use_it; true);
-  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  |
-  = help: message: No rule matched input
