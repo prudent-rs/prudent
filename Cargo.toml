@@ -59,11 +59,13 @@ prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3-del
 prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3-delta", optional = true }
 
 [package.metadata.docs.rs]
-# doc.rs builds projects in debug mode. So we enable `lint_unused_unsafe` feature to include the
-# `compile_fail` tests from demos/unused_unsafe_fails_lint/
+# doc.rs builds projects in debug mode. We **could** enable `lint_unused_unsafe` feature, but
+# there's no benefit. It's actually better not to, as then
+# - docs.rs generation is faster (no need to process proc macros), and
+# - the generated docs have `macro_rules`-based patterns for the macros.
 #
-# That does mean that docs.rs does NOT use `prudent-macros-enforce` (even though it's still loaded).
-# But that's OK, since that is tested by GitHub Actions CI, which tests both alternatives.
-features = ["lint_unused_unsafe"]
-# One target is OK. Prudent is platform-independent.
+# `lint_unused_unsafe` feature is tested by GitHub Actions CI anyway.
+#
+# One target is OK. Prudent is platform-independent. x86_64-unknown-linux-gnu is the native target
+# on docs.rs backend.
 default-target = "x86_64-unknown-linux-gnu"
