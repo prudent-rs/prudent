@@ -1,7 +1,5 @@
-// <!--
-// --> [![GitHub_Actions](https://github.com/prudent-rs/prudent/actions/workflows/main.yml/badge.svg)](https://github.com/prudent-rs/prudent/actions) <!--
-// --> \\\\ <!--
-/* -->
+[![GitHub_Actions](https://github.com/prudent-rs/prudent/actions/workflows/main.yml/badge.svg)](https://github.com/prudent-rs/prudent/actions)
+
 # Summary
 `prudent` helps you minimize/isolate parts of Rust `unsafe` expressions/statements.
 
@@ -18,19 +16,15 @@ For negative examples, see
 - [`negative_tests/`](negative_tests/).
 
 Each test starts with
-<!--
 ```rust
-*/
-
+// @TODO have this injected by readme-code-extractor:
+#[allow(unused_imports)]
 use prudent::prelude::*;
-/*
 ```
--->
 (which we will omit for brevity).
 
 ## unsafe_fn
 ```rust
--->*/
 use prudent::prelude::unsafe_fn;
 
 const unsafe fn unsafe_fn_no_args() {}
@@ -418,11 +412,12 @@ also be `const`).
 # Quality assurance
 ## Continuous integration
 [GitHub Actions] runs on Alpine Linux (without `libc`). See [the
-reports](https://github.com/peter-lyons-kehl/prudent/actions).
+reports](https://github.com/prudent-rs/prudent/actions).
 
 - `cargo test`
 - `cargo clippy` for linting
 - [`MIRI`]
+- @TODO `no_panic`
 
 ## Verification of expected errors
 - Error code validation: Where possible, expected error numbers are validated  with `cargo +nightly
@@ -535,7 +530,7 @@ enough, those checks can't be turned off.
 # Updates
 
 Please subscribe for low frequency updates at
-[peter-lyons-kehl/prudent#1](https://github.com/peter-lyons-kehl/prudent/issues/1).
+[prudent-rs/prudent#1](https://github.com/prudent-rs/prudent/issues/1).
 
 # Side fruit, related issues, credits
 Please contribute, or at least subscribe, and give thumbs up, to:
