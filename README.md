@@ -537,6 +537,8 @@ Please contribute, or at least subscribe, and give thumbs up, to:
 
 ## Related issues
 Sorted by importance (for `prudent`):
+- [xx](https://github.com/rust-lang/cargo/issues/6570) Doctests do not set profile codegen options
+- [xx](https://github.com/dtolnay/no-panic/issues/28) no-panic currently cannot be used in doctests
 - [prudent-rs/prudent#2](https://github.com/prudent-rs/prudent/issues/2) Slint-like VS-Code extension and/or LSP
 - [rust-lang/rust#43031](https://github.com/rust-lang/rust/issues/43031) rustdoc: allow full set of
   compiler options to be specified
