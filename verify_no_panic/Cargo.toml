@@ -1,0 +1,14 @@
+[package]
+name = "verify-no-panic"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+no-panic = "0.1.36"
+readme-code-extractor = {path = "../../readme-code-extractor", version="0.0.1"}
+prudent = {path = "..", version="0.0.3"}
+
+# [[bin]]
+# name = "main"
+# path = "src/main.rs"
+# test = false

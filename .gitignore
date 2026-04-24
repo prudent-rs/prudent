@@ -1,4 +1,4 @@
 /target/
 /negative_tests/*/target/
-/verify_panic_never/target/
+/verify_*/target/
 /.idea

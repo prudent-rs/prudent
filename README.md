@@ -537,6 +537,11 @@ Please contribute, or at least subscribe, and give thumbs up, to:
 
 ## Related issues
 Sorted by importance (for `prudent`):
+
+- [rust-lang/rust-analyzer#22172](https://github.com/rust-lang/rust-analyzer/issues/22172) Inlay
+  hints for 1-occurrence only macro_rules
+- [rust-lang/rust-analyzer#11323](https://github.com/rust-lang/rust-analyzer/issues/11323) Inlay
+  hints not working in macro call
 - [xx](https://github.com/rust-lang/cargo/issues/6570) Doctests do not set profile codegen options
 - [xx](https://github.com/dtolnay/no-panic/issues/28) no-panic currently cannot be used in doctests
 - [prudent-rs/prudent#2](https://github.com/prudent-rs/prudent/issues/2) Slint-like VS-Code extension and/or LSP
@@ -546,8 +551,6 @@ Sorted by importance (for `prudent`):
   `fn_traits` feature.
 - [rust-lang/rust#88531](https://github.com/rust-lang/rust/issues/88531) No way to get compile-time
   info from the type of local
-- [rust-lang/rust-analyzer#11323](https://github.com/rust-lang/rust-analyzer/issues/11323) Inlay
-  hints not working in macro call
 - [rust-lang/rust#63063](https://github.com/rust-lang/rust/issues/63063) Tracking issue for RFC
   2515, "Permit impl Trait in type aliases"
 - [rust-lang/rfcs#3444](https://github.com/rust-lang/rfcs/pull/3444) Inferred types
