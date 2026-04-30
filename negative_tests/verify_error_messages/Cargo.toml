@@ -5,7 +5,9 @@ edition = "2024"
 
 # As of trybuild v1.0.116, the following would NOT apply:
 #
-# [features] lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
+# [features]
+#
+# lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
 #
 # if we have "prudent" in ONLY [dependencies] but NOT in [dev-dependencies]. Prudent WOULD be still
 # available as a dev dependency, but its feature "lint_unused_unsafe" would NOT be set!

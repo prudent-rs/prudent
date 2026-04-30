@@ -477,10 +477,10 @@ However,
 
 `prudent` is `no-std`-compatible. It doesn't need allocation either.
 
-Even though `Cargo.toml` sets `rust-version` as 1.71.0, only some of `prudent`'s functionality works on Rust below 1.89.0. And, versions below 1.89.0 are not supported.
+Even though `Cargo.toml` sets `rust-version` as 1.71.0, only some of `prudent`'s functionality works
+on Rust below 1.89.0. And, versions below 1.89.0 are not supported.
 
-To use all functionality, and to run tests/doctests, you need Rust 1.89.0.
-(minimum version 1.39).
+To use all functionality, and to run tests/doctests, you need Rust 1.89.0. (minimum version 1.39).
 
 To verify error codes from `compile_fail` doctests, you need `nightly` Rust toolchain. However, all
 tests and doctests are run with appropriate toolchains by GitHub actions CI, so you don't need to.
@@ -542,9 +542,14 @@ Sorted by importance (for `prudent`):
   hints for 1-occurrence only macro_rules
 - [rust-lang/rust-analyzer#11323](https://github.com/rust-lang/rust-analyzer/issues/11323) Inlay
   hints not working in macro call
-- [xx](https://github.com/rust-lang/cargo/issues/6570) Doctests do not set profile codegen options
-- [xx](https://github.com/dtolnay/no-panic/issues/28) no-panic currently cannot be used in doctests
-- [prudent-rs/prudent#2](https://github.com/prudent-rs/prudent/issues/2) Slint-like VS-Code extension and/or LSP
+- [rust-lang/cargo#6570](https://github.com/rust-lang/cargo/issues/6570) Doctests do not set profile
+  codegen options
+- [dtolnay/no-panic#28](https://github.com/dtolnay/no-panic/issues/28) no-panic currently cannot be
+  used in doctests
+- [dtolnay/no-panic#78](https://github.com/dtolnay/no-panic/issues/78) Not working (false negative)
+  in integration tests
+- [prudent-rs/prudent#2](https://github.com/prudent-rs/prudent/issues/2) Slint-like VS-Code
+  extension and/or LSP
 - [rust-lang/rust#43031](https://github.com/rust-lang/rust/issues/43031) rustdoc: allow full set of
   compiler options to be specified
 - [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) `unboxed_closures` and
