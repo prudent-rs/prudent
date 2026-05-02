@@ -1,55 +1,72 @@
 #!/bin/sh
 
+# strict mode
+set -euo pipefail
+
 # - KEEP this in sync with .github/workflows/main.yml
 # - BUT, this needs to undo any directory change (`cd`) done in any of the GitHub Actions step
 
-echo NIGHTLY
-echo "CLIPPY (nightly)"
-cargo clippy
+echo NIGHTLY Rust TOOLCHAIN
 
 echo
-echo "FMT (nightly)"
+echo "CLIPPY"
+cargo +nightly clippy
+echo
+echo "CLIPPY (feature lint_unused_unsafe)"
+cargo +nightly clippy --features lint_unused_unsafe
+
+echo
+echo "FMT"
 cargo +nightly fmt --check
 
-cd demos
-
 echo
-echo "FMT: demos (nightly)"
+echo "FMT: negative_tests/verify_error_messages/"
+cd negative_tests/verify_error_messages/
 cargo +nightly fmt --check
 cd - >/dev/null
 
 echo
-echo "DOC (nightly)"
+echo "FMT:negative_tests/sneaky_unsafe_stops_compilation/"
+cd negative_tests/sneaky_unsafe_stops_compilation/
+cargo +nightly fmt --check
+cd - >/dev/null
+
+echo
+echo "FMT: negative_tests/unused_unsafe_fails_lint/"
+cd negative_tests/unused_unsafe_fails_lint/
+cargo +nightly fmt --check
+cd - >/dev/null
+
+echo
+echo "DOC"
 RUSTDOCFLAGS="--forbid rustdoc::invalid_codeblock_attributes \
   --forbid rustdoc::missing_doc_code_examples \
   -Zcrate-attr=feature(rustdoc_missing_doc_code_examples)" \
   cargo +nightly doc --no-deps --quiet
 
 echo
-echo "CARGO TEST (debug, nightly)"
+echo "CARGO TEST (debug)"
 # We need "cargo +nightly test" to validate error numbers. To locate them, search for
 # "compile_fail,E" in src/lib.rs.
 cargo +nightly test
-
 echo
-echo "CARGO TEST (debug, nightly, lint_unused_unsafe)"
-cargo +nightly test --features lint_unused_unsafe
-
-echo
-echo "CARGO TEST (release, nightly)"
+echo "CARGO TEST (release)"
 cargo +nightly test --release
 
 echo
-echo "CARGO TEST (MIRI, nightly)"
-cargo +nightly miri test
-
-cd violations_coverage/verify_error_messages
-
-echo
-echo "CARGO TEST (verify_error_messages with trybuild, nightly)"
-cargo +nightly test
+echo "CARGO TEST (debug, feature lint_unused_unsafe)"
+cargo +nightly test --features lint_unused_unsafe
+# feature "lint_unused_unsafe" can't be tested/used in release, only in debug (above)
 
 echo
-echo "CARGO FMT (verify_error_messages with trybuild, nightly)"
-cargo +nightly fmt --check
+echo "CARGO TEST (negative_tests/verify_error_messages, debug, feature unused_lint)"
+cd negative_tests/verify_error_messages
+cargo +nightly test --features lint_unused_unsafe
 cd - >/dev/null
+
+echo
+echo "CARGO TEST (MIRI)"
+cargo +nightly miri test
+echo
+echo "CARGO TEST (MIRI, feature unused_lint)"
+cargo +nightly miri test --features lint_unused_unsafe

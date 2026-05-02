@@ -42,7 +42,7 @@ dependencies = [
 
 [[package]]
 name = "prudent"
-version = "0.0.3-delta"
+version = "0.0.3"
 dependencies = [
  "prudent-macros-enforce",
  "prudent-macros-lint",
@@ -50,11 +50,11 @@ dependencies = [
 
 [[package]]
 name = "prudent-macros-enforce"
-version = "0.0.3-delta"
+version = "0.0.3"
 
 [[package]]
 name = "prudent-macros-lint"
-version = "0.0.3-delta"
+version = "0.0.3"
 dependencies = [
  "proc-macro-rules",
  "proc-macro2",
