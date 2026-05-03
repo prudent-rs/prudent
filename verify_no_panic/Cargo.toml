@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 no-panic = "0.1.36"
-readme-code-extractor = {path = "../../readme-code-extractor", version="0.0.1"}
+mce = {path = "../../mce", version="0.0.1"}
 prudent = {path = "..", version="0.0.3"}
 
 # [[bin]]

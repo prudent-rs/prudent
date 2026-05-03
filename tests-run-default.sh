@@ -6,7 +6,7 @@ set -euo pipefail
 # - KEEP this in sync with .github/workflows/main.yml
 # - BUT, this needs to undo any directory change (`cd`) done in any of the GitHub Actions step
 
-echo DEFAULT TOOLCHAIN
+echo DEFAULT Rust TOOLCHAIN
 
 echo
 echo "DOC"

@@ -17,7 +17,7 @@ For negative examples, see
 
 Each test starts with
 ```rust
-// @TODO have this injected by readme-code-extractor:
+// @TODO have this injected by mce:
 #[allow(unused_imports)]
 use prudent::prelude::*;
 ```
