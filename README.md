@@ -1,11 +1,12 @@
 [![GitHub_Actions](https://github.com/prudent-rs/prudent/actions/workflows/main.yml/badge.svg)](https://github.com/prudent-rs/prudent/actions)
 
 # Summary
-`prudent` helps you minimize/isolate parts of Rust `unsafe` expressions/statements.
+`prudent` helps you minimize/isolate the "`unsafe` surface" of your Rust code. That is the amount of Rust code that is marked as `unsafe`. Unlike standard `unsafe {...}` blocks, `prudent` allows you to isolate **parts** of Rust `unsafe` expressions/statements. `prudent` is
 
 - ergonomic (as much as possible)
-- lightweight (no dependencies, no procedural macros - fast build, `rust-analyzer`-friendly)
-- zero-cost (for binary size, speed and memory), verified in compile time
+- lightweight (no procedural macros (except for optional extra linting) - so the build is **fast**)
+- verified in compile time
+- zero-cost (for binary size, speed and memory)
 
 # API and examples
 Following are all the positive examples. They are also run by the above [GitHub Actions] as

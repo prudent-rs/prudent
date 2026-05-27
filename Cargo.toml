@@ -37,6 +37,8 @@ unknown_lints = { level = "forbid"}
 # AND: feature "lint_unused_unsafe" takes LONG to build, because it has to use procedural macros.
 lint_unused_unsafe = ["prudent-macros-lint"]
 
+#default = ["lint_unused_unsafe"]
+
 [dependencies]
 # We COULD use default-features of `prudent-macros-enforce`, which is just the reverse version
 # compatibility check done/initiated by prudent-macros-enforce itself; but we don't need to, because
@@ -54,13 +56,20 @@ lint_unused_unsafe = ["prudent-macros-lint"]
 #   (without having "build.rs") would be to include it in default-features of prudent, and
 #   instructing them to disable default-features of prudent. But then any 3rd party that uses
 #   prudent could re-add it simply by forgetting to opt out of default-features of prudent.
+
+#prudent-macros-enforce = {version="= 0.0.3", default-features = false }
+# For local development:
+#
 prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3", default-features = false }
+
+#prudent-macros-lint = {version="= 0.0.3", optional = true }
+# For local development:
 #
 prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3", optional = true }
 
 [package.metadata.docs.rs]
-# doc.rs builds projects in debug mode. We **could** enable `lint_unused_unsafe` feature, but
-# there's no benefit. It's actually better not to, as then
+# doc.rs builds projects in debug mode, but **without** `lint_unused_unsafe` feature. We **could**
+# enable `lint_unused_unsafe` feature, but there's no benefit. It's actually better not to, as then
 # - docs.rs generation is faster (no need to process proc macros), and
 # - the generated docs have `macro_rules`-based patterns for the macros.
 #
@@ -69,3 +78,4 @@ prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3", optiona
 # One target is OK. Prudent is platform-independent. x86_64-unknown-linux-gnu is the native target
 # on docs.rs backend.
 default-target = "x86_64-unknown-linux-gnu"
+all-features = true
