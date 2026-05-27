@@ -57,15 +57,15 @@ lint_unused_unsafe = ["prudent-macros-lint"]
 #   instructing them to disable default-features of prudent. But then any 3rd party that uses
 #   prudent could re-add it simply by forgetting to opt out of default-features of prudent.
 
-#prudent-macros-enforce = {version="= 0.0.3", default-features = false }
+prudent-macros-enforce = {version="= 0.0.3", default-features = false }
 # For local development:
 #
-prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3", default-features = false }
+#prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3", default-features = false }
 
-#prudent-macros-lint = {version="= 0.0.3", optional = true }
+prudent-macros-lint = {version="= 0.0.3", optional = true }
 # For local development:
 #
-prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3", optional = true }
+#prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3", optional = true }
 
 [package.metadata.docs.rs]
 # doc.rs builds projects in debug mode, but **without** `lint_unused_unsafe` feature. We **could**
