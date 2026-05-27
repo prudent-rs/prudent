@@ -3,6 +3,12 @@
 version = 3
 
 [[package]]
+name = "no-link"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c92d7c363e17e33cb78e212db459290e423d41c1a89423576bf75706f3d034bd"
+
+[[package]]
 name = "once_cell"
 version = "1.21.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -44,6 +50,7 @@ dependencies = [
 name = "prudent"
 version = "0.0.3"
 dependencies = [
+ "no-link",
  "prudent-macros-enforce",
  "prudent-macros-lint",
 ]

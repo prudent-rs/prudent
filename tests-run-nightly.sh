@@ -54,14 +54,14 @@ echo "CARGO TEST (release)"
 cargo +nightly test --release
 
 echo
-echo "CARGO TEST (debug, feature lint_unused_unsafe)"
-cargo +nightly test --features lint_unused_unsafe
+echo "CARGO CHECK --TESTS (debug, feature lint_unused_unsafe)"
+cargo +nightly check --tests --features lint_unused_unsafe
 # feature "lint_unused_unsafe" can't be tested/used in release, only in debug (above)
 
 echo
-echo "CARGO TEST (negative_tests/verify_error_messages, debug, feature unused_lint)"
+echo "CARGO CHECK --TESTS (negative_tests/verify_error_messages, debug, feature unused_lint)"
 cd negative_tests/verify_error_messages
-cargo +nightly test --features lint_unused_unsafe
+cargo +nightly check --tests --features lint_unused_unsafe
 cd - >/dev/null
 
 echo

@@ -5,6 +5,7 @@
 - more distinct/clearer syntax for `unsafe_fn` and `unsafe_method`
 - using `prudent-macros-enforce` and optionally `prudent-macros-lint`
 - `unused_unsafe` lint verification by optional `prudent-macros-lint` using the input token's span
+- feature `lint_unused_unsafe` now uses `no-link` crate to ensure that it can never be built/linked
 
 ## 0.0.3-alpha
 

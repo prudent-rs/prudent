@@ -35,7 +35,7 @@ unknown_lints = { level = "forbid"}
 # intentionally.
 #
 # AND: feature "lint_unused_unsafe" takes LONG to build, because it has to use procedural macros.
-lint_unused_unsafe = ["prudent-macros-lint"]
+lint_unused_unsafe = ["dep:prudent-macros-lint", "dep:no-link"]
 
 #default = ["lint_unused_unsafe"]
 
@@ -52,7 +52,10 @@ lint_unused_unsafe = ["prudent-macros-lint"]
 #
 # - There is no way to conditionally "disable" (or "not enable") a feature in Cargo.toml based on
 #   `cfg(debug_assertions)`, see
-#   https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#platform-specific-dependencies.
+#   https://doc.rust-lang.org/nightly/cargo/reference/specifying-dependencies.html#platform-specific-dependencies
+#   > "same applies to cfg(debug_assertions)... currently no way to add dependencies based on these
+#   configuration values.""
+#
 # - So, the only way to conditionally **exclude** prudent-macros-enforce somehow in Cargo.toml
 #   (without having "build.rs") would be to include it in default-features of prudent, and
 #   instructing them to disable default-features of prudent. But then any 3rd party that uses
@@ -67,6 +70,8 @@ prudent-macros-lint = {version="= 0.0.3", optional = true }
 # For local development:
 #
 #prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3", optional = true }
+
+no-link = {version="0.2.0", optional = true }
 
 [package.metadata.docs.rs]
 # doc.rs builds projects in debug mode, but **without** `lint_unused_unsafe` feature. We **could**

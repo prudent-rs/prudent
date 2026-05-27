@@ -2,8 +2,13 @@
 
 #[cfg(not(feature = "lint_unused_unsafe"))]
 use prudent_macros_enforce as prudent_macros;
+
 #[cfg(feature = "lint_unused_unsafe")]
 use prudent_macros_lint as prudent_macros;
+// The following will make `cargo build` FAIL. Intentional: use `cargo check` or `cargo check
+// --tests`.
+#[cfg(feature = "lint_unused_unsafe")]
+use no_link as _;
 
 /// Invoke an `unsafe` function, but isolate `unsafe {...}` only for the function invocation itself.
 /// - If `$fn` (the function itself) is NOT given as an identifier/qualified path, but it's given as
