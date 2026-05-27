@@ -3,6 +3,6 @@
 # strict mode
 set -euo pipefail
 
-rustup component add clippy rustfmt
+rustup component add rustfmt
 rustup install nightly --profile minimal
-rustup +nightly component add miri
+rustup +nightly component add clippy miri
