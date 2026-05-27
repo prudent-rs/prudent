@@ -1,7 +1,9 @@
 [![GitHub_Actions](https://github.com/prudent-rs/prudent/actions/workflows/main.yml/badge.svg)](https://github.com/prudent-rs/prudent/actions)
 
 # Summary
-`prudent` helps you minimize/isolate the `unsafe` "surface" of your Rust code. That is, the amount of Rust code that is marked as `unsafe`. Unlike standard `unsafe {...}` blocks, `prudent` allows you to isolate **parts** of Rust `unsafe` expressions/statements. It is
+`prudent` helps you minimize/isolate the `unsafe` "surface" of your Rust code. That is, the amount
+of Rust code that is marked as `unsafe`. Unlike standard `unsafe {...}` blocks, `prudent` allows you
+to isolate **parts** of Rust `unsafe` expressions/statements. It is
 
 - ergonomic (as much as possible)
 - lightweight: no procedural macros (except for extra linting) - so development is **fast**
@@ -13,8 +15,19 @@ Following are all the positive examples. They are also run by the above [GitHub 
 [doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html).
 
 For negative examples, see
-- documentation of each `prudent` macro, and
-- [`negative_tests/`](negative_tests/).
+- documentation of each `prudent` macro at [docs.rs/prudent >
+  Macros](https://docs.rs/prudent/latest/prudent/#macros), and
+- [`negative_tests/`](https://github.com/prudent-rs/prudent/tree/main/negative_tests/).
+<!-- \\\--- We use a FULL GitHub link. Otherwise
+1. https://crates.io would auto-generate link as
+   https://github.com/REPO/PROJECT/blob/HEAD/path-here/, which auto-converts to a
+   commit link!
+2. https://docs.rs would generate the link as
+   https://docs.rs/CRATE/latest/CRATE/path-here/, which doesn't exist, because as per
+   https://doc.rust-lang.org/nightly/cargo/reference/manifest.html#the-exclude-and-include-fields
+   > "Regardless of whether exclude or include..."
+   > "Any sub-packages will be skipped (any subdirectory that contains a Cargo.toml file)."
+-->
 
 Each test starts with
 ```rust

@@ -40,10 +40,11 @@ lint_unused_unsafe = ["prudent-macros-lint"]
 #default = ["lint_unused_unsafe"]
 
 [dependencies]
-# We COULD use default-features of `prudent-macros-enforce`, which is just the reverse version
-# compatibility check done/initiated by prudent-macros-enforce itself; but we don't need to, because
-# we request and accept only an exact version of prudent-macros-enforce with "= ..." version
-# specifier.
+# We CAN use feature `use_with_prudent_only` of `prudent-macros-enforce` (included in its
+# `default-features`), which is just the reverse compatibility check done/initiated by
+# prudent-macros-enforce itself; BUT we DON'T HAVE TO, because we request and accept only an exact
+# version of prudent-macros-enforce with "= ..." version specifier. However, to be on the safe side,
+# we specify `use_with_prudent_only` here anyway.
 #
 # prudent-macros-enforce is NOT used when you enable feature "lint_unused_unsafe". But it is NOT
 # optional - it IS required anyway. Doing it the other way (mutually excluding
@@ -57,10 +58,10 @@ lint_unused_unsafe = ["prudent-macros-lint"]
 #   instructing them to disable default-features of prudent. But then any 3rd party that uses
 #   prudent could re-add it simply by forgetting to opt out of default-features of prudent.
 
-prudent-macros-enforce = {version="= 0.0.3", default-features = false }
+prudent-macros-enforce = {version="= 0.0.3", features=["use_with_prudent_only"]}
 # For local development:
 #
-#prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3", default-features = false }
+#prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3", features=["use_with_prudent_only"] }
 
 prudent-macros-lint = {version="= 0.0.3", optional = true }
 # For local development:
