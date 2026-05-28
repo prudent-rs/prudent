@@ -19,14 +19,20 @@ echo
 echo "CARGO TEST (release)"
 cargo test --release
 
+# Features "lint_unused_unsafe" and "lint_unused_unsafe_all" can't be tested/built, but only
+#   checked; and not in release, but only in debug
 echo
 echo "CARGO CHECK --TESTS (debug, feature lint_unused_unsafe)"
 cargo check --tests --features lint_unused_unsafe
-# - feature "lint_unused_unsafe" can't be tested/built, only checked; and not in release, only in
-#   debug
+echo
+echo "CARGO CHECK --TESTS (debug, feature lint_unused_unsafe_all)"
+cargo check --tests --features lint_unused_unsafe_all
 
 echo
 echo "CARGO CHECK --TESTS (negative_tests/verify_error_messages, debug, feature unused_lint)"
 cd negative_tests/verify_error_messages
 cargo check --tests --features lint_unused_unsafe
+echo
+echo "CARGO CHECK --TESTS (negative_tests/verify_error_messages, debug, feature unused_lint_all)"
+cargo check --tests --features lint_unused_unsafe_all
 cd - >/dev/null

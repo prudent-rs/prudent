@@ -10,10 +10,10 @@ echo NIGHTLY Rust TOOLCHAIN
 
 echo
 echo "CLIPPY"
-cargo +nightly clippy
+cargo +nightly clippy -- -D warnings
 echo
 echo "CLIPPY (feature lint_unused_unsafe)"
-cargo +nightly clippy --features lint_unused_unsafe
+cargo +nightly clippy --features lint_unused_unsafe -- -D warnings
 
 echo
 echo "FMT"
@@ -53,15 +53,22 @@ echo
 echo "CARGO TEST (release)"
 cargo +nightly test --release
 
+# Features "lint_unused_unsafe" and "lint_unused_unsafe_all" can't be tested/built, but only
+#   checked; and not in release, but only in debug
 echo
 echo "CARGO CHECK --TESTS (debug, feature lint_unused_unsafe)"
 cargo +nightly check --tests --features lint_unused_unsafe
-# feature "lint_unused_unsafe" can't be tested/used in release, only in debug (above)
+echo
+echo "CARGO CHECK --TESTS (debug, feature lint_unused_unsafe_all)"
+cargo +nightly check --tests --features lint_unused_unsafe_all
 
 echo
 echo "CARGO CHECK --TESTS (negative_tests/verify_error_messages, debug, feature unused_lint)"
 cd negative_tests/verify_error_messages
 cargo +nightly check --tests --features lint_unused_unsafe
+echo
+echo "CARGO CHECK --TESTS (negative_tests/verify_error_messages, debug, feature unused_lint_all)"
+cargo +nightly check --tests --features lint_unused_unsafe_all
 cd - >/dev/null
 
 echo
@@ -70,3 +77,6 @@ cargo +nightly miri test
 echo
 echo "CARGO TEST (MIRI, feature unused_lint)"
 cargo +nightly miri test --features lint_unused_unsafe
+echo
+echo "CARGO TEST (MIRI, feature unused_lint_all)"
+cargo +nightly miri test --features lint_unused_unsafe_all

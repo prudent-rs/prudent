@@ -88,7 +88,7 @@ dependencies = [
 
 [[package]]
 name = "prudent"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [
  "no-link",
  "prudent-macros-enforce",
@@ -97,15 +97,11 @@ dependencies = [
 
 [[package]]
 name = "prudent-macros-enforce"
-version = "0.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed22d6fa551e611e4083cd51055a61c19bc320a74985b3f465f4acc59777843c"
+version = "0.0.4"
 
 [[package]]
 name = "prudent-macros-lint"
-version = "0.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f5b43539ecf37aa178c67c6e3a75598aa3e51953edd2be6876fd19707046264e"
+version = "0.0.4"
 dependencies = [
  "proc-macro-rules",
  "proc-macro2",

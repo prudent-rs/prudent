@@ -464,7 +464,7 @@ TODO
       - TODO: fields of `union` types
     - value cast (to a different type):
       - TODO: in expressions whose deref is `unsafe`
-- Reviewers: Save your time by making the unsafe parts shorter. Focus on what matters.
+- Reviewers: Save your time by making the `unsafe` parts shorter. Focus on what matters.
 - All of us:
   - Prevent accidental invocation of functions (3rd party, or even your own) that
     1. have been called as a part of (larger) `unsafe {...}` block, and

@@ -1,3 +1,3 @@
 # Positive tests
 
-They are loaded by [../README.md]
+They are also loaded by [../README.md](../README.md).

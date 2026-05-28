@@ -60,8 +60,11 @@ Then on `nightly` we forbid rustdoc::invalid_codeblock_attributes. See
 #[cfg(doc)]
 extern crate alloc;
 
-#[cfg(all(feature = "lint_unused_unsafe", not(debug_assertions)))]
-compile_error!("If you use lint_unused_unsafe, use it in debug build only.");
+#[cfg(all(
+    any(feature = "lint_unused_unsafe", feature = "lint_unused_unsafe_all"),
+    not(debug_assertions)
+))]
+compile_error!("If you use features lint_unused_unsafe or lint_unused_unsafe_all, use them in debug profile only.");
 
 pub mod backend;
 

@@ -2,7 +2,7 @@
 name = "prudent"
 
 # On version change, also update src/backend.rs -> assert_version.
-version = "0.0.3"
+version = "0.0.4"
 
 edition = "2021"
 # Full functionality and tests need Rust 1.89.0+.
@@ -29,13 +29,16 @@ unexpected_cfgs = { level = "forbid"}
 unknown_lints = { level = "forbid"}
 
 [features]
-# Check that the method/function/expression is actually unsafe.
+# Apply lints (conditionally or unconditionally) that the method/function/expression IS actually
+# unsafe.
 #
-# Use feature "lint_unused_unsafe" in debug mode (`debug_assertions`) ONLY. Otherwise it fails -
-# intentionally.
-#
-# AND: feature "lint_unused_unsafe" takes LONG to build, because it has to use procedural macros.
+# - Use features "lint_unused_unsafe" or "lint_unused_unsafe_all" in debug mode (`debug_assertions`)
+#   ONLY. Otherwise they fail - intentionally.
+# - AND: Use them with `cargo check` or `cargo check --tests` ONLY. NOT with `cargo build`, not with
+#   `cargo run`, not with `cargo test` - they CANNOT be LINKED, to prevent accidental use.
+# - AND: they take LONGER to compile, because they have to use procedural macros.
 lint_unused_unsafe = ["dep:prudent-macros-lint", "dep:no-link"]
+lint_unused_unsafe_all = ["lint_unused_unsafe", "prudent-macros-lint/lint_unused_unsafe_all"]
 
 #default = ["lint_unused_unsafe"]
 
@@ -44,11 +47,11 @@ lint_unused_unsafe = ["dep:prudent-macros-lint", "dep:no-link"]
 # `default-features`), which is just the reverse compatibility check done/initiated by
 # prudent-macros-enforce itself; BUT we DON'T HAVE TO, because we request and accept only an exact
 # version of prudent-macros-enforce with "= ..." version specifier. However, to be on the safe side,
-# we specify `use_with_prudent_only` here anyway.
+# we DO use `use_with_prudent_only` anyway.
 #
-# prudent-macros-enforce is NOT used when you enable feature "lint_unused_unsafe". But it is NOT
+# `prudent-macros-enforce` is NOT used when you enable feature "lint_unused_unsafe". But it is NOT
 # optional - it IS required anyway. Doing it the other way (mutually excluding
-# prudent-macros-enforce and prudent-macros-lint) would be difficult and confusing:
+# `prudent-macros-enforce` and `prudent-macros-lint`) would be difficult and confusing:
 #
 # - There is no way to conditionally "disable" (or "not enable") a feature in Cargo.toml based on
 #   `cfg(debug_assertions)`, see
@@ -56,20 +59,27 @@ lint_unused_unsafe = ["dep:prudent-macros-lint", "dep:no-link"]
 #   > "same applies to cfg(debug_assertions)... currently no way to add dependencies based on these
 #   configuration values.""
 #
-# - So, the only way to conditionally **exclude** prudent-macros-enforce somehow in Cargo.toml
-#   (without having "build.rs") would be to include it in default-features of prudent, and
-#   instructing them to disable default-features of prudent. But then any 3rd party that uses
-#   prudent could re-add it simply by forgetting to opt out of default-features of prudent.
+# - So, the only ways to conditionally **exclude** `prudent-macros-enforce` somehow in Cargo.toml
+#   (without having "build.rs") would be either to include it in `default-features` of `prudent`,
+#   and instructing them to disable `default-features` of `prudent`. But then any 3rd party that
+#   uses prudent could re-add it simply by forgetting to opt out of `default-features` of prudent.
+#   
+#   We could NOT have two mutually exclusive features, like `lint_unused_unsafe` and
+#   `dont_lint_unused_unsafe`, with a requirement to choose exactly one of them. Why? Because other
+#   crates using `prudent` would also have to choose one of those two features, and then we'd have a
+#   conflict.
+#   
+#   But, there's no real need to exclude `prudent-macros-enforce`, because it's lightweight.
 
-prudent-macros-enforce = {version="= 0.0.3", features=["use_with_prudent_only"]}
+prudent-macros-enforce = {version="= 0.0.4", features=["use_with_prudent_only"]}
 # For local development:
 #
-#prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.3", features=["use_with_prudent_only"] }
+#prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.4", features=["use_with_prudent_only"] }
 
-prudent-macros-lint = {version="= 0.0.3", optional = true }
+prudent-macros-lint = {version="= 0.0.4", optional = true }
 # For local development:
 #
-#prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.3", optional = true }
+#prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.4", optional = true }
 
 no-link = {version="0.2.0", optional = true }
 

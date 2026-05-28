@@ -21,10 +21,11 @@ edition = "2024"
 # all).
 [features]
 lint_unused_unsafe = ["prudent/lint_unused_unsafe"]
+lint_unused_unsafe_all = ["prudent/lint_unused_unsafe_all"]
 
 [dependencies]
-prudent = {path = "../..", version="0.0.3"}
+prudent = {path = "../..", version="0.0.4"}
 
 [dev-dependencies]
 trybuild = "1.0"
-prudent = {path = "../..", version="0.0.3"}
+prudent = {path = "../..", version="0.0.4"}
