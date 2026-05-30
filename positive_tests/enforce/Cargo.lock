@@ -4,9 +4,7 @@ version = 4
 
 [[package]]
 name = "dis"
-version = "0.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4119b5ff45c42389a724f4a549d7320a6ee30259a42a1481115703b6d8602f6"
+version = "0.0.2"
 dependencies = [
  "proc-macro2",
  "proc-macro2-diagnostics",
@@ -14,18 +12,14 @@ dependencies = [
 
 [[package]]
 name = "mce"
-version = "0.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "797490f8531cd3b73aebcbc57641a28fbbb501b7420ab8340fa3f1296f97e4a4"
+version = "0.0.4"
 dependencies = [
  "mce-proc",
 ]
 
 [[package]]
 name = "mce-lib"
-version = "0.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d1f061e95535c886ce91a72e8472dede33715c219fc26e7b67f7c66642ea9a4"
+version = "0.0.4"
 dependencies = [
  "dis",
  "proc-macro2",
@@ -36,9 +30,7 @@ dependencies = [
 
 [[package]]
 name = "mce-proc"
-version = "0.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc4621093a3ef65b06918d42400409ecb852a67f1f0a3b537de6180cf99f5398"
+version = "0.0.4"
 dependencies = [
  "dis",
  "mce-lib",

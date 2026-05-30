@@ -50,6 +50,7 @@ const unsafe fn unsafe_fn_two_args_non_copy(_: SNonCopy, u: u8) -> u8 { u }
 const _: () = unsafe_fn!(unsafe_fn_no_args);
 const _: bool = unsafe_fn!(unsafe_fn_one_arg; true);
 const _: u8 = unsafe_fn!(unsafe_fn_two_args_non_copy; SNonCopy {}, 0);
+println!("OK");
 ```
 
 ## unsafe_method

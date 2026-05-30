@@ -71,15 +71,15 @@ lint_unused_unsafe_all = ["lint_unused_unsafe", "prudent-macros-lint/lint_unused
 #   
 #   But, there's no real need to exclude `prudent-macros-enforce`, because it's lightweight.
 
-prudent-macros-enforce = {version="= 0.0.4", features=["use_with_prudent_only"]}
+#prudent-macros-enforce = {version="= 0.0.4", features=["use_with_prudent_only"]}
 # For local development:
 #
-#prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.4", features=["use_with_prudent_only"] }
+prudent-macros-enforce = {path="../prudent-macros-enforce", version="= 0.0.4", features=["use_with_prudent_only"] }
 
-prudent-macros-lint = {version="= 0.0.4", optional = true }
+#prudent-macros-lint = {version="= 0.0.4", optional = true }
 # For local development:
 #
-#prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.4", optional = true }
+prudent-macros-lint = {path="../prudent-macros-lint", version="= 0.0.4", optional = true }
 
 no-link = {version="0.2.0", optional = true }
 

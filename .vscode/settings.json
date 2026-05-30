@@ -4,6 +4,7 @@
         "blanks-around-headings": false,
         "blanks-around-lists": false
     },
-    "line-length-checker.lineLength": 100
+    "line-length-checker.lineLength": 100,
+    "rust-analyzer.cargo.features": "all"
 }
 

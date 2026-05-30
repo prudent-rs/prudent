@@ -5,4 +5,8 @@ edition = "2024"
 
 [dependencies]
 prudent = {version="0.0.4", path="../.."}
-mce = {version="0.0.3"}
+
+# For local development - but NOT for CI/Github Actions
+#
+#mce = {version="0.0.4", path="../../../mce"}
+mce = {version="0.0.4"}
