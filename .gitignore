@@ -1,4 +1,5 @@
 /target/
 /negative_tests/*/target/
+/positive_tests/*/target/
 /verify_*/target/
 /.idea

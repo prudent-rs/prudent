@@ -1,0 +1,8 @@
+[package]
+name = "positive_tests_lint_all"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+prudent = {version="0.0.4", path="../..", features=["lint_unused_unsafe_all"]}
+mce = {version="0.0.3"}

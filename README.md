@@ -41,13 +41,15 @@ use prudent::prelude::*;
 ```rust
 use prudent::prelude::unsafe_fn;
 
+struct SNonCopy {}
+
 const unsafe fn unsafe_fn_no_args() {}
 const unsafe fn unsafe_fn_one_arg(b: bool) -> bool { b }
-const unsafe fn unsafe_fn_two_args(_: bool, u: u8) -> u8 { u }
+const unsafe fn unsafe_fn_two_args_non_copy(_: SNonCopy, u: u8) -> u8 { u }
 
 const _: () = unsafe_fn!(unsafe_fn_no_args);
 const _: bool = unsafe_fn!(unsafe_fn_one_arg; true);
-const _: u8 = unsafe_fn!(unsafe_fn_two_args; true, 0);
+const _: u8 = unsafe_fn!(unsafe_fn_two_args_non_copy; SNonCopy {}, 0);
 ```
 
 ## unsafe_method
@@ -56,6 +58,25 @@ const _: u8 = unsafe_fn!(unsafe_fn_two_args; true, 0);
 ```rust
 use prudent::prelude::unsafe_method;
 const _: u8 = unsafe_method!( 1u8 =>. unchecked_add; 0 );
+```
+
+### self is not Copy, by value, args
+```rust
+use prudent::prelude::unsafe_method;
+fn main() {
+    {
+        struct SNonCopy {}
+        impl SNonCopy {
+            unsafe fn unsafe_method_no_args(self) {}
+            unsafe fn unsafe_method_one_arg(self, _: bool) {}
+            unsafe fn unsafe_method_two_args(self, _: bool, _: bool) {}
+        }
+
+        unsafe_method!(SNonCopy {} =>. unsafe_method_no_args);
+        unsafe_method!(SNonCopy {} =>. unsafe_method_one_arg; true);
+        unsafe_method!(SNonCopy {} =>. unsafe_method_two_args; true, false);
+    }
+}
 ```
 
 ### self is not Copy, by shared reference
@@ -92,37 +113,6 @@ fn main() {
     unsafe_method!(s =>. unsafe_method_no_args);
     unsafe_method!(s =>. unsafe_method_one_arg; true);
     unsafe_method!(s =>. unsafe_method_two_args; true, false);
-}
-```
-
-## unsafe_method > self: by value
-```rust
-use prudent::prelude::unsafe_method;
-fn main() {
-    {
-        struct SNonCopy {}
-        impl SNonCopy {
-            unsafe fn unsafe_method_no_args(self) {}
-            unsafe fn unsafe_method_one_arg(self, _: bool) {}
-            unsafe fn unsafe_method_two_args(self, _: bool, _: bool) {}
-        }
-
-        unsafe_method!(SNonCopy {} =>. unsafe_method_no_args);
-        unsafe_method!(SNonCopy {} =>. unsafe_method_one_arg; true);
-        unsafe_method!(SNonCopy {} =>. unsafe_method_two_args; true, false);
-    }
-    {
-        #[derive(Clone, Copy)]
-        struct SCopy {}
-        impl SCopy {
-            unsafe fn unsafe_method_no_args(self) {}
-        }
-
-        let sCopy = SCopy {};
-        unsafe_method!(sCopy =>. unsafe_method_no_args);
-        unsafe_method!(sCopy =>. unsafe_method_no_args);
-        let _ = sCopy;
-    }
 }
 ```
 <!-- ------- -->

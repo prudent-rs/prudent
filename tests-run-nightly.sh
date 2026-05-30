@@ -9,11 +9,17 @@ set -euo pipefail
 echo NIGHTLY Rust TOOLCHAIN
 
 echo
-echo "CLIPPY"
+echo "CLIPPY (debug)"
 cargo +nightly clippy -- -D warnings
 echo
-echo "CLIPPY (feature lint_unused_unsafe)"
+echo "CLIPPY (release)"
+cargo +nightly clippy --release -- -D warnings
+echo
+echo "CLIPPY (debug, feature lint_unused_unsafe)"
 cargo +nightly clippy --features lint_unused_unsafe -- -D warnings
+echo
+echo "CLIPPY (debug, feature lint_unused_unsafe_all)"
+cargo +nightly clippy --features lint_unused_unsafe_all -- -D warnings
 
 echo
 echo "FMT"

@@ -1,0 +1,1 @@
+../../../shared/src/bin/04_unsafe_method_ref.rs

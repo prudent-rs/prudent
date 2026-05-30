@@ -1,0 +1,8 @@
+    markdown_file_path = "../../../README.md"
+    start_prefix = """
+        #[allow(unused_imports)]
+        use prudent::prelude::*;
+        
+        fn main() {
+    """
+    final_suffix = "}"

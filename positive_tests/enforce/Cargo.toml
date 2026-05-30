@@ -1,0 +1,8 @@
+[package]
+name = "positive_tests_enforce"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+prudent = {version="0.0.4", path="../.."}
+mce = {version="0.0.3"}

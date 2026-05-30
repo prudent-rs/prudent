@@ -1,0 +1,1 @@
+../../../shared/src/bin/03_unsafe_method_value_non_copy.rs

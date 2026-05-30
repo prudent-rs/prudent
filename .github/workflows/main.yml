@@ -2,7 +2,7 @@
 # - BUT, ../../tests-run.sh needs to undo any effects of directory change (`cd`), while here each
 #   GitHub action step starts in the repository directory
 
-name: Tests, doc tests, MIRI, violations coverage
+name: Tests, doc tests, Clippy, MIRI, violations coverage, lint verification
 
 on:
   push:
