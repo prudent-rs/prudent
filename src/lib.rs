@@ -60,6 +60,9 @@ Then on `nightly` we forbid rustdoc::invalid_codeblock_attributes. See
 #[cfg(doc)]
 extern crate alloc;
 
+#[cfg(feature = "lint_unused_unsafe")]
+use no_link as _;
+
 #[cfg(all(
     any(feature = "lint_unused_unsafe", feature = "lint_unused_unsafe_all"),
     not(debug_assertions)
