@@ -1,8 +1,3 @@
-#![doc(test(attr(forbid(unexpected_cfgs))))]
-#![doc(test(attr(deny(unused, dead_code))))]
-// @TODO check if still needed:
-// Workaround for https://github.com/rust-lang/rust/issues/148599
-#![doc(test(attr(allow(forbidden_lint_groups))))]
 #![doc = include_str!("../README.md")]
 //!
 //! Implementation notes of macros ARE a part of the documentation. Why?
@@ -11,6 +6,11 @@
 //!   - macros inject code, so they are not as sandboxed/isolated as non-macro code.
 //! - Otherwise it's a pain to edit them/render them in VS Code. Yes, that matters.
 
+#![doc(test(attr(forbid(unexpected_cfgs))))]
+#![doc(test(attr(deny(unused, dead_code))))]
+// @TODO check if still needed:
+// Workaround for https://github.com/rust-lang/rust/issues/148599
+#![doc(test(attr(allow(forbidden_lint_groups))))]
 #![allow(clippy::useless_attribute)]
 #![allow(clippy::needless_doctest_main)]
 #![cfg_attr(not(any(doc, test)), no_std)]
@@ -61,6 +61,7 @@ Then on `nightly` we forbid rustdoc::invalid_codeblock_attributes. See
 extern crate alloc;
 
 #[cfg(feature = "lint_unused_unsafe")]
+/// When `lint_unused_unsafe` feature is enabled, ensure that the crate will never be linked to.
 use no_link as _;
 
 #[cfg(all(
