@@ -48,6 +48,8 @@ use no_link as _;
 ///
 /// @TODO this should fail, but it does NOT
 #[cfg_attr(feature = "lint_unused_unsafe", doc = " ```compile_fail")]
+//
+// @TODO here and elsewhere in this file
 #[cfg_attr(
     all(
         feature = "lint_unused_unsafe",

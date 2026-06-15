@@ -547,6 +547,8 @@ Sorted by importance (for `prudent`):
   hints for 1-occurrence only macro_rules
 - [rust-lang/rust-analyzer#11323](https://github.com/rust-lang/rust-analyzer/issues/11323) Inlay
   hints not working in macro call
+- [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) Tracking issue for Fn
+  traits (unboxed_closures & fn_traits feature)
 - [rust-lang/cargo#6570](https://github.com/rust-lang/cargo/issues/6570) Doctests do not set profile
   codegen options
 - [dtolnay/no-panic#28](https://github.com/dtolnay/no-panic/issues/28) no-panic currently cannot be

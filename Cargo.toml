@@ -50,7 +50,7 @@ lint_unused_unsafe_all = ["lint_unused_unsafe", "prudent-macros-lint/lint_unused
 # we DO use `use_with_prudent_only` anyway.
 #
 # `prudent-macros-enforce` is NOT used when you enable feature "lint_unused_unsafe". But it is NOT
-# optional - it IS required anyway. Doing it the other way (mutually excluding
+# optional either - it IS required anyway. Doing it the other way (mutually excluding
 # `prudent-macros-enforce` and `prudent-macros-lint`) would be difficult and confusing:
 #
 # - There is no way to conditionally "disable" (or "not enable") a feature in Cargo.toml based on
@@ -64,12 +64,12 @@ lint_unused_unsafe_all = ["lint_unused_unsafe", "prudent-macros-lint/lint_unused
 #   and instructing them to disable `default-features` of `prudent`. But then any 3rd party that
 #   uses prudent could re-add it simply by forgetting to opt out of `default-features` of prudent.
 #   
-#   We could NOT have two mutually exclusive features, like `lint_unused_unsafe` and
+#   We CANNOT have two mutually exclusive features, like `lint_unused_unsafe` and
 #   `dont_lint_unused_unsafe`, with a requirement to choose exactly one of them. Why? Because other
 #   crates using `prudent` would also have to choose one of those two features, and then we'd have a
 #   conflict.
 #   
-#   But, there's no real need to exclude `prudent-macros-enforce`, because it's lightweight.
+#   Anyway, there's no real need to exclude `prudent-macros-enforce`, because it's lightweight.
 
 #prudent-macros-enforce = {version="= 0.0.4", features=["use_with_prudent_only"]}
 # For local development:
