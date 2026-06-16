@@ -547,8 +547,8 @@ Sorted by importance (for `prudent`):
   hints for 1-occurrence only macro_rules
 - [rust-lang/rust-analyzer#11323](https://github.com/rust-lang/rust-analyzer/issues/11323) Inlay
   hints not working in macro call
-- [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) Tracking issue for Fn
-  traits (unboxed_closures & fn_traits feature)
+- [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) `unboxed_closures` and
+  `fn_traits` feature.
 - [rust-lang/cargo#6570](https://github.com/rust-lang/cargo/issues/6570) Doctests do not set profile
   codegen options
 - [dtolnay/no-panic#28](https://github.com/dtolnay/no-panic/issues/28) no-panic currently cannot be
@@ -559,8 +559,6 @@ Sorted by importance (for `prudent`):
   extension and/or LSP
 - [rust-lang/rust#43031](https://github.com/rust-lang/rust/issues/43031) rustdoc: allow full set of
   compiler options to be specified
-- [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) `unboxed_closures` and
-  `fn_traits` feature.
 - [rust-lang/rust#88531](https://github.com/rust-lang/rust/issues/88531) No way to get compile-time
   info from the type of local
 - [rust-lang/rust#63063](https://github.com/rust-lang/rust/issues/63063) Tracking issue for RFC
@@ -602,6 +600,8 @@ Sorted by importance (for `prudent`):
   tuples
 - [dtolnay/trybuild#321](https://github.com/dtolnay/trybuild/pull/321) README: Avoid directory
   traversal
+- [rust-lang/rust#156458](https://github.com/rust-lang/rust/issues/156458) rustc lexer/macro_rules
+  diagnostics feature request: Color highlight acceptable characters
 
 ## Credits
 
