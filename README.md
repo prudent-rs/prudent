@@ -505,6 +505,7 @@ versions `1.0` or higher.
 # Scope
 
 ## Not supported: Pattern matching
+
 Rust is a rich language and it allows complex statements/expressions. `prudent` tries to be
 flexible, but it also needs to be manageable and testable. So, there may be code that `prudent`
 doesn't accept (please do report it). Most likely if it involves advanced pattern matching
@@ -515,6 +516,7 @@ matching or other complex syntax may sound exciting, but it makes reading the co
 that be an opportunity for refactoring?
 
 ## Not supported: Procedural macros with side effects
+
 Several `prudent` macros duplicate their expression "parameter". In the generated Rust code the
 parameter expression is evaluated only once, but it's present in the code twice - once in an
 inactive `if false {...}` branch for verification, and once in the following active `else {...}`
@@ -540,13 +542,19 @@ Please subscribe for low frequency updates at
 # Side fruit, related issues, credits
 Please contribute, or at least subscribe, and give thumbs up, to:
 
-## Related issues
+## Blockers and related issues
 Sorted by importance (for `prudent`):
 
+- [SergioBenitez/proc-macro2-diagnostics#13](https://github.com/SergioBenitez/proc-macro2-diagnostics/issues/13)
+  defect: Error message and details missing, when macro fails to generate main() on STABLE
+- [SergioBenitez/proc-macro2-diagnostics#12](https://github.com/SergioBenitez/proc-macro2-diagnostics/issues/12)
+  tests/stable/errors.rs fails with Rust 1.89.0 and also stable 1.95.0
 - [rust-lang/rust-analyzer#22172](https://github.com/rust-lang/rust-analyzer/issues/22172) Inlay
   hints for 1-occurrence only macro_rules
 - [rust-lang/rust-analyzer#11323](https://github.com/rust-lang/rust-analyzer/issues/11323) Inlay
   hints not working in macro call
+- [rust-lang/rust#157987](https://github.com/rust-lang/rust/issues/157987) Tracking issue for
+  `core::marker::Tuple`
 - [rust-lang/rust#29625](https://github.com/rust-lang/rust/issues/29625) `unboxed_closures` and
   `fn_traits` feature.
 - [rust-lang/cargo#6570](https://github.com/rust-lang/cargo/issues/6570) Doctests do not set profile
